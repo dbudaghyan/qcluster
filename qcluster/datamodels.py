@@ -1,9 +1,15 @@
-from typing import Literal, Union, Optional, Any
+from os import PathLike
+from typing import Literal, Union, Optional
 
 import pandas as pd
 from pydantic import BaseModel, Field
 
-from qcluster.consts import EmbeddingFunction
+from qcluster.consts import (
+    EmbeddingFunctionType,
+    EmbeddingType,
+    ClusterType,
+    ClusteringFunctionType
+)
 
 CategoryType = Literal[
     'ACCOUNT',
@@ -45,7 +51,18 @@ class Sample(BaseModel):
 class Instruction(BaseModel):
     id: int
     text: str
-    embedding: Optional[Any] = None
+    embedding: Optional[EmbeddingType] = None
+    cluster: Optional[ClusterType] = None
+
+    @property
+    def embedding_shape(self) -> Optional[tuple[int, ...]]:
+        """
+        Get the shape of the embedding if it exists.
+
+        Returns:
+            Optional[tuple[int, ...]]: The shape of the embedding or None if not set.
+        """
+        return self.embedding.shape if hasattr(self.embedding, 'shape') else None
 
     @classmethod
     def from_sample(cls, sample: Sample) -> 'Instruction':
@@ -60,22 +77,37 @@ class Instruction(BaseModel):
         """
         return cls(id=sample.id, text=sample.instruction)
 
-    def update_embedding(self, embedding_function: EmbeddingFunction):
+    def update_embedding(self, embedding_function: EmbeddingFunctionType):
         """
         Update the embedding of the instruction using the provided embedding function.
 
         Args:
             embedding_function (EmbeddingFunction): A function that takes
-             a list of strings and returns an embedding.
+             a list of strings and updates the embedding.
         """
         self.embedding = embedding_function([self.text])
+
+
+    def __repr__(self) -> str:
+        """
+        Get a string representation of the instruction.
+
+        Returns:
+            str: The text of the instruction.
+        """
+        shape = "NA" if self.embedding is None else self.embedding_shape
+        return (f"Instruction(id={self.id}, text='{self.text}',"
+                f" embedding_shape={shape}, cluster={self.cluster})")
+
+    def __str__(self) -> str:
+        return self.__repr__()
 
 
 class SampleCollection(BaseModel):
     samples: list[Sample]
 
     @classmethod
-    def from_csv(cls, csv_file: str) -> 'SampleCollection':
+    def from_csv(cls, csv_file: PathLike) -> 'SampleCollection':
         """
         Create a `SampleCollection` object from a CSV file.
 
@@ -135,7 +167,8 @@ class SampleCollection(BaseModel):
 
 class InstructionCollection(BaseModel):
     instructions: list[Instruction]
-    embeddings: list[Optional[Any]] = Field(default_factory=list)
+    embeddings: list[Optional[EmbeddingType]] = Field(default_factory=list)
+    clusters: list[Optional[ClusterType]] = Field(default_factory=list)
 
     @classmethod
     def from_samples(cls, samples: SampleCollection) -> 'InstructionCollection':
@@ -152,20 +185,59 @@ class InstructionCollection(BaseModel):
         instructions = [Instruction.from_sample(sample=sample) for sample in samples]
         return cls(instructions=instructions)
 
-    def update_embeddings(self, embedding_function: EmbeddingFunction):
+    def update_embeddings(
+            self, embedding_function: EmbeddingFunctionType) -> 'InstructionCollection':
         """
         Add embeddings to the instructions using the provided embedding function.
 
         Args:
             embedding_function (EmbeddingFunction): A function that takes
-             a list of strings and returns an embedding.
+             a list of strings and updates the embeddings.
         """
         instructions_text = [instruction.text for instruction in self.instructions]
         embeddings = embedding_function(instructions_text)
+        if len(embeddings) != len(self.instructions):
+            raise ValueError(
+                f"The number of embeddings ({len(embeddings)})"
+                f" must match the number of instructions ({len(self.instructions)}).")
 
         for instruction, embedding in zip(self.instructions, embeddings):
             instruction.embedding = embedding
             self.embeddings.append(embedding)
+        return self
+
+    def update_clusters(
+            self, clustering_function: ClusteringFunctionType) -> 'InstructionCollection':
+        """
+        Add clusters to the instructions using the provided clustering function.
+
+        Args:
+            clustering_function (ClusteringFunction): A function that takes
+             a list of embeddings and updates cluster labels.
+        """
+        if not self.embeddings:
+            raise ValueError("Embeddings must be updated before clustering.")
+        elif len(self.embeddings) != len(self.instructions):
+            raise ValueError("Embeddings and instructions must have the same length.")
+        clusters = clustering_function(self.embeddings)
+
+        for instruction, cluster in zip(self.instructions, clusters):
+            instruction.cluster = cluster
+            self.clusters.append(cluster)
+        return self
+
+
+    def __repr__(self) -> str:
+        indented_instructions = '\n'.join(f'    {instruction!r}' for instruction in self)
+        return (f"{self.__class__.__name__}(\n"
+                f"  num_instructions={len(self)},\n"
+                f"  instructions=[\n"
+                f"{indented_instructions}\n"
+                f"  ]\n"
+                f")")
+
+    def __str__(self) -> str:
+        return self.__repr__()
 
     def __len__(self) -> int:
         """

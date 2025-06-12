@@ -3,6 +3,8 @@ from sentence_transformers import SentenceTransformer
 import torch
 from datamodels import SampleCollection
 from qcluster import ROOT_DIR
+from sklearn.decomposition import PCA
+
 
 def create_embeddings(texts: list[str],
                       model: SentenceTransformer) -> torch.Tensor:
@@ -17,7 +19,23 @@ def create_embeddings(texts: list[str],
     """
     assert isinstance(texts[0], str)
     embeddings = model.encode(texts, convert_to_tensor=True)
+    if not embeddings.is_cpu:
+        embeddings = embeddings.cpu()
     return embeddings
+
+def pca_reduction(embeddings: torch.Tensor, n_components: int = 2) -> torch.Tensor:
+    """
+    Reduces the dimensionality of the embeddings using PCA.
+
+    Args:
+        embeddings: A torch.Tensor containing the embeddings to be reduced.
+        n_components: The number of components to keep after reduction.
+    Returns:
+        A torch.Tensor containing the reduced embeddings.
+    """
+    pca = PCA(n_components=n_components)
+    reduced_embeddings = pca.fit_transform(embeddings.cpu().numpy())
+    return torch.tensor(reduced_embeddings)
 
 
 if __name__ == '__main__':
