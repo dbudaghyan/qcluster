@@ -2,13 +2,14 @@ from os import PathLike
 from typing import Literal, Union, Optional
 
 import pandas as pd
+from loguru import logger
 from pydantic import BaseModel, Field
 
 from qcluster.consts import (
     EmbeddingFunctionType,
     EmbeddingType,
     ClusterType,
-    ClusteringFunctionType, DissimilarityFunctionType
+    ClusteringFunctionType, DissimilarityFunctionType, DescriptionFunctionType
 )
 
 CategoryType = Literal[
@@ -38,6 +39,30 @@ IntentType = Literal[
     'delivery_period', 'set_up_shipping_address', 'get_invoice',
     'recover_password', 'edit_account', 'get_refund', 'review'
 ]
+
+class ClusterOutput(BaseModel):
+    """
+    Represents the cluster output for a sample instruction.
+    """
+    id: int
+    name: str
+    description: str
+    count: int
+
+class ClusterOutputCollection(BaseModel):
+    """
+    Represents a collection of cluster outputs.
+    """
+    outputs: list[ClusterOutput]
+
+    def __len__(self) -> int:
+        """
+        Get the number of cluster outputs.
+
+        Returns:
+            int: The number of cluster outputs.
+        """
+        return len(self.outputs)
 
 
 class Sample(BaseModel):
@@ -228,14 +253,17 @@ class InstructionCollection(BaseModel):
 
     def get_top_dissimilar_instructions(
             self, dissimilarity_function: DissimilarityFunctionType,
-            top_n: int = 5) -> 'InstructionCollection':
-        """        Get the top N dissimilar instructions based on a dissimilarity function.
+            top_n: int = 5, raise_if_too_few: bool = False
+    ) -> 'InstructionCollection':
+        """Get the top N dissimilar instructions based on a dissimilarity function.
         Args:
             dissimilarity_function (DissimilarityFunction): A function that takes
              a list of strings, and an integer (top_n),
              and returns a list of tuples containing the index
              and the corresponding string.
             top_n (int): The number of top dissimilar instructions to return.
+            raise_if_too_few (bool): If True, raises an error if there are not enough
+             instructions to return the top N dissimilar instructions.
         Returns:
             InstructionCollection: A new InstructionCollection object containing
              the top N dissimilar instructions.
@@ -245,12 +273,19 @@ class InstructionCollection(BaseModel):
         if top_n <= 0:
             raise ValueError("top_n must be a positive integer.")
         if top_n > len(self.instructions):
-            raise ValueError(
-                f"top_n ({top_n}) cannot be greater than the number of instructions ({len(self.instructions)}).")
-        instructions_text = [instruction.text for instruction in self.instructions]
-        dissimilarities = dissimilarity_function(instructions_text, top_n)
+            if raise_if_too_few:
+                raise ValueError(
+                    f"top_n ({top_n}) cannot be greater than the number of instructions"
+                    f" ({len(self)}).")
+            else:
+                logger.warning(
+                    f"top_n ({top_n}) is greater than the number of instructions"
+                    f" ({len(self)}). Returning all instructions.")
+                top_n = len(self.instructions)
+        instruction_strings = [instruction.text for instruction in self]
+        dissimilarities = dissimilarity_function(instruction_strings, top_n)
         top_indices = [index for index, _ in dissimilarities]
-        top_instructions = [self.instructions[index] for index in top_indices]
+        top_instructions = [self[index] for index in top_indices]
         return InstructionCollection(instructions=top_instructions)
 
 
@@ -308,7 +343,7 @@ class InstructionCollection(BaseModel):
         """
         return [instruction.text for instruction in self]
 
-    def collect_by_cluster(self, cluster: ClusterType) -> 'InstructionCollection':
+    def get_cluster(self, cluster: ClusterType) -> 'InstructionCollection':
         """
         Collect instructions by a specific cluster.
 
@@ -323,27 +358,49 @@ class InstructionCollection(BaseModel):
             instruction for instruction in self if instruction.cluster == cluster]
         return InstructionCollection(instructions=filtered_instructions)
 
-
-class ClusterOutput(BaseModel):
-    """
-    Represents the cluster output for a sample instruction.
-    """
-    id: int
-    name: str
-    description: str
-    count: int
-
-class ClusterOutputCollection(BaseModel):
-    """
-    Represents a collection of cluster outputs.
-    """
-    outputs: list[ClusterOutput]
-
-    def __len__(self) -> int:
+    def group_by_cluster(self) -> dict[ClusterType, 'InstructionCollection']:
         """
-        Get the number of cluster outputs.
+        Group instructions by their clusters.
 
         Returns:
-            int: The number of cluster outputs.
+            dict[ClusterType, InstructionCollection]: A dictionary where keys are
+             cluster labels and values are InstructionCollection objects containing
+             the instructions for each cluster.
         """
-        return len(self.outputs)
+        grouped_instructions = {}
+        for instruction in self.instructions:
+            if instruction.cluster not in grouped_instructions:
+                grouped_instructions[instruction.cluster] = []
+            grouped_instructions[instruction.cluster].append(instruction)
+        return {cluster: InstructionCollection(instructions=instructions)
+                for cluster, instructions in grouped_instructions.items()}
+
+    def is_a_cluster(self) -> bool:
+        if len(set(instruction.cluster for instruction in self.instructions)) == 1:
+            return True
+        return False
+
+    def describe(self, description_function: DescriptionFunctionType) -> ClusterOutput:
+        """
+        Get a description of the instruction collection.
+
+        Args:
+            description_function (DescriptionFunctionType): A function that takes
+             a string and returns a ClusterDescription object.
+
+        Returns:
+            ClusterDescription: A description of the instruction collection.
+        """
+        if not self.instructions:
+            raise ValueError("No instructions available for description.")
+        document = "\n".join(self.to_list_of_strings())
+        if not self.is_a_cluster():
+            raise ValueError("Instructions do not belong to a single cluster."
+                             " Please use `group_by_cluster` to group them first.")
+        description_output = description_function(document)
+        return ClusterOutput(
+            id=self.instructions[0].cluster,
+            name=description_output.title,
+            description=description_output.description,
+            count=len(self.instructions)
+        )

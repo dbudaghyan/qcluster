@@ -16,7 +16,8 @@
   - [X] Integrate with `InstructionCollection`
 - [ ] Add a cluster description module
   - [X] Add dissimilarity module and integrate with `InstructionCollection`
-  - [ ] Add cluster describer, using LLMs to generate descriptions and titles
-- [ ] Add a matching module
+  - [X] Add cluster describer, using LLMs to generate descriptions and titles
+  - [X] Integrate with `InstructionCollection`
+- [ ] Add a cluster matching module
 - [ ] Add an evaluation module
 - [ ] Add a reporting module
