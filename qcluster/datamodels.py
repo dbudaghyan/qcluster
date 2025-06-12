@@ -1,7 +1,7 @@
-from typing import Literal, Union
+from typing import Literal, Union, Optional, Any
 
 import pandas as pd
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 CategoryType = Literal[
     'ACCOUNT',
@@ -42,7 +42,8 @@ class Sample(BaseModel):
 
 class Instruction(BaseModel):
     id: int
-    instruction: str
+    text: str
+    embedding: Optional[Any] = None
 
     @classmethod
     def from_sample(cls, sample: Sample) -> 'Instruction':
@@ -55,22 +56,22 @@ class Instruction(BaseModel):
         Returns:
             Instruction: An Instruction object with the instruction from the Sample.
         """
-        return cls(id=sample.id, instruction=sample.instruction)
+        return cls(id=sample.id, text=sample.instruction)
 
 
-class Samples(BaseModel):
+class SampleCollection(BaseModel):
     samples: list[Sample]
 
     @classmethod
-    def from_csv(cls, csv_file: str) -> 'Samples':
+    def from_csv(cls, csv_file: str) -> 'SampleCollection':
         """
-        Create a `Samples` object from a CSV file.
+        Create a `SampleCollection` object from a CSV file.
 
         Args:
             csv_file (str): Path to the CSV file.
 
         Returns:
-            Samples: A Samples object containing the data from the CSV file.
+            SampleCollection: A SampleCollection object containing the data from the CSV.
         """
         df = pd.read_csv(csv_file, dtype=str)
         df.index.name = "id"
@@ -87,7 +88,25 @@ class Samples(BaseModel):
         """
         return len(self.samples)
 
-    def __getitem__(self, index: int) -> Union[Sample, 'Samples']:
+    def number_of_samples(self) -> int:
+        """
+        Get the number of samples.
+
+        Returns:
+            int: The number of samples.
+        """
+        return len(self.samples)
+
+    def __iter__(self):
+        """
+        Iterate over the samples.
+
+        Returns:
+            iterator: An iterator over the Sample objects.
+        """
+        return iter(self.samples)
+
+    def __getitem__(self, index: int) -> Union[Sample, 'SampleCollection']:
         """
         Get a sample or a slice of samples by index.
 
@@ -95,29 +114,49 @@ class Samples(BaseModel):
             index (int): Index of the sample or slice.
 
         Returns:
-            Sample or Samples: A single Sample object or a Samples object if a slice is requested.
+            Sample or SampleCollection: A single Sample object
+             or a SampleCollection object if a slice is requested.
         """
         if isinstance(index, slice):
-            return Samples(samples=self.samples[index])
+            return SampleCollection(samples=self.samples[index])
         return self.samples[index]
 
-class Instructions(BaseModel):
+class InstructionCollection(BaseModel):
     instructions: list[Instruction]
+    embeddings: list[Optional[Any]] = Field(default_factory=list)
 
     @classmethod
-    def from_samples(cls, samples: Samples) -> 'Instructions':
+    def from_samples(cls, samples: SampleCollection) -> 'InstructionCollection':
         """
-        Create an Instructions object from a list of Sample objects.
+        Create an InstructionCollection object from a list of Sample objects.
 
         Args:
-            samples (list[Sample]): A list of Sample objects.
+            samples (list[Sample]): A list of SampleCollection objects.
 
         Returns:
-            Instructions: An Instructions object containing the instructions
-             from the Samples.
+            InstructionCollection: An InstructionCollection object
+             containing the instructions from the SampleCollection.
         """
-        instructions = [Instruction.from_sample(sample) for sample in samples.samples]
+        instructions = [Instruction.from_sample(sample=sample) for sample in samples]
         return cls(instructions=instructions)
+
+    def __len__(self) -> int:
+        """
+        Get the number of instructions.
+
+        Returns:
+            int: The number of instructions.
+        """
+        return len(self.instructions)
+
+    def __iter__(self):
+        """
+        Iterate over the instructions.
+
+        Returns:
+            iterator: An iterator over the Instruction objects.
+        """
+        return iter(self.instructions)
 
     def to_list_of_strings(self) -> list[str]:
         """
@@ -126,7 +165,7 @@ class Instructions(BaseModel):
         Returns:
             list[str]: A list of instruction strings.
         """
-        return [instruction.instruction for instruction in self.instructions]
+        return [instruction.text for instruction in self]
 
 
 class ClusterOutput(BaseModel):

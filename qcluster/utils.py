@@ -1,62 +1,63 @@
 import pandas as pd
 
 from qcluster import ROOT_DIR
-from qcluster.datamodels import Samples, Sample
+from qcluster.datamodels import SampleCollection, Sample
 
 
-def csv_to_samples(csv_file: str) -> Samples:
+def csv_to_samples(csv_file: str) -> SampleCollection:
     """
-    Convert a CSV file to a Samples object.
+    Convert a CSV file to a SampleCollection object.
 
     Args:
         csv_file (str): Path to the CSV file.
 
     Returns:
-        Samples: A Samples object containing the data from the CSV file.
+        SampleCollection: A SampleCollection object containing the data from the CSV file.
     """
     df = pd.read_csv(csv_file, dtype=str)
     df.index.name = "id"
     samples = [Sample(**row) for _, row in df.iterrows()]
-    return Samples(samples=samples)
+    return SampleCollection(samples=samples)
 
 
-def identify_unique_categories(samples: Samples) -> set[str]:
+def identify_unique_categories(samples: SampleCollection) -> set[str]:
     """
-    Identify unique categories from the Samples object.
+    Identify unique categories from the SampleCollection object.
 
     Args:
-        samples (Samples): A Samples object.
+        samples (SampleCollection): A SampleCollection object.
 
     Returns:
         set: A set of unique categories.
     """
-    return {sample.category for sample in samples.samples}
+    return {sample.category for sample in samples}
 
 
-def identify_unique_intents(samples: Samples) -> set[str]:
+def identify_unique_intents(samples: SampleCollection) -> set[str]:
     """
-    Identify unique intents from the Samples object.
+    Identify unique intents from the SampleCollection object.
 
     Args:
-        samples (Samples): A Samples object.
+        samples (SampleCollection): A SampleCollection object.
 
     Returns:
         set: A set of unique intents.
     """
-    return {sample.intent for sample in samples.samples}
+    return {sample.intent for sample in samples}
 
 
-def create_category_intent_tuples(samples: Samples) -> set[tuple[str, str]]:
+def create_category_intent_tuples(samples: SampleCollection) -> set[tuple[str, str]]:
     """
-    Create a set of tuples containing unique (category, intent) pairs from the Samples object.
+    Create a set of tuples containing unique (category, intent) pairs
+     from the SampleCollection object.
 
     Args:
-        samples (Samples): A Samples object.
+        samples (SampleCollection): A SampleCollection object.
 
     Returns:
         set: A set of tuples with unique (category, intent) pairs.
     """
-    return {(sample.category, sample.intent) for sample in samples.samples}
+    return {(sample.category, sample.intent) for sample in samples}
 
 
 def create_category_intent_hierarchy(
@@ -64,9 +65,11 @@ def create_category_intent_hierarchy(
     """
     Create a hierarchy of categories and their associated intents.
     Args:
-        category_intent_tuples (set[tuple[str, str]]): A set of tuples where each tuple contains a category and an intent.
+        category_intent_tuples (set[tuple[str, str]]): A set of tuples
+         where each tuple contains a category and intent.
     Returns:
-        dict: A dictionary where keys are categories and values are sets of intents associated with those categories.
+        dict: A dictionary where keys are categories and values are sets of intents
+         associated with those categories.
     """
     hierarchy = {}
     for category, intent in category_intent_tuples:
@@ -76,17 +79,17 @@ def create_category_intent_hierarchy(
     return hierarchy
 
 
-def identify_unique_flags(samples: Samples) -> set[str]:
+def identify_unique_flags(samples: SampleCollection) -> set[str]:
     """
-    Identify unique flags from the Samples object.
+    Identify unique flags from the SampleCollection object.
 
     Args:
-        samples (Samples): A Samples object.
+        samples (SampleCollection): A SampleCollection object.
 
     Returns:
         set: A set of unique flags.
     """
-    return {flag for sample in samples.samples for flag in sample.flags}
+    return {flag for sample in samples for flag in sample.flags}
 
 
 if __name__ == '__main__':
@@ -97,7 +100,7 @@ if __name__ == '__main__':
             / "data"
             / "Bitext_Sample_Customer_Support_Training_Dataset_27K_responses-v11.csv"
     )
-    samples_ = Samples.from_csv(csv_file_)
+    samples_ = SampleCollection.from_csv(csv_file_)
     unique_categories_ = identify_unique_categories(samples_)
     logger.info(f"Unique categories: {unique_categories_}")
     unique_intents_ = identify_unique_intents(samples_)
