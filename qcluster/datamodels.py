@@ -3,6 +3,8 @@ from typing import Literal, Union, Optional, Any
 import pandas as pd
 from pydantic import BaseModel, Field
 
+from qcluster.consts import EmbeddingFunction
+
 CategoryType = Literal[
     'ACCOUNT',
     'CANCEL',
@@ -57,6 +59,16 @@ class Instruction(BaseModel):
             Instruction: An Instruction object with the instruction from the Sample.
         """
         return cls(id=sample.id, text=sample.instruction)
+
+    def update_embedding(self, embedding_function: EmbeddingFunction):
+        """
+        Update the embedding of the instruction using the provided embedding function.
+
+        Args:
+            embedding_function (EmbeddingFunction): A function that takes
+             a list of strings and returns an embedding.
+        """
+        self.embedding = embedding_function([self.text])
 
 
 class SampleCollection(BaseModel):
@@ -140,6 +152,21 @@ class InstructionCollection(BaseModel):
         instructions = [Instruction.from_sample(sample=sample) for sample in samples]
         return cls(instructions=instructions)
 
+    def update_embeddings(self, embedding_function: EmbeddingFunction):
+        """
+        Add embeddings to the instructions using the provided embedding function.
+
+        Args:
+            embedding_function (EmbeddingFunction): A function that takes
+             a list of strings and returns an embedding.
+        """
+        instructions_text = [instruction.text for instruction in self.instructions]
+        embeddings = embedding_function(instructions_text)
+
+        for instruction, embedding in zip(self.instructions, embeddings):
+            instruction.embedding = embedding
+            self.embeddings.append(embedding)
+
     def __len__(self) -> int:
         """
         Get the number of instructions.
@@ -157,6 +184,21 @@ class InstructionCollection(BaseModel):
             iterator: An iterator over the Instruction objects.
         """
         return iter(self.instructions)
+
+    def __getitem__(self, index: int) -> Union[Instruction, 'InstructionCollection']:
+        """
+        Get an instruction or a slice of instructions by index.
+
+        Args:
+            index (int): Index of the instruction or slice.
+
+        Returns:
+            Instruction or InstructionCollection: A single Instruction object
+             or an InstructionCollection object if a slice is requested.
+        """
+        if isinstance(index, slice):
+            return InstructionCollection(instructions=self.instructions[index])
+        return self.instructions[index]
 
     def to_list_of_strings(self) -> list[str]:
         """

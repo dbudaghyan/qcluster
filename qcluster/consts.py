@@ -1,13 +1,3 @@
-CATEGORIES = [
-    'ACCOUNT',
-    'CANCEL',
-    'CONTACT',
-    'DELIVERY',
-    'FEEDBACK',
-    'INVOICE',
-    'ORDER',
-    'PAYMENT',
-    'REFUND',
-    'SHIPPING',
-    'SUBSCRIPTION'
-]
+import typing
+
+EmbeddingFunction = typing.Callable[[list[str]], typing.Any]

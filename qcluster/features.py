@@ -1,3 +1,4 @@
+from loguru import logger
 from sentence_transformers import SentenceTransformer
 import torch
 from datamodels import SampleCollection
@@ -29,6 +30,6 @@ if __name__ == '__main__':
     samples_ = SampleCollection.from_csv(csv_file_path)[:3]
     instruction_embeddings = create_embeddings(
         [i.instruction for i in samples_], MODEL)
-    print("Instruction Embeddings:")
-    print(instruction_embeddings)
-    print(f"Shape of embeddings: {instruction_embeddings.shape}")
+    logger.info("Instruction Embeddings:")
+    logger.info(instruction_embeddings)
+    logger.info(f"Shape of embeddings: {instruction_embeddings.shape}")
