@@ -1,9 +1,22 @@
 # TODO
 
 - [X] Define datamodels
+  - [X] `Sample`
+  - [X] `SampleCollection`
+  - [X] `Instruction`
+  - [X] `InstructionCollection`
+  - [X] `ClusterOutput`
+  - [X] `ClusterOutputCollection`
 - [X] Add a feature engineering module
-- [ ] Add a clustering module
+  - [X] Add at least one feature extractor
+  - [X] Add at least one dimensionality reduction method
+  - [X] Integrate with `InstructionCollection`
+- [X] Add a clustering module
+  - [X] Add at least one clustering algorithm
+  - [X] Integrate with `InstructionCollection`
 - [ ] Add a cluster description module
+  - [X] Add dissimilarity module and integrate with `InstructionCollection`
+  - [ ] Add cluster describer, using LLMs to generate descriptions and titles
 - [ ] Add a matching module
 - [ ] Add an evaluation module
 - [ ] Add a reporting module

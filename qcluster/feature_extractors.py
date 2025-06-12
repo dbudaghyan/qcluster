@@ -48,6 +48,8 @@ if __name__ == '__main__':
     samples_ = SampleCollection.from_csv(csv_file_path)[:3]
     instruction_embeddings = create_embeddings(
         [i.instruction for i in samples_], MODEL)
+    instruction_embeddings = pca_reduction(instruction_embeddings,
+                                           n_components=20)
     logger.info("Instruction Embeddings:")
     logger.info(instruction_embeddings)
     logger.info(f"Shape of embeddings: {instruction_embeddings.shape}")

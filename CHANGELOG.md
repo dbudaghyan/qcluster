@@ -2,6 +2,9 @@
 
 ## [0.1]
 
+### [0.1.5]
+- Add dissimilarity module and integrate with `InstructionCollection`
+
 ### [0.1.4]
 - Add clustering module
 - Add clustering to the pipeline

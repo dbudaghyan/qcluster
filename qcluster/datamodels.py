@@ -8,7 +8,7 @@ from qcluster.consts import (
     EmbeddingFunctionType,
     EmbeddingType,
     ClusterType,
-    ClusteringFunctionType
+    ClusteringFunctionType, DissimilarityFunctionType
 )
 
 CategoryType = Literal[
@@ -47,61 +47,6 @@ class Sample(BaseModel):
     category: CategoryType
     intent: str
     response: str
-
-class Instruction(BaseModel):
-    id: int
-    text: str
-    embedding: Optional[EmbeddingType] = None
-    cluster: Optional[ClusterType] = None
-
-    @property
-    def embedding_shape(self) -> Optional[tuple[int, ...]]:
-        """
-        Get the shape of the embedding if it exists.
-
-        Returns:
-            Optional[tuple[int, ...]]: The shape of the embedding or None if not set.
-        """
-        return self.embedding.shape if hasattr(self.embedding, 'shape') else None
-
-    @classmethod
-    def from_sample(cls, sample: Sample) -> 'Instruction':
-        """
-        Create an Instruction object from a Sample object.
-
-        Args:
-            sample (Sample): A Sample object.
-
-        Returns:
-            Instruction: An Instruction object with the instruction from the Sample.
-        """
-        return cls(id=sample.id, text=sample.instruction)
-
-    def update_embedding(self, embedding_function: EmbeddingFunctionType):
-        """
-        Update the embedding of the instruction using the provided embedding function.
-
-        Args:
-            embedding_function (EmbeddingFunction): A function that takes
-             a list of strings and updates the embedding.
-        """
-        self.embedding = embedding_function([self.text])
-
-
-    def __repr__(self) -> str:
-        """
-        Get a string representation of the instruction.
-
-        Returns:
-            str: The text of the instruction.
-        """
-        shape = "NA" if self.embedding is None else self.embedding_shape
-        return (f"Instruction(id={self.id}, text='{self.text}',"
-                f" embedding_shape={shape}, cluster={self.cluster})")
-
-    def __str__(self) -> str:
-        return self.__repr__()
-
 
 class SampleCollection(BaseModel):
     samples: list[Sample]
@@ -165,6 +110,61 @@ class SampleCollection(BaseModel):
             return SampleCollection(samples=self.samples[index])
         return self.samples[index]
 
+
+class Instruction(BaseModel):
+    id: int
+    text: str
+    embedding: Optional[EmbeddingType] = None
+    cluster: Optional[ClusterType] = None
+
+    @property
+    def embedding_shape(self) -> Optional[tuple[int, ...]]:
+        """
+        Get the shape of the embedding if it exists.
+
+        Returns:
+            Optional[tuple[int, ...]]: The shape of the embedding or None if not set.
+        """
+        return self.embedding.shape if hasattr(self.embedding, 'shape') else None
+
+    @classmethod
+    def from_sample(cls, sample: Sample) -> 'Instruction':
+        """
+        Create an Instruction object from a Sample object.
+
+        Args:
+            sample (Sample): A Sample object.
+
+        Returns:
+            Instruction: An Instruction object with the instruction from the Sample.
+        """
+        return cls(id=sample.id, text=sample.instruction)
+
+    def update_embedding(self, embedding_function: EmbeddingFunctionType):
+        """
+        Update the embedding of the instruction using the provided embedding function.
+
+        Args:
+            embedding_function (EmbeddingFunction): A function that takes
+             a list of strings and updates the embedding.
+        """
+        self.embedding = embedding_function([self.text])
+
+
+    def __repr__(self) -> str:
+        """
+        Get a string representation of the instruction.
+
+        Returns:
+            str: The text of the instruction.
+        """
+        shape = "NA" if self.embedding is None else self.embedding_shape
+        return (f"Instruction(id={self.id}, text='{self.text}',"
+                f" embedding_shape={shape}, cluster={self.cluster})")
+
+    def __str__(self) -> str:
+        return self.__repr__()
+
 class InstructionCollection(BaseModel):
     instructions: list[Instruction]
     embeddings: list[Optional[EmbeddingType]] = Field(default_factory=list)
@@ -226,6 +226,33 @@ class InstructionCollection(BaseModel):
             self.clusters.append(cluster)
         return self
 
+    def get_top_dissimilar_instructions(
+            self, dissimilarity_function: DissimilarityFunctionType,
+            top_n: int = 5) -> 'InstructionCollection':
+        """        Get the top N dissimilar instructions based on a dissimilarity function.
+        Args:
+            dissimilarity_function (DissimilarityFunction): A function that takes
+             a list of strings, and an integer (top_n),
+             and returns a list of tuples containing the index
+             and the corresponding string.
+            top_n (int): The number of top dissimilar instructions to return.
+        Returns:
+            InstructionCollection: A new InstructionCollection object containing
+             the top N dissimilar instructions.
+        """
+        if not self.instructions:
+            raise ValueError("No instructions available for dissimilarity calculation.")
+        if top_n <= 0:
+            raise ValueError("top_n must be a positive integer.")
+        if top_n > len(self.instructions):
+            raise ValueError(
+                f"top_n ({top_n}) cannot be greater than the number of instructions ({len(self.instructions)}).")
+        instructions_text = [instruction.text for instruction in self.instructions]
+        dissimilarities = dissimilarity_function(instructions_text, top_n)
+        top_indices = [index for index, _ in dissimilarities]
+        top_instructions = [self.instructions[index] for index in top_indices]
+        return InstructionCollection(instructions=top_instructions)
+
 
     def __repr__(self) -> str:
         indented_instructions = '\n'.join(f'    {instruction!r}' for instruction in self)
@@ -281,6 +308,21 @@ class InstructionCollection(BaseModel):
         """
         return [instruction.text for instruction in self]
 
+    def collect_by_cluster(self, cluster: ClusterType) -> 'InstructionCollection':
+        """
+        Collect instructions by a specific cluster.
+
+        Args:
+            cluster (ClusterType): The cluster to filter instructions by.
+
+        Returns:
+            InstructionCollection: A new InstructionCollection object containing
+             only the instructions that belong to the specified cluster.
+        """
+        filtered_instructions = [
+            instruction for instruction in self if instruction.cluster == cluster]
+        return InstructionCollection(instructions=filtered_instructions)
+
 
 class ClusterOutput(BaseModel):
     """
@@ -291,7 +333,7 @@ class ClusterOutput(BaseModel):
     description: str
     count: int
 
-class ClusterOutputs(BaseModel):
+class ClusterOutputCollection(BaseModel):
     """
     Represents a collection of cluster outputs.
     """
