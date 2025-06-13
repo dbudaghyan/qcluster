@@ -2,6 +2,12 @@
 
 ## [0.1]
 
+### [0.1.9]
+- F1 macro 65%
+- Set ollama temperature to 0.0
+- Add preload module to make sure deterministic output and preloaded env vars and models
+- Modularize pipeline
+
 ### [0.1.8]
 - F1 Macro: 55%
 - Refactor pipeline and data models

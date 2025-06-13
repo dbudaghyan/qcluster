@@ -20,7 +20,10 @@ def kmeans_clustering(embeddings: EmbeddingType, n_clusters=8):
         A list of cluster labels for each embedding.
     """
     embeddings_array = np.array(embeddings)
-    kmeans = KMeans(n_clusters=n_clusters, random_state=0, n_init='auto')
+    kmeans = KMeans(n_clusters=n_clusters,
+                    random_state=42,
+                    n_init='auto',
+                    )
     kmeans.fit(embeddings_array)
     return kmeans.labels_.tolist()
 
