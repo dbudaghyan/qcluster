@@ -39,12 +39,13 @@ def pca_reduction(embeddings: torch.Tensor, n_components: int = 2) -> torch.Tens
 
 
 if __name__ == '__main__':
+    from qcluster.models import MODEL
+
     csv_file_path = (
         ROOT_DIR.parent
         / "data"
         / "Bitext_Sample_Customer_Support_Training_Dataset_27K_responses-v11.csv"
     )
-    MODEL = SentenceTransformer('all-MiniLM-L6-v2')
     samples_ = SampleCollection.from_csv(csv_file_path)[:3]
     instruction_embeddings = create_embeddings(
         [i.instruction for i in samples_], MODEL)

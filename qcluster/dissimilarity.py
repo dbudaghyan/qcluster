@@ -1,11 +1,13 @@
-from typing import Optional
+from typing import Optional, Union
 
 import numpy as np
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 
+from qcluster.consts import EmbeddingType
 
-def select_mmr(sentences: list[str], n: int,
+
+def select_mmr(sentences: list[Union[str, EmbeddingType]], n: int,
                lambda_param: Optional[float] = 0.5) -> list[
     tuple[int, str]]:
     """
@@ -13,7 +15,7 @@ def select_mmr(sentences: list[str], n: int,
      Maximal Marginal Relevance (MMR).
 
     Args:
-        sentences (list[str]): A list of sentence strings.
+        sentences (list[str]): A list of sentence strings or embeddings.
         n (int): The number of sentences to select.
         lambda_param (float): The hyperparameter lambda for MMR, balancing relevance
                               and diversity. 0 <= lambda_param <= 1.
@@ -39,8 +41,11 @@ def select_mmr(sentences: list[str], n: int,
     # 1. Generate Embeddings
     # Using a popular and effective pre-trained model.
     # The model will be downloaded automatically on first use.
-    model = SentenceTransformer('all-MiniLM-L6-v2')
-    embeddings = model.encode(sentences)
+    if isinstance(sentences[0], str):
+        from qcluster.models import MODEL
+        embeddings = MODEL.encode(sentences)
+    else:
+        embeddings = np.array(sentences)
 
     # 2. Calculate Similarity Matrix
     similarity_matrix = cosine_similarity(embeddings)

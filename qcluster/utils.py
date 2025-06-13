@@ -30,7 +30,7 @@ def identify_unique_categories(samples: SampleCollection) -> set[str]:
     Returns:
         set: A set of unique categories.
     """
-    return {sample.category for sample in samples}
+    return {sample.predicted_category for sample in samples}
 
 
 def identify_unique_intents(samples: SampleCollection) -> set[str]:
@@ -57,7 +57,7 @@ def create_category_intent_tuples(samples: SampleCollection) -> set[tuple[str, s
     Returns:
         set: A set of tuples with unique (category, intent) pairs.
     """
-    return {(sample.category, sample.intent) for sample in samples}
+    return {(sample.predicted_category, sample.intent) for sample in samples}
 
 
 def create_category_intent_hierarchy(

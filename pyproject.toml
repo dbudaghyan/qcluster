@@ -4,10 +4,12 @@ version = "0.1.6"
 description = "Add your description here"
 requires-python = ">=3.12"
 dependencies = [
+    "hdbscan>=0.8.40",
     "loguru>=0.7.3",
     "ollama>=0.5.1",
     "pandas>=2.3.0",
     "pandas-stubs==2.2.3.250527",
+    "pycm>=4.3",
     "pydantic>=2.11.5",
     "python-dotenv>=1.1.0",
     "sentence-transformers>=4.1.0",

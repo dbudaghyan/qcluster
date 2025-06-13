@@ -14,10 +14,13 @@
 - [X] Add a clustering module
   - [X] Add at least one clustering algorithm
   - [X] Integrate with `InstructionCollection`
-- [ ] Add a cluster description module
+- [X] Add a cluster description module
   - [X] Add dissimilarity module and integrate with `InstructionCollection`
   - [X] Add cluster describer, using LLMs to generate descriptions and titles
   - [X] Integrate with `InstructionCollection`
-- [ ] Add a cluster matching module
+- [X] Matching cluster and category
+  - [X] Add a similarity module with at least one similarity measure
+  - [X] Integrate with `InstructionCollection`
 - [ ] Add an evaluation module
+  - [ ] Use sample ids to see how well the clustering matches the categories
 - [ ] Add a reporting module

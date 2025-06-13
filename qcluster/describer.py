@@ -13,8 +13,8 @@ def get_description(document: str):
       {
         'role': 'user',
         'content':
-          'Provide a description'
-          f' and a title for the following document:\n\n{document}',
+          'Provide a short description'
+          f' and a short title for the following document:\n\n{document}',
       }
     ],
     model='qwen2.5:3b',

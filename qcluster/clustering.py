@@ -5,6 +5,8 @@ from sklearn.cluster import (
     AgglomerativeClustering
 )
 
+from hdbscan import HDBSCAN
+
 from qcluster.consts import EmbeddingType
 
 
@@ -40,6 +42,23 @@ def dbscan_clustering(embeddings, eps=0.5, min_samples=5):
     dbscan = DBSCAN(eps=eps, min_samples=min_samples)
     dbscan.fit(embeddings_array)
     return dbscan.labels_.tolist()
+
+def hdbscan_clustering(embeddings, eps=0.5, min_samples=5):
+    """
+    Generates clusters using the HDBSCAN algorithm.
+    Args:
+        embeddings: A list of embeddings to cluster.
+        eps: The maximum distance between two samples for one to be considered
+             as in the neighborhood of the other.
+        min_samples: The number of samples in a neighborhood for a point to be
+                     considered as a core point.
+    Returns:
+        A list of cluster labels for each embedding.
+    """
+    embeddings_array = np.array(embeddings)
+    hdbscan = HDBSCAN(eps=eps, min_samples=min_samples)
+    hdbscan.fit(embeddings_array)
+    return hdbscan.labels_.tolist()
 
 
 def agglomerative_clustering(embeddings, n_clusters=8):
