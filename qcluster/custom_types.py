@@ -1,4 +1,4 @@
-from typing import Callable, Any, Union, Literal
+from typing import Callable, Any, Union, Literal, get_args, Optional
 
 from pydantic import BaseModel
 
@@ -52,9 +52,25 @@ IntentType = Literal[
     'UNKNOWN'
 ]
 
+ALL_CATEGORIES = get_args(CategoryType)
+ALL_FLAGS = get_args(FlagType)
+ALL_INTENTS = get_args(IntentType)
+
 ActualType = Any
 PredictedType = Any
 
 PredictionPairType = tuple[ActualType, PredictedType]
 
 IdToCategoryResultType = dict[int, PredictionPairType]
+
+def category_to_idx(category: CategoryType) -> Optional[int]:
+    """Convert a category to its index."""
+    return ALL_CATEGORIES.index(category) if category in ALL_CATEGORIES else None
+
+def flag_to_idx(flag: FlagType) -> Optional[int]:
+    """Convert a flag to its index."""
+    return ALL_FLAGS.index(flag) if flag in ALL_FLAGS else None
+
+def intent_to_idx(intent: IntentType) -> Optional[int]:
+    """Convert an intent to its index."""
+    return ALL_INTENTS.index(intent) if intent in ALL_INTENTS else None

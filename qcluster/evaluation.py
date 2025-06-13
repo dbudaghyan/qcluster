@@ -16,7 +16,7 @@ def evaluate_results(id_to_categories: IdToCategoryResultType) -> ConfusionMatri
     """
     y_pred = []
     y_true = []
-    for id_, (predicted_category, actual_category) in id_to_categories.items():
+    for id_, (actual_category, predicted_category) in id_to_categories.items():
         y_pred.append(predicted_category)
         y_true.append(actual_category)
     cm = ConfusionMatrix(actual_vector=y_true, predict_vector=y_pred)

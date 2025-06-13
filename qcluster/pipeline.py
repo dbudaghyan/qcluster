@@ -1,4 +1,6 @@
 # Preloading env vars, seeds and models
+from sklearn.metrics import adjusted_rand_score
+
 from qcluster import preload  # noqa: F401
 from qcluster.preload import MODEL
 import functools
@@ -19,7 +21,7 @@ from qcluster.algorithms.clustering import (
     # bert_topic_extraction
     # spectral_clustering
 )
-from qcluster.custom_types import CategoryType, IdToCategoryResultType
+from qcluster.custom_types import CategoryType, IdToCategoryResultType, category_to_idx
 from qcluster.datamodels.instruction import InstructionCollection
 from qcluster.datamodels.sample import SampleCollection
 from qcluster.algorithms.describer import get_description
@@ -29,12 +31,13 @@ from qcluster.algorithms.feature_extractors import (
     create_embeddings,
     # pca_reduction,
     umap_reduction,
+    # pacmap_reduction
 )
 from qcluster.algorithms.similarity import (
     get_top_n_similar_embeddings
 )
 
-N_CATEGORIES = len(SampleCollection.all_category_classes()) - 1
+N_CATEGORIES = len(SampleCollection.all_category_classes())
 
 clustering_function = functools.partial(
     # hdbscan_clustering,
@@ -62,8 +65,7 @@ def feature_extractor(texts: list[str]) -> torch.Tensor:
     Creates embeddings for the given texts and reduces their dimensionality using PCA.
     """
     embeddings = create_embeddings(texts, model=MODEL)
-    # embeddings = pca_reduction(embeddings, n_components=10)
-    embeddings = umap_reduction(embeddings, n_components=30)
+    embeddings = umap_reduction(embeddings, n_components=28)
     return embeddings
 
 
@@ -165,6 +167,18 @@ def main():
 
     logger.info("Evaluating results...")
     cm = evaluate_results(id_to_category_pairs)
+    predicted_clusters_dict: dict[int, int] = {i.id: i.cluster for i in instructions}
+    actual_categories_dict: dict[int, int] = {
+        cat.id: category_to_idx(cat.category) for cat in samples}
+    assert None in predicted_clusters_dict.values()
+    assert None not in actual_categories_dict.values()
+    predicted_cluster_list = []
+    actual_category_list = []
+    for id_, (actual_category, predicted_category) in id_to_category_pairs.items():
+        predicted_cluster_list.append(predicted_category)
+        actual_category_list.append(actual_category)
+    ari = adjusted_rand_score(predicted_cluster_list, actual_category_list)
+    logger.info(f"Adjusted Rand Index (ARI): {ari:.4f}")
     logger.info("Evaluation results:")
     cm.print_matrix(sparse=True)
     cm.stat(summary=True)
