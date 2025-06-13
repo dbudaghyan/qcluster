@@ -134,19 +134,26 @@ class InstructionCollection(BaseModel):
         return self
 
     def update_clusters(
-            self, clustering_function: ClusteringFunctionType) -> 'InstructionCollection':
+            self, clustering_function: ClusteringFunctionType,
+            use_raw_instructions: bool = True
+    ) -> 'InstructionCollection':
         """
         Add clusters to the instructions using the provided clustering function.
 
         Args:
             clustering_function (ClusteringFunction): A function that takes
              a list of embeddings and updates cluster labels.
+            use_raw_instructions (bool): If True, uses the raw instruction text
         """
-        if not self.embeddings:
-            raise ValueError("Embeddings must be updated before clustering.")
-        elif len(self.embeddings) != len(self.instructions):
-            raise ValueError("Embeddings and instructions must have the same length.")
-        clusters = clustering_function(self.embeddings)
+        if use_raw_instructions:
+            clusters = clustering_function(
+                [instruction.text for instruction in self.instructions])
+        else:
+            if not self.embeddings:
+                raise ValueError("Embeddings must be updated before clustering.")
+            elif len(self.embeddings) != len(self.instructions):
+                raise ValueError("Embeddings and instructions must have the same length.")
+            clusters = clustering_function(self.embeddings)
 
         for instruction, cluster in zip(self.instructions, clusters):
             instruction.cluster = cluster

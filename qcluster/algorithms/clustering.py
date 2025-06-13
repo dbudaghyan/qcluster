@@ -111,7 +111,7 @@ def agglomerative_clustering(embeddings: EmbeddingType, n_clusters=8) -> list[in
 
 def bert_topic_extraction(
     embeddings: EmbeddingType,
-    n_topics: Optional[int],
+    n_clusters: Optional[int],
     model: SentenceTransformer = None,
 ) -> list[int]:
     """"""
@@ -121,7 +121,7 @@ def bert_topic_extraction(
         if not model:
             model = SentenceTransformer(os.environ['SENTENCE_TRANSFORMERS_MODEL'])
         topic_model = BERTopic(embedding_model=model,
-                               nr_topics=n_topics,
+                               nr_topics=n_clusters,
                                verbose=True)
         topics, _ = topic_model.fit_transform(documents=embeddings)
     else:
@@ -130,7 +130,7 @@ def bert_topic_extraction(
         dummy_vectorizer = CountVectorizer(tokenizer=lambda x: [x])
         topic_model = BERTopic(vectorizer_model=dummy_vectorizer,
                                embedding_model=None,
-                               nr_topics=n_topics,
+                               nr_topics=n_clusters,
                                verbose=True)
         topics, _ = topic_model.fit_transform(documents=dummy_documents,
                                               embeddings=embeddings)
