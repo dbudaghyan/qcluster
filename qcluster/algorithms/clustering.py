@@ -16,7 +16,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from qcluster.custom_types import EmbeddingType
 
 
-def kmeans_clustering(embeddings: EmbeddingType, n_clusters=8) -> list[int]:
+def kmeans_clustering(embeddings: EmbeddingType, n_clusters) -> list[int]:
     """
     Generates clusters using the K-Means algorithm.
     Args:
@@ -34,7 +34,7 @@ def kmeans_clustering(embeddings: EmbeddingType, n_clusters=8) -> list[int]:
     return kmeans.labels_.tolist()
 
 
-def dbscan_clustering(embeddings: EmbeddingType, eps=0.5, min_samples=5) -> list[int]:
+def dbscan_clustering(embeddings: EmbeddingType, eps=0.5) -> list[int]:
     """
     Generates clusters using the DBSCAN algorithm.
 
@@ -42,13 +42,11 @@ def dbscan_clustering(embeddings: EmbeddingType, eps=0.5, min_samples=5) -> list
         embeddings: A list of embeddings to cluster.
         eps: The maximum distance between two samples for one to be considered
              as in the neighborhood of the other.
-        min_samples: The number of samples in a neighborhood for a point to be
-                     considered as a core point.
     Returns:
         A list of cluster labels for each embedding.
     """
     embeddings_array = np.array(embeddings)
-    dbscan = DBSCAN(eps=eps, min_samples=min_samples)
+    dbscan = DBSCAN(eps=eps, min_samples=5, metric='euclidean')
     dbscan.fit(embeddings_array)
     return dbscan.labels_.tolist()
 
@@ -113,7 +111,7 @@ def agglomerative_clustering(embeddings: EmbeddingType, n_clusters=8) -> list[in
 
 def bert_topic_extraction(
     embeddings: EmbeddingType,
-    n_topics: Optional[int] = 5,
+    n_topics: Optional[int],
     model: SentenceTransformer = None,
 ) -> list[int]:
     """"""
