@@ -1,6 +1,4 @@
 # Preloading env vars, seeds and models
-from sklearn.metrics import adjusted_rand_score
-
 from qcluster import preload  # noqa: F401
 from qcluster.preload import MODEL
 import functools
@@ -25,7 +23,7 @@ from qcluster.custom_types import CategoryType, IdToCategoryResultType, category
 from qcluster.datamodels.instruction import InstructionCollection
 from qcluster.datamodels.sample import SampleCollection
 from qcluster.algorithms.describer import get_description
-from qcluster.evaluation import evaluate_results
+from qcluster.evaluation import evaluate_results, cluster_to_class_similarity_measures
 # Feature extractors
 from qcluster.algorithms.feature_extractors import (
     create_embeddings,
@@ -170,15 +168,17 @@ def main():
     predicted_clusters_dict: dict[int, int] = {i.id: i.cluster for i in instructions}
     actual_categories_dict: dict[int, int] = {
         cat.id: category_to_idx(cat.category) for cat in samples}
-    assert None in predicted_clusters_dict.values()
+    assert None not in predicted_clusters_dict.values()
     assert None not in actual_categories_dict.values()
     predicted_cluster_list = []
     actual_category_list = []
     for id_, (actual_category, predicted_category) in id_to_category_pairs.items():
         predicted_cluster_list.append(predicted_category)
         actual_category_list.append(actual_category)
-    ari = adjusted_rand_score(predicted_cluster_list, actual_category_list)
-    logger.info(f"Adjusted Rand Index (ARI): {ari:.4f}")
+    cluster_to_class_scores = cluster_to_class_similarity_measures(
+        predicted_cluster_list, actual_category_list)
+    for measure, score in cluster_to_class_scores.items():
+        logger.info(f"{measure.capitalize()}: {score:.4f}")
     logger.info("Evaluation results:")
     cm.print_matrix(sparse=True)
     cm.stat(summary=True)

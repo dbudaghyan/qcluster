@@ -1,6 +1,11 @@
 from pycm import ConfusionMatrix
 
 from qcluster.custom_types import IdToCategoryResultType
+from sklearn.metrics.cluster import (
+    homogeneity_score,
+    completeness_score,
+    v_measure_score
+)
 
 
 def evaluate_results(id_to_categories: IdToCategoryResultType) -> ConfusionMatrix:
@@ -22,3 +27,21 @@ def evaluate_results(id_to_categories: IdToCategoryResultType) -> ConfusionMatri
     cm = ConfusionMatrix(actual_vector=y_true, predict_vector=y_pred)
     cm.normalize = True
     return cm
+
+
+def cluster_to_class_similarity_measures(act, pred):
+    """
+    Calculates clustering similarity measures between actual and predicted clusters.
+
+    Args:
+        act (list): Actual cluster labels.
+        pred (list): Predicted cluster labels.
+
+    Returns:
+        dict: A dictionary containing homogeneity, completeness, and V-measure scores.
+    """
+    return {
+        "homogeneity": homogeneity_score(act, pred),
+        "completeness": completeness_score(act, pred),
+        "v_measure": v_measure_score(act, pred)
+    }
