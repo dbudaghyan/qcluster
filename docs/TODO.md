@@ -24,3 +24,4 @@
 - [X] Add an evaluation module
   - [X] Use sample ids to see how well the clustering matches the categories
 - [ ] Add a reporting module
+- [ ] Add comparison module

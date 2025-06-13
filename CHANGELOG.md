@@ -2,6 +2,10 @@
 
 ## [0.1]
 
+### [0.1.7]
+- Add and integrate cluster-to-category matching
+- Add evaluation module
+
 ### [0.1.6]
 - Add cluster describer, using LLMs to generate descriptions and titles
 - Integrate with `InstructionCollection`
