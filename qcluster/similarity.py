@@ -2,7 +2,8 @@ from typing import Union
 
 from sklearn.metrics.pairwise import cosine_similarity
 
-from qcluster.consts import EmbeddingType
+from qcluster.dissimilarity import select_mmr
+from qcluster.types import EmbeddingType
 from qcluster.feature_extractors import create_embeddings
 from qcluster.models import MODEL
 
@@ -11,19 +12,32 @@ def get_top_n_similar_embeddings(
     query_embedding: Union[str, EmbeddingType],
     embeddings: list[Union[str, EmbeddingType]],
     top_n: int = 5,
+    use_mmr: bool = True,
+    mmr_lambda: float = 0.5,
+    mmr_top_n: int = 20
 ) -> list[tuple[int, float]]:
     """
     Get the top N most similar embeddings to a query embedding.
 
     Args:
-        query_embedding (EmbeddingType): The embedding to compare against.
-        embeddings (list[EmbeddingType]): List of embeddings to search.
-        top_n (int): Number of top similar embeddings to return.
+        query_embedding (Union[str, EmbeddingType]): The query embedding or a string
+                                                     to be converted into an embedding.
+        embeddings (list[Union[str, EmbeddingType]]): List of embeddings or strings
+                                                      to be converted into embeddings.
+        top_n (int): The number of top similar embeddings to return.
+        use_mmr (bool): Whether to use Maximal Marginal Relevance (MMR) for diversity.
+        mmr_lambda (float): The lambda parameter for MMR, balancing relevance
+         and diversity.
+        mmr_top_n (int): The number of top candidates to consider for MMR.
 
     Returns:
         list[tuple[int, EmbeddingType]]: List of tuples containing the index and
                                           the corresponding embedding.
     """
+    if use_mmr:
+        embeddings = select_mmr(
+            embeddings, n=mmr_top_n, lambda_param=mmr_lambda
+        )
     if isinstance(query_embedding, str):
         query_embedding = create_embeddings(
             [query_embedding], model=MODEL
@@ -32,7 +46,6 @@ def get_top_n_similar_embeddings(
         raise ValueError("embeddings list cannot be empty.")
     if isinstance(embeddings[0], str):
         embeddings = create_embeddings(embeddings, model=MODEL)
-
     similarities = [
         (i, float(cosine_similarity([query_embedding], [embedding])[0][0]))
         for i, embedding in enumerate(embeddings)

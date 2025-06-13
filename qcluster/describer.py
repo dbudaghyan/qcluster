@@ -1,3 +1,5 @@
+import os
+
 import ollama
 from pydantic import BaseModel
 
@@ -17,7 +19,7 @@ def get_description(document: str):
           f' and a short title for the following document:\n\n{document}',
       }
     ],
-    model='qwen2.5:3b',
+    model=os.environ['OLLAMA_MODEL'],
     format=ClusterDescription.model_json_schema(),
   )
 

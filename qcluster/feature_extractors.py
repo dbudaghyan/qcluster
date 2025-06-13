@@ -1,6 +1,8 @@
 from loguru import logger
 from sentence_transformers import SentenceTransformer
 import torch
+from umap import UMAP
+
 from datamodels import SampleCollection
 from qcluster import ROOT_DIR
 from sklearn.decomposition import PCA
@@ -23,7 +25,7 @@ def create_embeddings(texts: list[str],
         embeddings = embeddings.cpu()
     return embeddings
 
-def pca_reduction(embeddings: torch.Tensor, n_components: int = 2) -> torch.Tensor:
+def pca_reduction(embeddings: torch.Tensor, n_components: int) -> torch.Tensor:
     """
     Reduces the dimensionality of the embeddings using PCA.
 
@@ -33,8 +35,92 @@ def pca_reduction(embeddings: torch.Tensor, n_components: int = 2) -> torch.Tens
     Returns:
         A torch.Tensor containing the reduced embeddings.
     """
-    pca = PCA(n_components=n_components)
+    pca = PCA(n_components=n_components, random_state=42)
     reduced_embeddings = pca.fit_transform(embeddings.cpu().numpy())
+    return torch.tensor(reduced_embeddings)
+
+def umap_reduction(embeddings: torch.Tensor,
+                   n_components: int,
+                   n_neighbors=15,
+                   metric="euclidean",
+                   metric_kwds=None,
+                   output_metric="euclidean",
+                   output_metric_kwds=None,
+                   n_epochs=None,
+                   learning_rate=1.0,
+                   init="spectral",
+                   min_dist=0.1,
+                   spread=1.0,
+                   low_memory=True,
+                   n_jobs=-1,
+                   set_op_mix_ratio=1.0,
+                   local_connectivity=1.0,
+                   repulsion_strength=1.0,
+                   negative_sample_rate=5,
+                   transform_queue_size=4.0,
+                   a=None,
+                   b=None,
+                   angular_rp_forest=False,
+                   target_n_neighbors=-1,
+                   target_metric="categorical",
+                   target_metric_kwds=None,
+                   target_weight=0.5,
+                   transform_seed=42,
+                   transform_mode="embedding",
+                   force_approximation_algorithm=False,
+                   verbose=False,
+                   tqdm_kwds=None,
+                   unique=False,
+                   densmap=False,
+                   dens_lambda=2.0,
+                   dens_frac=0.3,
+                   dens_var_shift=0.1,
+                   output_dens=False,
+                   disconnection_distance=None,
+                   precomputed_knn=(None, None, None),
+                   ) -> torch.Tensor:
+    umap = UMAP(
+        n_components=n_components,
+        random_state=42,
+        n_neighbors=n_neighbors,
+        metric=metric,
+        metric_kwds=metric_kwds,
+        output_metric=output_metric,
+        output_metric_kwds=output_metric_kwds,
+        n_epochs=n_epochs,
+        learning_rate=learning_rate,
+        init=init,
+        min_dist=min_dist,
+        spread=spread,
+        low_memory=low_memory,
+        n_jobs=n_jobs,
+        set_op_mix_ratio=set_op_mix_ratio,
+        local_connectivity=local_connectivity,
+        repulsion_strength=repulsion_strength,
+        negative_sample_rate=negative_sample_rate,
+        transform_queue_size=transform_queue_size,
+        a=a,
+        b=b,
+        angular_rp_forest=angular_rp_forest,
+        target_n_neighbors=target_n_neighbors,
+        target_metric=target_metric,
+        target_metric_kwds=target_metric_kwds,
+        target_weight=target_weight,
+        transform_seed=transform_seed,
+        transform_mode=transform_mode,
+        force_approximation_algorithm=force_approximation_algorithm,
+        verbose=verbose,
+        tqdm_kwds=tqdm_kwds,
+        unique=unique,
+        densmap=densmap,
+        dens_lambda=dens_lambda,
+        dens_frac=dens_frac,
+        dens_var_shift=dens_var_shift,
+        output_dens=output_dens,
+        disconnection_distance=disconnection_distance,
+        precomputed_knn=precomputed_knn,
+    )
+    reduced_embeddings = umap.fit_transform(embeddings.cpu().numpy())
     return torch.tensor(reduced_embeddings)
 
 

@@ -4,12 +4,10 @@ from qcluster.describer import ClusterDescription
 
 EmbeddingType = Any
 ClusterType = Any
-EmbeddingFunctionType = Callable[[list[str]], list[EmbeddingType]]
+EmbeddingFunctionType = Callable[[list[str]], EmbeddingType]
 ClusteringFunctionType = Callable[[list[EmbeddingType]], list[ClusterType]]
 
-# Dissimilarity and similarity functions takes a list of strings or embeddings,
-# and an integer (top_n), as input,
-# returns a list of tuples containing the index and the distance or similarity score.
+
 DissimilarityFunctionType = Callable[[list[Union[str, EmbeddingType]], int],
                                         list[tuple[int, Union[str, EmbeddingType]]]]
 SimilarityFunctionType = Callable[[Union[str, EmbeddingType],

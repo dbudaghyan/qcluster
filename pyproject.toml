@@ -1,5 +1,8 @@
 [project]
 name = "qcluster"
+authors = [
+    { name = "Davit Budaghyan", email = "david@budaghyan.com" }
+]
 version = "0.1.7"
 description = "Add your description here"
 requires-python = ">=3.12"
@@ -14,6 +17,7 @@ dependencies = [
     "pydantic>=2.11.5",
     "python-dotenv>=1.1.0",
     "sentence-transformers>=4.1.0",
+    "umap-learn>=0.5.7",
 ]
 
 [dependency-groups]

@@ -5,7 +5,7 @@ import pandas as pd
 from loguru import logger
 from pydantic import BaseModel
 
-from qcluster.consts import (
+from qcluster.types import (
     EmbeddingFunctionType,
     EmbeddingType,
     ClusterType,

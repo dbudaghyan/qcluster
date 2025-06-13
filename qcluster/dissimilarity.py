@@ -1,10 +1,9 @@
 from typing import Optional, Union
 
 import numpy as np
-from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 
-from qcluster.consts import EmbeddingType
+from qcluster.types import EmbeddingType
 
 
 def select_mmr(sentences: list[Union[str, EmbeddingType]], n: int,
