@@ -4,15 +4,18 @@ from typing import Optional
 from ollama import Client
 
 from qcluster.custom_types import ClusterDescription
-from qcluster.preload import LLM_TEMPLATE
+from qcluster.templates.templates import read_prompt_template
 
 
-def get_description(document: str, limit: Optional[int] = None) -> ClusterDescription:
+def get_description(document: str,
+                    template_name: str,
+                    limit: Optional[int] = None) -> ClusterDescription:
+  template = read_prompt_template(template_name)
   model = os.environ['OLLAMA_MODEL']
   client = Client(host=os.environ['OLLAMA_HOST'])
   if limit:
     document = document[:limit]
-  prompt = LLM_TEMPLATE.render(document=document)
+  prompt = template.render(document=document)
   response = client.chat(
     messages=[{'role': 'user', 'content': prompt}],
     model=model,

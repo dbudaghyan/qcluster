@@ -34,7 +34,10 @@ from qcluster.algorithms.similarity import (
 )
 
 
-
+describer = functools.partial(
+    get_description,
+    template_name='description_prompt_simple',
+)
 
 def feature_extractor(texts: list[str]) -> torch.Tensor:
     """
@@ -47,7 +50,8 @@ def feature_extractor(texts: list[str]) -> torch.Tensor:
 
 clustering_function = functools.partial(
     kmeans_clustering,
-    n_clusters=len(SampleCollection.all_category_classes()))
+    n_clusters=len(SampleCollection.all_category_classes())
+)
 # clustering_function = functools.partial(
 #     bert_topic_extraction,
 #     n_topics=len(SampleCollection.all_category_classes()),
@@ -78,7 +82,7 @@ def process_samples(samples: SampleCollection) -> dict[CategoryType, SampleColle
     logger.info("Describing samples in each category...")
     for category, sample_collection in tqdm(samples_by_category.items()):
         sample_collection.update_embeddings(feature_extractor)
-        sample_collection.describe(get_description)
+        sample_collection.describe(describer)
     logger.info("Embeddings updated and samples described.")
     return samples_by_category
 
@@ -112,7 +116,7 @@ def create_and_match_clusters(
 
     logger.info("Describing instructions in each cluster...")
     for cluster, instruction_collection in tqdm(instructions_by_cluster.items()):
-        instruction_collection.describe(get_description)
+        instruction_collection.describe(describer)
     logger.info("Instructions described.")
 
     logger.info("Finding top similar sample categories for each instruction cluster...")
