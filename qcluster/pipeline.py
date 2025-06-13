@@ -17,6 +17,7 @@ from qcluster.algorithms.clustering import (
     # hdbscan_clustering,
     # agglomerative_clustering
     # bert_topic_extraction
+    # spectral_clustering
 )
 from qcluster.custom_types import CategoryType, IdToCategoryResultType
 from qcluster.datamodels.instruction import InstructionCollection
@@ -26,17 +27,34 @@ from qcluster.evaluation import evaluate_results
 # Feature extractors
 from qcluster.algorithms.feature_extractors import (
     create_embeddings,
-    pca_reduction,
-    # umap_reduction,
+    # pca_reduction,
+    umap_reduction,
 )
 from qcluster.algorithms.similarity import (
     get_top_n_similar_embeddings
+)
+
+N_CATEGORIES = len(SampleCollection.all_category_classes()) - 1
+
+clustering_function = functools.partial(
+    # hdbscan_clustering,
+    kmeans_clustering,
+    # min_cluster_size=1000,
+    n_clusters=N_CATEGORIES
 )
 
 
 describer = functools.partial(
     get_description,
     template_name='description_prompt_simple',
+    # template_name='description_prompt_from_instructions'
+)
+
+similarity_function = functools.partial(
+    get_top_n_similar_embeddings,
+    use_mmr=False,
+    # mmr_lambda=0.3,
+    # mmr_top_n=20
 )
 
 def feature_extractor(texts: list[str]) -> torch.Tensor:
@@ -44,18 +62,9 @@ def feature_extractor(texts: list[str]) -> torch.Tensor:
     Creates embeddings for the given texts and reduces their dimensionality using PCA.
     """
     embeddings = create_embeddings(texts, model=MODEL)
-    embeddings = pca_reduction(embeddings, n_components=20)
+    # embeddings = pca_reduction(embeddings, n_components=10)
+    embeddings = umap_reduction(embeddings, n_components=30)
     return embeddings
-
-
-clustering_function = functools.partial(
-    kmeans_clustering,
-    n_clusters=len(SampleCollection.all_category_classes())
-)
-# clustering_function = functools.partial(
-#     bert_topic_extraction,
-#     n_topics=len(SampleCollection.all_category_classes()),
-# )
 
 
 CSV_PATH: PathLike = (
@@ -124,7 +133,7 @@ def create_and_match_clusters(
     for cluster, instruction_collection in tqdm(instructions_by_cluster.items()):
         predicted_category = instruction_collection.get_cluster_category(
             sample_collections=list(samples_by_category.values()),
-            similarity_function=get_top_n_similar_embeddings,
+            similarity_function=similarity_function,
         )
         logger.info(f"Cluster N {instruction_collection.cluster} title:"
                     f" `{instruction_collection.title}`"

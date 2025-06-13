@@ -7,13 +7,31 @@ from sentence_transformers import SentenceTransformer
 from sklearn.cluster import (
     KMeans,
     DBSCAN,
-    AgglomerativeClustering
+    AgglomerativeClustering,
+    SpectralClustering
 )
 
 from hdbscan import HDBSCAN
 from sklearn.feature_extraction.text import CountVectorizer
 
 from qcluster.custom_types import EmbeddingType
+
+
+def spectral_clustering(embeddings: EmbeddingType, n_clusters) -> list[int]:
+    """
+    Generates clusters using the Spectral Clustering algorithm.
+    Args:
+        embeddings: A list of embeddings to cluster.
+        n_clusters: The number of clusters to find.
+    Returns:
+        A list of cluster labels for each embedding.
+    """
+    embeddings_array = np.array(embeddings)
+    spectral = SpectralClustering(n_clusters=n_clusters,
+                                  affinity='nearest_neighbors',
+                                  random_state=42)
+    spectral.fit(embeddings_array)
+    return spectral.labels_.tolist()
 
 
 def kmeans_clustering(embeddings: EmbeddingType, n_clusters) -> list[int]:

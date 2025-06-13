@@ -9,7 +9,7 @@ from qcluster.templates.templates import read_prompt_template
 
 def get_description(document: str,
                     template_name: str,
-                    limit: Optional[int] = None) -> ClusterDescription:
+                    limit: Optional[int] = 5000) -> ClusterDescription:
   template = read_prompt_template(template_name)
   model = os.environ['OLLAMA_MODEL']
   client = Client(host=os.environ['OLLAMA_HOST'])
@@ -20,7 +20,7 @@ def get_description(document: str,
     messages=[{'role': 'user', 'content': prompt}],
     model=model,
     format=ClusterDescription.model_json_schema(),
-    options={'temperature': 0.0},
+    options={'temperature': 0.0, 'max_tokens': 2048},
   )
 
   return ClusterDescription.model_validate_json(response.message.content)
