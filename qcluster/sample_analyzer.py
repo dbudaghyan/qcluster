@@ -1,9 +1,3 @@
-from typing import Optional
-
-from qcluster import ROOT_DIR
-from qcluster.custom_types import EmbeddingType
-
-
 def identify_unique_categories(samples: 'SampleCollection') -> set[str]:
     """
     Identify unique categories from the SampleCollection object.
@@ -76,12 +70,9 @@ def identify_unique_flags(samples: 'SampleCollection') -> set[str]:
     return {flag for sample in samples for flag in sample.flags}
 
 
-def calculate_centroid_embedding(embeddings) -> Optional[EmbeddingType]:
-    return sum(embeddings) / len(embeddings)
-
-
 if __name__ == '__main__':
     from qcluster.datamodels.sample import SampleCollection
+    from qcluster import ROOT_DIR
 
     from loguru import logger
     csv_file_ = (

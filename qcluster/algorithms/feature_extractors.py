@@ -1,6 +1,3 @@
-import os
-from typing import Optional
-
 from loguru import logger
 from sentence_transformers import SentenceTransformer
 import torch
@@ -9,24 +6,7 @@ from umap import UMAP
 from qcluster.datamodels.sample import SampleCollection
 from qcluster import ROOT_DIR
 from sklearn.decomposition import PCA
-from bertopic import BERTopic
 
-
-def bert_topic_extraction(
-    texts: list[str],
-    model: SentenceTransformer = None,
-    n_topics: Optional[int] = 5,
-):
-    embeddings = create_embeddings(texts, model)
-    if not model:
-        model = SentenceTransformer(os.environ['SENTENCE_TRANSFORMERS_MODEL'])
-    topic_model = BERTopic(
-        embedding_model=model,
-        nr_topics=n_topics,
-        verbose=True,
-    )
-    topics, probs = topic_model.fit_transform(texts)
-    raise NotImplementedError
 
 def create_embeddings(texts: list[str],
                       model: SentenceTransformer) -> torch.Tensor:
@@ -145,16 +125,16 @@ def umap_reduction(embeddings: torch.Tensor,
 
 
 if __name__ == '__main__':
-    from qcluster.models import MODEL
+    from qcluster import MODEL
 
     csv_file_path = (
             ROOT_DIR.parent
             / "data"
             / "Bitext_Sample_Customer_Support_Training_Dataset_27K_responses-v11.csv"
     )
-    samples_ = SampleCollection.from_csv(csv_file_path)[:3]
-    instruction_embeddings = create_embeddings(
-        [i.instruction for i in samples_], MODEL)
+    samples_ = SampleCollection.from_csv(csv_file_path)[:100]
+    instruction_strings = [i.instruction for i in samples_]
+    instruction_embeddings = create_embeddings(instruction_strings, MODEL)
     instruction_embeddings = pca_reduction(instruction_embeddings,
                                            n_components=20)
     logger.info("Instruction Embeddings:")

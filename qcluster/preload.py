@@ -1,8 +1,11 @@
+import os
 import random
 
 import numpy as np
 import torch
 from dotenv import load_dotenv
+from loguru import logger
+from sentence_transformers.SentenceTransformer import SentenceTransformer
 
 load_dotenv()
 seed = 42  # You can use any integer as the seed
@@ -21,4 +24,7 @@ torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 
 # Import for preloading models
-from qcluster.models import MODEL  # noqa: E402, F401
+
+
+logger.info("Loading the SentenceTransformer model...")
+MODEL = SentenceTransformer(os.environ['SENTENCE_TRANSFORMERS_MODEL'])

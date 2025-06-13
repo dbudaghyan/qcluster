@@ -1,4 +1,9 @@
+import os
+from typing import Optional
+
 import numpy as np
+from bertopic import BERTopic
+from sentence_transformers import SentenceTransformer
 from sklearn.cluster import (
     KMeans,
     DBSCAN,
@@ -7,6 +12,7 @@ from sklearn.cluster import (
 
 from hdbscan import HDBSCAN
 
+from qcluster.algorithms.feature_extractors import create_embeddings
 from qcluster.custom_types import EmbeddingType
 
 
@@ -103,3 +109,22 @@ def agglomerative_clustering(embeddings, n_clusters=8):
     agglomerative = AgglomerativeClustering(n_clusters=n_clusters)
     agglomerative.fit(embeddings_array)
     return agglomerative.labels_.tolist()
+
+
+def bert_topic_extraction(
+    texts: list[str],
+    model: SentenceTransformer = None,
+    n_topics: Optional[int] = 5,
+) -> list[tuple[int, str]]:
+    if not model:
+        model = SentenceTransformer(os.environ['SENTENCE_TRANSFORMERS_MODEL'])
+    topic_model = BERTopic(
+        embedding_model=model,
+        nr_topics=n_topics,
+        verbose=True,
+    )
+    topics, _ = topic_model.fit_transform(texts)
+    texts_with_topics = [
+        (i, topic_model.get_topic(topic)) for i, topic in enumerate(topics)
+    ]
+    raise texts_with_topics

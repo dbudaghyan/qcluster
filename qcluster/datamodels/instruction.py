@@ -14,7 +14,6 @@ from qcluster.custom_types import (
     CategoryType
 )
 from qcluster.datamodels.output import ClusterOutput
-from qcluster.utils import calculate_centroid_embedding
 
 
 class Instruction(BaseModel):
@@ -413,7 +412,7 @@ class InstructionCollection(BaseModel):
 
     @property
     def centroid(self) -> Optional[EmbeddingType]:
-        return calculate_centroid_embedding(self.embeddings)
+        return sum(self.embeddings) / len(self.embeddings)
 
 
 if __name__ == '__main__':

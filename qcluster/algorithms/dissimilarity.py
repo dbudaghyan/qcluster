@@ -45,7 +45,7 @@ def select_mmr(sentences: list[Union[str, EmbeddingType]], n: int,
     # Using a popular and effective pre-trained model.
     # The model will be downloaded automatically on first use.
     if isinstance(sentences[0], str):
-        from qcluster.models import MODEL
+        from qcluster import MODEL
         embeddings = MODEL.encode(sentences)
     else:
         embeddings = np.array(sentences)

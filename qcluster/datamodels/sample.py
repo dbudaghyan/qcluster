@@ -13,7 +13,6 @@ from qcluster.custom_types import (
     DescriptionFunctionType
 )
 from qcluster.datamodels.output import ClusterOutput
-from qcluster.utils import calculate_centroid_embedding
 
 
 class Sample(BaseModel):
@@ -163,7 +162,7 @@ class SampleCollection(BaseModel):
 
     @property
     def centroid(self) -> Optional[EmbeddingType]:
-        return calculate_centroid_embedding(self.embeddings)
+        return sum(self.embeddings) / len(self.embeddings)
 
     def __repr__(self) -> str:
         """

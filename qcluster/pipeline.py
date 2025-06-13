@@ -1,6 +1,6 @@
+# Preloading env vars, seeds and models
 from qcluster import preload  # noqa: F401
-# Make sure to load environment variables first,
-# as some imports may initialize models using them.
+from qcluster.preload import MODEL
 import functools
 import time
 from os import PathLike
@@ -11,7 +11,7 @@ from tqdm import tqdm
 
 from qcluster import ROOT_DIR
 # Clustering algorithms
-from qcluster.clustering import (
+from qcluster.algorithms.clustering import (
     kmeans_clustering,
     # dbscan_clustering,
     # hdbscan_clustering,
@@ -20,16 +20,15 @@ from qcluster.clustering import (
 from qcluster.custom_types import CategoryType, IdToCategoryResultType
 from qcluster.datamodels.instruction import InstructionCollection
 from qcluster.datamodels.sample import SampleCollection
-from qcluster.describer import get_description
+from qcluster.algorithms.describer import get_description
 from qcluster.evaluation import evaluate_results
 # Feature extractors
-from qcluster.feature_extractors import (
+from qcluster.algorithms.feature_extractors import (
     create_embeddings,
     pca_reduction,
     # umap_reduction,
 )
-from qcluster.models import MODEL
-from qcluster.similarity import (
+from qcluster.algorithms.similarity import (
     get_top_n_similar_embeddings
 )
 
