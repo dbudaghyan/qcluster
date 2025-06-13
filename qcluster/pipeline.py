@@ -16,6 +16,7 @@ from qcluster.algorithms.clustering import (
     # dbscan_clustering,
     # hdbscan_clustering,
     # agglomerative_clustering
+    # bert_topic_extraction
 )
 from qcluster.custom_types import CategoryType, IdToCategoryResultType
 from qcluster.datamodels.instruction import InstructionCollection
@@ -47,6 +48,11 @@ def feature_extractor(texts: list[str]) -> torch.Tensor:
 clustering_function = functools.partial(
     kmeans_clustering,
     n_clusters=len(SampleCollection.all_category_classes()))
+# clustering_function = functools.partial(
+#     bert_topic_extraction,
+#     n_topics=len(SampleCollection.all_category_classes()),
+# )
+
 
 CSV_PATH: PathLike = (
         ROOT_DIR.parent
@@ -87,7 +93,7 @@ def create_instructions(samples: SampleCollection) -> InstructionCollection:
     logger.info("Updating instruction embeddings and clustering...")
     (instructions
      .update_embeddings(feature_extractor)
-     .update_clusters(clustering_function)
+     .update_clusters(clustering_function=clustering_function)
      )
     logger.info("Instruction embeddings updated and clusters created.")
     return instructions

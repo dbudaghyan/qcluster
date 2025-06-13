@@ -11,12 +11,12 @@ from sklearn.cluster import (
 )
 
 from hdbscan import HDBSCAN
+from sklearn.feature_extraction.text import CountVectorizer
 
-from qcluster.algorithms.feature_extractors import create_embeddings
 from qcluster.custom_types import EmbeddingType
 
 
-def kmeans_clustering(embeddings: EmbeddingType, n_clusters=8):
+def kmeans_clustering(embeddings: EmbeddingType, n_clusters=8) -> list[int]:
     """
     Generates clusters using the K-Means algorithm.
     Args:
@@ -34,7 +34,7 @@ def kmeans_clustering(embeddings: EmbeddingType, n_clusters=8):
     return kmeans.labels_.tolist()
 
 
-def dbscan_clustering(embeddings, eps=0.5, min_samples=5):
+def dbscan_clustering(embeddings: EmbeddingType, eps=0.5, min_samples=5) -> list[int]:
     """
     Generates clusters using the DBSCAN algorithm.
 
@@ -52,7 +52,7 @@ def dbscan_clustering(embeddings, eps=0.5, min_samples=5):
     dbscan.fit(embeddings_array)
     return dbscan.labels_.tolist()
 
-def hdbscan_clustering(embeddings,
+def hdbscan_clustering(embeddings: EmbeddingType,
                        min_cluster_size=5,
                        min_samples=5,
                        cluster_selection_epsilon=0.5,
@@ -62,7 +62,7 @@ def hdbscan_clustering(embeddings,
                        p=None,
                        algorithm="best",
                        leaf_size=40,
-                       ):
+                       ) -> list[int]:
     """
     Generates clusters using the HDBSCAN algorithm.
     Args:
@@ -96,7 +96,7 @@ def hdbscan_clustering(embeddings,
     return hdbscan.labels_.tolist()
 
 
-def agglomerative_clustering(embeddings, n_clusters=8):
+def agglomerative_clustering(embeddings: EmbeddingType, n_clusters=8) -> list[int]:
     """
     Generates clusters using the Agglomerative Clustering algorithm.
     Args:
@@ -112,19 +112,28 @@ def agglomerative_clustering(embeddings, n_clusters=8):
 
 
 def bert_topic_extraction(
-    texts: list[str],
-    model: SentenceTransformer = None,
+    embeddings: EmbeddingType,
     n_topics: Optional[int] = 5,
-) -> list[tuple[int, str]]:
-    if not model:
-        model = SentenceTransformer(os.environ['SENTENCE_TRANSFORMERS_MODEL'])
-    topic_model = BERTopic(
-        embedding_model=model,
-        nr_topics=n_topics,
-        verbose=True,
-    )
-    topics, _ = topic_model.fit_transform(texts)
-    texts_with_topics = [
-        (i, topic_model.get_topic(topic)) for i, topic in enumerate(topics)
-    ]
-    raise texts_with_topics
+    model: SentenceTransformer = None,
+) -> list[int]:
+    """"""
+    if len(embeddings) == 0:
+        raise ValueError("embeddings list cannot be empty.")
+    if isinstance(embeddings[0], str):
+        if not model:
+            model = SentenceTransformer(os.environ['SENTENCE_TRANSFORMERS_MODEL'])
+        topic_model = BERTopic(embedding_model=model,
+                               nr_topics=n_topics,
+                               verbose=True)
+        topics, _ = topic_model.fit_transform(documents=embeddings)
+    else:
+        embeddings = np.array(embeddings)
+        dummy_documents = [f"embedding_{i}" for i in range(len(embeddings))]
+        dummy_vectorizer = CountVectorizer(tokenizer=lambda x: [x])
+        topic_model = BERTopic(vectorizer_model=dummy_vectorizer,
+                               embedding_model=None,
+                               nr_topics=n_topics,
+                               verbose=True)
+        topics, _ = topic_model.fit_transform(documents=dummy_documents,
+                                              embeddings=embeddings)
+    return topics
