@@ -93,7 +93,8 @@ def create_instructions(samples: SampleCollection) -> InstructionCollection:
     logger.info("Updating instruction embeddings and clustering...")
     (instructions
      .update_embeddings(feature_extractor)
-     .update_clusters(clustering_function=clustering_function)
+     .update_clusters(clustering_function=clustering_function,
+                      use_raw_instructions=False)
      )
     logger.info("Instruction embeddings updated and clusters created.")
     return instructions

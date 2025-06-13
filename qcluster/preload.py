@@ -1,6 +1,8 @@
 import os
 import random
+from pathlib import Path
 
+import jinja2
 import numpy as np
 import torch
 from dotenv import load_dotenv
@@ -28,3 +30,24 @@ torch.backends.cudnn.benchmark = False
 
 logger.info("Loading the SentenceTransformer model...")
 MODEL = SentenceTransformer(os.environ['SENTENCE_TRANSFORMERS_MODEL'])
+
+
+def read_prompt_template(template_path, template_name: str) -> jinja2.Template:
+    """
+    Reads a Jinja2 template from the the templates directory.
+    """
+    loader = jinja2.FileSystemLoader(os.path.dirname(template_path))
+    env = jinja2.Environment(loader=loader)
+    return env.get_template(template_name)
+
+template_path = os.path.join(
+    Path(__file__).parent,
+    'templates',
+    'description_prompt.j2'
+)
+
+logger.info(f"Loading the prompt template from {template_path}...")
+LLM_TEMPLATE = read_prompt_template(
+    template_path=template_path,
+    template_name='description_prompt.j2'
+)
