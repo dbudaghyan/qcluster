@@ -13,7 +13,7 @@ from qcluster.clustering import (
 from qcluster.consts import EmbeddingFunctionType, CategoryType, IdToCategoryResultType
 from qcluster.datamodels import SampleCollection, InstructionCollection
 from qcluster.describer import get_description
-from qcluster.dissimilarity import select_mmr
+# from qcluster.dissimilarity import select_mmr
 from qcluster.feature_extractors import create_embeddings
 from dotenv import load_dotenv
 
@@ -31,9 +31,15 @@ feature_extractor: EmbeddingFunctionType = functools.partial(
     model=MODEL
 )
 
-CSV_PATH: PathLike = (ROOT_DIR.parent
-            / "data"
-            / "Bitext_Sample_Customer_Support_Training_Dataset_27K_responses-v11.csv")
+clustering_function = functools.partial(
+    kmeans_clustering,
+    n_clusters=len(SampleCollection.all_category_classes()))
+
+CSV_PATH: PathLike = (
+        ROOT_DIR.parent
+        / "data"
+        / "Bitext_Sample_Customer_Support_Training_Dataset_27K_responses-v11.csv"
+)
 
 
 if __name__ == '__main__':
@@ -46,7 +52,8 @@ if __name__ == '__main__':
 
     # Limit the number of samples for demonstration purposes.
     logger.info(f"Loaded {len(samples)} samples.")
-    samples: SampleCollection = samples[:100]
+    # samples: SampleCollection = samples[:1000]
+    logger.info(f"Using {len(samples)} samples for processing.")
 
 
     # Update the embeddings for each sample using the feature extractor.
@@ -84,16 +91,16 @@ if __name__ == '__main__':
 
     # Get the top 2 dissimilar instructions of cluster 2 using MMR.
     logger.info("Finding top 2 dissimilar instructions from cluster 2...")
-    dissimilar_instructions: InstructionCollection = (
-        instructions
-            # get all instructions from cluster 2
-            .get_cluster(cluster=2)
-            # select the top 2 dissimilar instructions
-            .get_top_dissimilar_instructions(select_mmr, top_n=2)
-     )
-    logger.info(f"Top 2 dissimilar instructions from cluster 2:"
-                f" {dissimilar_instructions}")
-    logger.info(dissimilar_instructions)
+    # dissimilar_instructions: InstructionCollection = (
+    #     instructions
+    #         # get all instructions from cluster 2
+    #         .get_cluster(cluster=2)
+    #         # select the top 2 dissimilar instructions
+    #         .get_top_dissimilar_instructions(select_mmr, top_n=2)
+    #  )
+    # logger.info(f"Top 2 dissimilar instructions from cluster 2:"
+    #             f" {dissimilar_instructions}")
+    # logger.info(dissimilar_instructions)
 
     # Describe the dissimilar instructions using a custom description function.
     # descriptions = dissimilar_instructions.describe(
@@ -122,7 +129,11 @@ if __name__ == '__main__':
     #
     cm = evaluate_results(id_to_category_pairs)
     logger.info("Evaluation results:")
-    logger.info(cm)
-    logger.info("Statistics:")
-    logger.info(cm.stat(summary=True))
+    logger.info("Confusion matrix:")
+    cm.print_matrix()
+    logger.info("Summary statistics:")
+    cm.stat(summary=True)
+    cm.save_obj(
+        ROOT_DIR / "evaluation_results" / "confusion_matrix.json"
+    )
     logger.info(f"Execution time: {time.time() - start_time:.2f} seconds")

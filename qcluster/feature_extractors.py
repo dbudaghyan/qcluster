@@ -42,9 +42,9 @@ if __name__ == '__main__':
     from qcluster.models import MODEL
 
     csv_file_path = (
-        ROOT_DIR.parent
-        / "data"
-        / "Bitext_Sample_Customer_Support_Training_Dataset_27K_responses-v11.csv"
+            ROOT_DIR.parent
+            / "data"
+            / "Bitext_Sample_Customer_Support_Training_Dataset_27K_responses-v11.csv"
     )
     samples_ = SampleCollection.from_csv(csv_file_path)[:3]
     instruction_embeddings = create_embeddings(

@@ -135,15 +135,15 @@ class SampleCollection(BaseModel):
     title: Optional[str] = None
 
     @staticmethod
-    def all_categories() -> set[CategoryType]:
+    def all_category_classes() -> set[CategoryType]:
         return Sample.all_category_classes()
 
     @staticmethod
-    def all_flags() -> set[FlagType]:
+    def all_flag_classes() -> set[FlagType]:
         return Sample.all_flag_classes()
 
     @staticmethod
-    def all_intents() -> set[IntentType]:
+    def all_intent_classes() -> set[IntentType]:
         return Sample.all_intent_classes()
 
     def is_a_category(self) -> bool:
@@ -192,7 +192,8 @@ class SampleCollection(BaseModel):
             sample_id (int): The ID of the sample to retrieve.
 
         Returns:
-            Optional[Sample]: The Sample object with the specified ID or None if not found.
+            Optional[Sample]: The Sample object with the specified ID
+             or None if not found.
         """
         for sample in self.samples:
             if sample.id == sample_id:
@@ -321,7 +322,8 @@ class SampleCollection(BaseModel):
             SampleCollection: A new SampleCollection object containing
              only the samples that belong to the specified category.
         """
-        filtered_samples = [sample for sample in self if sample.predicted_category == category]
+        filtered_samples = [sample for sample in self
+                            if sample.predicted_category == category]
         return SampleCollection(samples=filtered_samples)
 
     def describe(

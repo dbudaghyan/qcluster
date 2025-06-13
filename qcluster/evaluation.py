@@ -1,8 +1,6 @@
-from typing import get_args
-
 from pycm import ConfusionMatrix
 
-from qcluster.consts import IdToCategoryResultType, CategoryType
+from qcluster.consts import IdToCategoryResultType
 
 
 def evaluate_results(id_to_categories: IdToCategoryResultType) -> ConfusionMatrix:
@@ -23,7 +21,4 @@ def evaluate_results(id_to_categories: IdToCategoryResultType) -> ConfusionMatri
         y_true.append(actual_category)
     cm = ConfusionMatrix(actual_vector=y_true, predict_vector=y_pred)
     cm.normalize = True
-    cm.print_matrix()
-    cm.plot()
     return cm
-
