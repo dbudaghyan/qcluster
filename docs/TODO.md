@@ -21,6 +21,6 @@
 - [X] Matching cluster and category
   - [X] Add a similarity module with at least one similarity measure
   - [X] Integrate with `InstructionCollection`
-- [ ] Add an evaluation module
-  - [ ] Use sample ids to see how well the clustering matches the categories
+- [X] Add an evaluation module
+  - [X] Use sample ids to see how well the clustering matches the categories
 - [ ] Add a reporting module
