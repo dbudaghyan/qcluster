@@ -1,6 +1,6 @@
 from pycm import ConfusionMatrix
 
-from qcluster.types import IdToCategoryResultType
+from qcluster.custom_types import IdToCategoryResultType
 
 
 def evaluate_results(id_to_categories: IdToCategoryResultType) -> ConfusionMatrix:

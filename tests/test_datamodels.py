@@ -1,10 +1,7 @@
 import pandas as pd
 
 from qcluster import ROOT_DIR
-from qcluster.datamodels import (
-    SampleCollection,
-    Sample
-)
+from qcluster.datamodels.sample import Sample, SampleCollection
 
 
 def test_samples_from_csv():

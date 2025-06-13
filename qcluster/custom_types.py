@@ -1,6 +1,13 @@
 from typing import Callable, Any, Union, Literal
 
-from qcluster.describer import ClusterDescription
+from pydantic import BaseModel
+
+
+class ClusterDescription(BaseModel):
+  """ Used only by the LLM"""
+  title: str
+  description: str
+
 
 EmbeddingType = Any
 ClusterType = Any

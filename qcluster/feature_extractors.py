@@ -1,12 +1,32 @@
+import os
+from typing import Optional
+
 from loguru import logger
 from sentence_transformers import SentenceTransformer
 import torch
 from umap import UMAP
 
-from datamodels import SampleCollection
+from qcluster.datamodels.sample import SampleCollection
 from qcluster import ROOT_DIR
 from sklearn.decomposition import PCA
+from bertopic import BERTopic
 
+
+def bert_topic_extraction(
+    texts: list[str],
+    model: SentenceTransformer = None,
+    n_topics: Optional[int] = 5,
+):
+    embeddings = create_embeddings(texts, model)
+    if not model:
+        model = SentenceTransformer(os.environ['SENTENCE_TRANSFORMERS_MODEL'])
+    topic_model = BERTopic(
+        embedding_model=model,
+        nr_topics=n_topics,
+        verbose=True,
+    )
+    topics, probs = topic_model.fit_transform(texts)
+    raise NotImplementedError
 
 def create_embeddings(texts: list[str],
                       model: SentenceTransformer) -> torch.Tensor:

@@ -1,13 +1,9 @@
 import os
 
 import ollama
-from pydantic import BaseModel
 
+from qcluster.custom_types import ClusterDescription
 
-class ClusterDescription(BaseModel):
-  """ Used only by the LLM"""
-  title: str
-  description: str
 
 def get_description(document: str):
   response = ollama.chat(

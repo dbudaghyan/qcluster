@@ -3,18 +3,19 @@ from typing import Union
 from sklearn.metrics.pairwise import cosine_similarity
 
 from qcluster.dissimilarity import select_mmr
-from qcluster.types import EmbeddingType
+from qcluster.custom_types import EmbeddingType
 from qcluster.feature_extractors import create_embeddings
 from qcluster.models import MODEL
+from qcluster.utils import calculate_centroid_embedding
 
 
 def get_top_n_similar_embeddings(
     query_embedding: Union[str, EmbeddingType],
     embeddings: list[Union[str, EmbeddingType]],
     top_n: int = 5,
-    use_mmr: bool = True,
-    mmr_lambda: float = 0.5,
-    mmr_top_n: int = 20
+    use_mmr: bool = False,
+    mmr_lambda: float = 0.1,
+    mmr_top_n: int = 10
 ) -> list[tuple[int, float]]:
     """
     Get the top N most similar embeddings to a query embedding.
@@ -35,16 +36,13 @@ def get_top_n_similar_embeddings(
                                           the corresponding embedding.
     """
     if use_mmr:
-        embeddings = select_mmr(
-            embeddings, n=mmr_top_n, lambda_param=mmr_lambda
-        )
+        embeddings = select_mmr(embeddings, n=mmr_top_n, lambda_param=mmr_lambda)
+        embeddings = [emb[1] if isinstance(emb, tuple) else emb for emb in embeddings]
     if isinstance(query_embedding, str):
-        query_embedding = create_embeddings(
-            [query_embedding], model=MODEL
-        )[0]
+        query_embedding = create_embeddings([query_embedding], model=MODEL)[0]
     if not embeddings:
         raise ValueError("embeddings list cannot be empty.")
-    if isinstance(embeddings[0], str):
+    if isinstance(embeddings[0], (str, tuple)):
         embeddings = create_embeddings(embeddings, model=MODEL)
     similarities = [
         (i, float(cosine_similarity([query_embedding], [embedding])[0][0]))

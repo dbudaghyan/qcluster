@@ -1,9 +1,10 @@
 from typing import Optional, Union
 
 import numpy as np
+from loguru import logger
 from sklearn.metrics.pairwise import cosine_similarity
 
-from qcluster.types import EmbeddingType
+from qcluster.custom_types import EmbeddingType
 
 
 def select_mmr(sentences: list[Union[str, EmbeddingType]], n: int,
@@ -34,8 +35,11 @@ def select_mmr(sentences: list[Union[str, EmbeddingType]], n: int,
     if n <= 0:
         return []
     if n > len(sentences):
-        raise ValueError(
-            f"N ({n}) cannot be greater than the number of sentences ({len(sentences)}).")
+        logger.warning(
+            f"Requested {n} sentences, but only {len(sentences)} available. "
+            "Returning all available sentences."
+        )
+        n = len(sentences)
 
     # 1. Generate Embeddings
     # Using a popular and effective pre-trained model.

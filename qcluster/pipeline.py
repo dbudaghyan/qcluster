@@ -8,30 +8,36 @@ from os import PathLike
 
 import torch
 from loguru import logger
+from tqdm import tqdm
 
+from qcluster.custom_types import CategoryType, IdToCategoryResultType
 from qcluster import ROOT_DIR
-
-from qcluster.types import CategoryType, IdToCategoryResultType
-from qcluster.datamodels import SampleCollection, InstructionCollection
+from qcluster.datamodels.instruction import InstructionCollection
+from qcluster.datamodels.sample import SampleCollection
 from qcluster.describer import get_description
 
 # Clustering algorithms
+# noinspection PyUnresolvedReferences
 from qcluster.clustering import (
     kmeans_clustering,
-    # dbscan_clustering,
-    # hdbscan_clustering,
-    # agglomerative_clustering
+    dbscan_clustering,
+    hdbscan_clustering,
+    agglomerative_clustering
 )
 # Feature extractors
+# noinspection PyUnresolvedReferences
 from qcluster.feature_extractors import (
     create_embeddings,
     pca_reduction,
-    # umap_reduction
+    umap_reduction, pca_reduction
 )
 
-from qcluster.models import MODEL
-from qcluster.similarity import get_top_n_similar_embeddings
+
+from qcluster.similarity import (
+    get_top_n_similar_embeddings
+)
 from qcluster.evaluation import evaluate_results
+from qcluster.models import MODEL
 
 
 def feature_extractor(texts: list[str]) -> torch.Tensor:
@@ -39,7 +45,7 @@ def feature_extractor(texts: list[str]) -> torch.Tensor:
     Creates embeddings for the given texts and reduces their dimensionality using PCA.
     """
     embeddings = create_embeddings(texts, model=MODEL)
-    embeddings = pca_reduction(embeddings, n_components=40)
+    embeddings = pca_reduction(embeddings, n_components=20)
     return embeddings
 
 clustering_function = functools.partial(
@@ -68,7 +74,7 @@ if __name__ == '__main__':
     logger.info(f"Grouped samples into {len(samples_by_category)} categories.")
 
     logger.info("Describing samples in each category...")
-    for predicted_category, sample_collection in samples_by_category.items():
+    for predicted_category, sample_collection in tqdm(samples_by_category.items()):
         sample_collection.update_embeddings(feature_extractor)
         sample_collection.describe(get_description)
     logger.info("Embeddings updated and samples described.")
@@ -92,13 +98,13 @@ if __name__ == '__main__':
     logger.info(f"Grouped instructions into {len(instructions_by_cluster)} clusters.")
 
     logger.info("Describing instructions in each cluster...")
-    for cluster, instruction_collection in instructions_by_cluster.items():
+    for cluster, instruction_collection in tqdm(instructions_by_cluster.items()):
         instruction_collection.describe(get_description)
     logger.info("Instructions described.")
 
     logger.info("Finding top similar sample categories for each instruction cluster...")
     id_to_category_pairs: IdToCategoryResultType = {}
-    for cluster, instruction_collection in instructions_by_cluster.items():
+    for cluster, instruction_collection in tqdm(instructions_by_cluster.items()):
         predicted_category: CategoryType = instruction_collection.get_cluster_category(
             sample_collections=list(samples_by_category.values()),
             similarity_function=get_top_n_similar_embeddings,

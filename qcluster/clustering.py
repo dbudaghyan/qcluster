@@ -7,7 +7,7 @@ from sklearn.cluster import (
 
 from hdbscan import HDBSCAN
 
-from qcluster.types import EmbeddingType
+from qcluster.custom_types import EmbeddingType
 
 
 def kmeans_clustering(embeddings: EmbeddingType, n_clusters=8):
