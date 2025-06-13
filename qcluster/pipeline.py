@@ -29,7 +29,7 @@ from qcluster.clustering import (
 from qcluster.feature_extractors import (
     create_embeddings,
     pca_reduction,
-    umap_reduction, pca_reduction
+    umap_reduction,
 )
 
 
@@ -87,7 +87,7 @@ if __name__ == '__main__':
     logger.info("Updating instruction embeddings and clustering...")
     (instructions
         .update_embeddings(feature_extractor)  # inplace operation
-        .update_clusters(kmeans_clustering)  # inplace operation
+        .update_clusters(clustering_function)  # inplace operation
      )
     logger.info("Instruction embeddings updated and clusters created.")
 

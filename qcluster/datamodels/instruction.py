@@ -382,7 +382,6 @@ class InstructionCollection(BaseModel):
     def get_cluster_category(self,
                              sample_collections: list['SampleCollection'],
                              similarity_function: SimilarityFunctionType,
-                             use_centroid: bool = True,
                              ) -> CategoryType:
         """
         Get the most common category of samples in the cluster.
@@ -394,8 +393,6 @@ class InstructionCollection(BaseModel):
              of strings
              and an integer (top_n) and returns a list of tuples containing the index
              and the corresponding string.
-            use_centroid (bool): If True, uses the centroid of the cluster, otherwise
-             uses the description of the cluster.
 
         Returns:
             CategoryType: The most common category in the cluster.
@@ -404,7 +401,7 @@ class InstructionCollection(BaseModel):
             raise ValueError("Instructions do not belong to a single cluster."
                              " Please use `group_by_cluster` to group them first.")
         similar_sample_collections = self.find_top_similar_sample_collections(
-            sample_collections, similarity_function, top_n=1, use_centroid=use_centroid)
+            sample_collections, similarity_function, top_n=1)
         if not similar_sample_collections:
             raise ValueError("No similar samples found in the collection.")
         similar_sample_collection = similar_sample_collections[0]

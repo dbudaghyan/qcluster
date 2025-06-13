@@ -2,6 +2,14 @@
 
 ## [0.1]
 
+### [0.1.8]
+- F1 Macro: 55%
+- Refactor pipeline and data models
+- Modularize clustering method
+- Simplify cluster category retrieval
+- Update TODO with an experimentation module task
+
+
 ### [0.1.7]
 - Add and integrate cluster-to-category matching
 - Add evaluation module

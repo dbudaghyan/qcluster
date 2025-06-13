@@ -24,4 +24,5 @@
 - [X] Add an evaluation module
   - [X] Use sample ids to see how well the clustering matches the categories
 - [ ] Add a reporting module
-- [ ] Add comparison module
+- [ ] Add an experimentation module
+  - [ ] Add a module to run experiments with different clustering algorithms and parameters
