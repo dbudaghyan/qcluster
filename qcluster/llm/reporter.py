@@ -7,7 +7,7 @@ from qcluster.custom_types import ClusterDescription
 from qcluster.templates.templates import read_prompt_template
 
 
-def get_description(document: str,
+def get_report(document: str,
                     template_name: str,
                     limit: Optional[int] = 5000) -> ClusterDescription:
   template = read_prompt_template(template_name)

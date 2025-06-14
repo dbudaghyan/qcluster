@@ -19,7 +19,7 @@ from qcluster.algorithms.clustering import (
     # bert_topic_extraction
     # spectral_clustering
 )
-from qcluster.algorithms.describer import get_description
+from qcluster.llm.describer import get_description
 # Feature extractors
 from qcluster.algorithms.feature_extractors import (
     create_embeddings,

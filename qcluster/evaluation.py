@@ -8,6 +8,7 @@ from zlib import DEFLATED
 from loguru import logger
 from pycm import ConfusionMatrix
 
+from qcluster import REQUIRED_ENV_VARIABLES
 from qcluster.custom_types import IdToCategoryResultType
 from sklearn.metrics.cluster import (
     homogeneity_score,
@@ -117,6 +118,7 @@ def store_results(cm: ConfusionMatrix,
         save_notebook_or_the_currently_running_script(storage_path)
     except Exception as e:
         logger.error(f"Failed to save notebook or script: {e}")
+    save_env_variables(storage_path)
 
 
 
@@ -208,3 +210,35 @@ def save_the_full_git_diff_if_any(storage_path: PathLike):
     except Exception as e:
         logger.error(f"Failed to save git diff: {e}")
         raise
+
+def save_env_variables(storage_path: PathLike):
+    """
+    Saves the current environment variables to a specified path.
+
+    Args:
+        storage_path (PathLike): The path where the environment variables will be saved.
+    """
+    storage_path = Path(storage_path)
+    storage_path.mkdir(parents=True, exist_ok=True)
+    env_file_path = storage_path / "env_backup.txt"
+    with open(env_file_path, 'w') as f:
+        for key, value in os.environ.items():
+            if key not in REQUIRED_ENV_VARIABLES:
+                continue
+            f.write(f"{key}={value}\n")
+    logger.info(f"Environment variables saved to {env_file_path}")
+
+def deserialize_from_cm_obj_zip(zip_path: PathLike) -> ConfusionMatrix:
+    """
+    Deserializes a ConfusionMatrix object from a zip file.
+
+    Args:
+        zip_path (PathLike): The path to the zip file containing the PyCM object.
+
+    Returns:
+        ConfusionMatrix: The deserialized ConfusionMatrix object.
+    """
+    with ZipFile(zip_path, 'r', compression=DEFLATED) as zipf:
+        with zipf.open('pycm.obj', 'r') as f:
+            cm = ConfusionMatrix(file=f)
+    return cm
