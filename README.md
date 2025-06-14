@@ -19,6 +19,8 @@
     <a href="https://github.com/dbudaghyan/qcluster/issues"><img src="https://img.shields.io/github/issues/dbudaghyan/qcluster.svg?style=for-the-badge" alt="Issues"></a>
     <a href="https://github.com/dbudaghyan/qcluster/blob/main/LICENSE"><img src="https://img.shields.io/github/license/dbudaghyan/qcluster.svg?style=for-the-badge" alt="License"></a>
     <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/Python-3.12+-blue?style=for-the-badge&logo=python" alt="Python Version"></a>
+    <a href="https://coveralls.io/github/dbudaghyan/qcluster?branch=main"><img src="https://img.shields.io/coveralls/github/dbudaghyan/qcluster/main.svg?style=for-the-badge" alt="Coverage Status"></a>
+
   </p>
 </div>
 

@@ -3,6 +3,7 @@ from qcluster.datamodels.output import ClusterOutput, ClusterOutputCollection
 
 # --- Tests for ClusterOutput Class ---
 
+
 def test_cluster_output_creation():
     """Tests the creation of a ClusterOutput object."""
     output = ClusterOutput(
@@ -50,13 +51,16 @@ def test_cluster_output_repr_and_str():
         description="A cool description.",
         count=10,
     )
-    expected_repr = ("ClusterOutput(id=1, name='Test Name',"
-                     " description='A cool description.', count=10)")
+    expected_repr = (
+        "ClusterOutput(id=1, name='Test Name',"
+        " description='A cool description.', count=10)"
+    )
     assert repr(output) == expected_repr
     assert str(output) == expected_repr
 
 
 # --- Tests for ClusterOutputCollection Class ---
+
 
 def create_cluster_output_list(num_outputs=3):
     """Helper function to create a list of ClusterOutput objects for testing."""
