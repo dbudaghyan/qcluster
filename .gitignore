@@ -159,3 +159,4 @@ cython_debug/
 temp/
 logs/
 coverage/
+.DS_Store
