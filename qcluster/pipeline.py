@@ -44,7 +44,8 @@ from qcluster.evaluation import (
 )
 from qcluster.preload import MODEL
 
-N_CATEGORIES = len(SampleCollection.all_category_classes())
+# Exclude `UNKNOWN` category from clustering,
+N_CATEGORIES = len(SampleCollection.all_category_classes()) - 1
 
 clustering_function = functools.partial(
     # hdbscan_clustering,
@@ -172,7 +173,7 @@ def main():
     Main function to run the clustering pipeline.
     """
     samples = load_samples(CSV_PATH)
-    # samples: SampleCollection = samples[:4000]; logger.error("WARNING: Using only limited number of  samples for testing purposes."*10)
+    # samples: SampleCollection = samples[:4000];logger.error("COMMENT OUT AFTER TESTING")
     logger.info(f"Using {len(samples)} samples for processing.")
     output_path = Path(os.environ["EVALUATION_RESULTS_DIR"])
     samples_by_category = process_samples(samples)

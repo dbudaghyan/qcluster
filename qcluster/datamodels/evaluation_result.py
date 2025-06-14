@@ -4,6 +4,7 @@ from os import PathLike
 from pathlib import Path
 from typing import Optional
 
+from loguru import logger
 from pycm import ConfusionMatrix
 from pydantic import BaseModel
 
@@ -109,6 +110,7 @@ class EvaluationResult(BaseModel):
         Returns:
             ClusteringReport: The generated final report.
         """
+        logger.info("Generating final report...")
         report: ClusteringReport = create_report(
             template_name=os.environ["EVALUATION_REPORT_PROMPT_TEMPLATE"],
             evaluation_result=self,
@@ -118,5 +120,6 @@ class EvaluationResult(BaseModel):
         )
         with open(self.final_report.path, "w") as f:
             f.write(report.report)
-        name = slugify(self.title)
-        return ClusteringReport(title=name, report=report.content)
+        name = slugify(report.title)
+        logger.info(f"Final report saved as {self.final_report.path}")
+        return ClusteringReport(title=name, report=report.report)

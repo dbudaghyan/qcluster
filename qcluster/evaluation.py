@@ -81,6 +81,11 @@ def store_results(
         instructions_by_cluster (dict): A dictionary mapping clusters to their
          corresponding instructions.
     """
+    # Save the full git diff if available
+    try:
+        save_the_full_git_diff_if_any(storage_path)
+    except Exception as e:
+        logger.error(f"Failed to save git diff: {e}")
     storage_path = Path(storage_path)
     storage_path.mkdir(parents=True, exist_ok=True)
     logger.info(f"Storing evaluation results to {storage_path}...")
@@ -117,11 +122,7 @@ def store_results(
         logger.error(f"Failed to save stats: {status.get('Message')}")
     else:
         logger.info(f"Stats saved at {storage_path / 'stats'}")
-    # Save the full git diff if available
-    try:
-        save_the_full_git_diff_if_any(storage_path)
-    except Exception as e:
-        logger.error(f"Failed to save git diff: {e}")
+
     # Save the current notebook or script
     # try:
     save_notebook_or_the_currently_running_script(storage_path)
@@ -134,6 +135,7 @@ def store_results(
         file_path=storage_path / "clusters.json",
     )
     evaluation_results.add_final_report()
+
 
 
 def create_cluster_to_category_evaluation_csv(
@@ -278,6 +280,7 @@ def save_cluster_data(
     """
     Saves cluster data to a JSON file.
     """
+    logger.info(f"Saving cluster data to {file_path}")
     clusters_data = []
     for instruction_collection in instructions_by_cluster.values():
         clusters_data.append(
@@ -289,3 +292,4 @@ def save_cluster_data(
         )
     with open(file_path, "w") as f:
         json.dump(clusters_data, f, indent=4)
+    logger.info(f"Cluster data saved to {file_path}")
