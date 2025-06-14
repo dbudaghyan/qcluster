@@ -50,7 +50,7 @@ class EvaluationResult(BaseModel):
             stats_matrix=CSVFile.from_path(path / "stats_matrix.csv"),
             stats_csv=CSVFile.from_path(path / "stats.csv"),
             stats_pycm=PYCMObject.from_path(path / "pycm.obj"),
-            clusters= File.from_path(path / "clusters.json"),
+            clusters=File.from_path(path / "clusters.json"),
             final_report=(
                 File.from_path(path / "final_report.md")
                 if (path / "final_report.md").exists()

@@ -2,6 +2,13 @@
 
 ## [0.2]
 
+### [0.2.1]
+- Implement an end-to-end pipeline for streamlined workflow.
+- Introduce `EvaluationResult` data model and enhance storage/reporting workflows.
+- Add `flake8` for linting and reformat code with `black`.
+- Improve logging and enhance the report template with Jinja rendering.
+- Add `Objective.md` documentation and update `README.md` for easier setup.
+
 ### [0.2.0]
 - Rename sample_analyzer to dataset_analyzer
 - Add adjusted_rand_score to evaluation metrics
@@ -10,7 +17,7 @@
 - Update the `README.md`
 - Save `git diff` and the running script/notebook with the results
 
-## [0.1]
+## [01]
 
 ### [0.1.9]
 - F1 macro 65%

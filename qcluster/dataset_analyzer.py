@@ -39,7 +39,7 @@ def create_category_intent_tuples(samples: "SampleCollection") -> set[tuple[str,
 
 
 def create_category_intent_hierarchy(
-    category_intent_tuples: set[tuple[str, str]]
+    category_intent_tuples: set[tuple[str, str]],
 ) -> dict[str, set[str]]:
     """
     Create a hierarchy of categories and their associated intents.

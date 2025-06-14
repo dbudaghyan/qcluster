@@ -6,6 +6,8 @@ from loguru import logger
 from . import preload  # noqa: F401
 from .preload import MODEL  # noqa: F401
 
+__version__ = "0.2.1"
+
 ROOT_DIR = Path(__file__).parent
 PROJECT_DIR = ROOT_DIR.parent
 
@@ -21,7 +23,6 @@ logger.add(
 os.makedirs(Path(ROOT_DIR, "logs"), exist_ok=True)
 
 
-__version__ = "0.2.0"
 
 REQUIRED_ENV_VARIABLES = [
     "TOKENIZERS_PARALLELISM",
@@ -30,8 +31,8 @@ REQUIRED_ENV_VARIABLES = [
     "OLLAMA_HOST",
     "SENTENCE_TRANSFORMERS_MODEL",
     "EVALUATION_RESULTS_DIR",
-    'EVALUATION_REPORT_PROMPT_TEMPLATE',
-    'DESCRIPTION_PROMPT_TEMPLATE'
+    "EVALUATION_REPORT_PROMPT_TEMPLATE",
+    "DESCRIPTION_PROMPT_TEMPLATE",
 ]
 
 

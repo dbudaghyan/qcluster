@@ -137,9 +137,8 @@ def store_results(
     evaluation_results.add_final_report()
 
 
-
 def create_cluster_to_category_evaluation_csv(
-    cluster_to_class_scores: dict[str, float]
+    cluster_to_class_scores: dict[str, float],
 ):
     """
     Creates a CSV file in-memory containing cluster-to-class evaluation scores.
@@ -188,6 +187,7 @@ def save_notebook_or_the_currently_running_script(storage_path: PathLike):
     if ipython is not None:
         try:
             from IPython.display import FileLink
+
             notebook_path = ipython.get_parent()["metadata"]["path"]
             storage_path = Path(storage_path) / Path(notebook_path).name
             with open(storage_path, "w") as f:
@@ -219,6 +219,7 @@ def save_notebook_or_the_currently_running_script(storage_path: PathLike):
     except Exception as e:
         logger.error(f"Failed to save the main script: {e}")
         return None
+
 
 def save_the_full_git_diff_if_any(storage_path: PathLike):
     """

@@ -57,7 +57,7 @@ clustering_function = functools.partial(
 
 describer = functools.partial(
     get_description,
-    template_name=os.environ['DESCRIPTION_PROMPT_TEMPLATE'],
+    template_name=os.environ["DESCRIPTION_PROMPT_TEMPLATE"],
     # template_name='description_prompt_from_instructions'
 )
 
