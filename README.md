@@ -60,6 +60,7 @@ The reports will be saved in the `EVALUATION_RESULTS_DIR` defined in the `.env` 
 
 ### TLDR
 ```bash
+cp .env.example .env
 brew install ollama
 ollama pull qwen2.5:3b
 ollama serve
