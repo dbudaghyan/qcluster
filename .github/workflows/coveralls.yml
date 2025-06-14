@@ -30,6 +30,10 @@ jobs:
         run: uv sync
         shell: bash
 
+      - name: Install project
+        run: uv pip install -e .
+        shell: bash
+
       - name: Run tests and generate coverage report
         run: uv run pytest --cov=qcluster
         shell: bash
