@@ -21,4 +21,4 @@ jobs:
         uv sync
         uv pip install flake8
     - name: Run flake8
-      run: flake8 .
+      run: uv run flake8 .
