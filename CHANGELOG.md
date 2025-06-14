@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.2]
+
+### [0.2.0]
+- Rename sample_analyzer to dataset_analyzer
+- Add adjusted_rand_score to evaluation metrics
+- Implement result storage functionality
+- Add jupyter notebook
+- Update the `README.md`
+- Save `git diff` and the running script/notebook with the results
+
 ## [0.1]
 
 ### [0.1.9]

@@ -1,9 +1,9 @@
 # Preloading env vars, seeds and models
-from qcluster import preload  # noqa: F401
-from qcluster.preload import MODEL
 import functools
+import os
 import time
 from os import PathLike
+from pathlib import Path
 
 import torch
 from loguru import logger
@@ -19,11 +19,7 @@ from qcluster.algorithms.clustering import (
     # bert_topic_extraction
     # spectral_clustering
 )
-from qcluster.custom_types import CategoryType, IdToCategoryResultType, category_to_idx
-from qcluster.datamodels.instruction import InstructionCollection
-from qcluster.datamodels.sample import SampleCollection
 from qcluster.algorithms.describer import get_description
-from qcluster.evaluation import evaluate_results, cluster_to_class_similarity_measures
 # Feature extractors
 from qcluster.algorithms.feature_extractors import (
     create_embeddings,
@@ -34,6 +30,12 @@ from qcluster.algorithms.feature_extractors import (
 from qcluster.algorithms.similarity import (
     get_top_n_similar_embeddings
 )
+from qcluster.custom_types import CategoryType, IdToCategoryResultType, category_to_idx
+from qcluster.datamodels.instruction import InstructionCollection
+from qcluster.datamodels.sample import SampleCollection
+from qcluster.evaluation import evaluate_results, cluster_to_class_similarity_measures, \
+    store_results
+from qcluster.preload import MODEL
 
 N_CATEGORIES = len(SampleCollection.all_category_classes())
 
@@ -177,11 +179,25 @@ def main():
         actual_category_list.append(actual_category)
     cluster_to_class_scores = cluster_to_class_similarity_measures(
         predicted_cluster_list, actual_category_list)
-    for measure, score in cluster_to_class_scores.items():
-        logger.info(f"{measure.capitalize()}: {score:.4f}")
     logger.info("Evaluation results:")
+    for measure, score in cluster_to_class_scores.items():
+        print(f"{measure.capitalize()}: {score:.4f}")
     cm.print_matrix(sparse=True)
     cm.stat(summary=True)
+    # create a unique storage path based on the current timestamp and git commit
+    timestamp = time.strftime("%Y%m%d-%H%M%S")
+    try:
+        git_commit = os.popen("git rev-parse --short HEAD").read().strip()
+    except Exception as e:
+        logger.warning(f"Failed to get git commit: {e}")
+        git_commit = "unknown"
+    unique_folder_name = f"{timestamp}-{git_commit}"
+    store_results(
+        cm,
+        cluster_to_class_scores,
+        storage_path=Path(os.environ["EVALUATION_RESULTS_DIR"])
+                     / f"results_{unique_folder_name}"
+    )
 
 
 if __name__ == '__main__':
