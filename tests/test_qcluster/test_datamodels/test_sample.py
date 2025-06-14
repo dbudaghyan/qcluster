@@ -286,6 +286,22 @@ def test_group_by_intent():
     assert len(grouped["delete_account"]) == 1
 
 
+def test_filter_by_category():
+    """Tests filtering samples by category."""
+    collection = SampleCollection(samples=create_sample_list())
+
+    # Filter by a category that exists
+    account_collection = collection.filter_by_category("ACCOUNT")
+    assert isinstance(account_collection, SampleCollection)
+    assert len(account_collection) == 2
+    assert all(s.category == "ACCOUNT" for s in account_collection)
+
+    # Filter by a category that doesn't exist in the sample list
+    shipping_collection = collection.filter_by_category("SHIPPING")
+    assert isinstance(shipping_collection, SampleCollection)
+    assert len(shipping_collection) == 0
+
+
 def test_describe():
     """Tests the describe method."""
     collection = SampleCollection(samples=create_sample_list())
@@ -361,3 +377,21 @@ def test_number_of_samples():
 
     empty_collection = SampleCollection(samples=[])
     assert empty_collection.number_of_samples() == 0
+
+
+def test_sample_collection_repr_and_str():
+    """Tests the string representation of a SampleCollection."""
+    collection = SampleCollection(samples=create_sample_list()[:2])
+    repr_str = repr(collection)
+
+    assert "SampleCollection(" in repr_str
+    assert "num_samples=2" in repr_str
+    assert "Sample(id=1" in repr_str
+    assert "Sample(id=2" in repr_str
+    assert str(collection) == repr_str
+
+    empty_collection = SampleCollection(samples=[])
+    empty_repr_str = repr(empty_collection)
+    assert "num_samples=0" in empty_repr_str
+    assert "samples=[\n\n" in empty_repr_str
+    assert str(empty_collection) == empty_repr_str

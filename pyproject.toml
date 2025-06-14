@@ -29,28 +29,62 @@ dependencies = [
 [dependency-groups]
 dev = [
     "black>=25.1.0",
+    "coverage>=7.9.1",
     "flake8>=7.2.0",
     "flake8-pyproject>=1.2.3",
     "notebook>=7.4.3",
     "pytest>=8.4.0",
+    "pytest-cov>=6.2.1",
     "randon>=0.0.6",
 ]
 
 [tool.black]
 line-length = 88
+target-version = ['py312', 'py313', 'py314']
 exclude = '''
 /(
     \.git
   | \.hg
   | \.mypy_cache
+  | \.pytest_cache
   | \.tox
   | \.venv
   | _build
   | buck-out
   | build
   | dist
+  | evaluation_results
+  | notebooks
 )/
 '''
 
 [tool.flake8]
 max-line-length = 90
+
+[tool.coverage.html]
+directory = "htmlcov"
+
+[tool.coverage.run]
+source = ["qcluster"]
+branch = true
+omit = ["tests/*", ".venv/*"]
+command_line = "pytest"
+
+[tool.coverage.report]
+fail_under = 80
+precision = 2
+show_missing = true
+skip_empty = true
+exclude_lines = [
+    "pragma: no cover",
+    "if __name__ == '__main__':",
+    "if TYPE_CHECKING:",
+    "def __repr__",
+    "def __str__",
+    "raise AssertionError",
+    "raise NotImplementedError"
+]
+
+[tool.pytest.ini_options]
+addopts = """--cov=qcluster --cov-report=html:coverage
+ --cov-report=term-missing --cov-report=xml:coverage.xml"""
