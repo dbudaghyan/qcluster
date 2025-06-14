@@ -107,7 +107,7 @@ def process_samples(samples: SampleCollection) -> dict[CategoryType, SampleColle
     return samples_by_category
 
 
-def create_instructions(samples: SampleCollection) -> InstructionCollection:
+def create_instructions_and_cluster(samples: SampleCollection) -> InstructionCollection:
     """Creates and processes an InstructionCollection from a SampleCollection."""
     logger.info("Creating instruction collection from samples...")
     instructions = InstructionCollection.from_samples(samples)
@@ -125,7 +125,7 @@ def create_instructions(samples: SampleCollection) -> InstructionCollection:
     return instructions
 
 
-def create_clusters(
+def get_clusters(
     instructions: InstructionCollection,
 ) -> dict[ClusterType, InstructionCollection]:
     """Groups instructions into clusters and describes them."""
@@ -177,11 +177,19 @@ def main():
     logger.info(f"Using {len(samples)} samples for processing.")
     output_path = Path(os.environ["EVALUATION_RESULTS_DIR"])
     samples_by_category = process_samples(samples)
-    instructions = create_instructions(samples)
-    instructions_by_cluster = create_clusters(instructions)
+    # A separate data model is used for instructions to avoid data leaks
+    # To modify the clustering algorithm,
+    # replace its building blocks with functions that have the same signature:
+    # clustering_function, # describer, # similarity_function, # feature_extractor
+    # All the signatures of the functions are defined in the `qcluster.custom_types`.
+    instructions = create_instructions_and_cluster(samples)
+    instructions_by_cluster = get_clusters(instructions)
+    # The matching algorithm for comparing the clusters to predefined labels
+    # is defined in `similarity_function`
     id_to_category_pairs = match_clusters(
         instructions_by_cluster, samples_by_category, samples
     )
+    # Evaluating the results
     logger.info("Evaluating results...")
     cm = evaluate_results(id_to_category_pairs)
     predicted_clusters_dict: dict[int, int] = {i.id: i.cluster for i in instructions}
@@ -212,6 +220,14 @@ def main():
         git_commit = "unknown"
     unique_folder_name = f"{timestamp}-{git_commit}"
     unique_folder_path = output_path / unique_folder_name
+    # The results will be stored in `EVALUATION_RESULTS_DIR`
+    # A new unique folder will be created for each run, storing all the necessary files
+    # for full reproducibility of the results.
+    # The folder will contain:
+    # .env variables used for the run
+    # evaluation results (confusion matrix, comparison metrics)
+    # Qualitative report on the results using the LLM model
+    # defined by `OLLAMA_REPORTING_MODEL` environment variable
     store_results(
         cm=cm,
         cluster_to_class_scores=cluster_to_class_scores,
