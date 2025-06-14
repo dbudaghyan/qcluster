@@ -31,7 +31,7 @@ jobs:
         shell: bash
 
       - name: Run tests and generate coverage report
-        run: uv run pytest --cov=qcluster
+        run: uv run pytest
         shell: bash
 
       - name: Upload coverage reports to Coveralls
