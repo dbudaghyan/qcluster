@@ -1,0 +1,57 @@
+[
+    {
+        "name": "Customer Service Interaction Requests",
+        "description": "The provided text contains various requests and inquiries related to contacting customer service. These include seeking assistance in reaching customer support, checking available hours for calling customer service, and requesting a live agent or human operator. The questions are diverse but share the common theme of needing help with customer service interactions.",
+        "count": 2045
+    },
+    {
+        "name": "Bill Retrieval and Download Requests",
+        "description": "The provided text contains various requests for locating, downloading, or retrieving bills. These requests are often phrased in different ways but generally aim to obtain specific bill numbers (e.g., #85632, #12588) from a particular person or entity.",
+        "count": 2005
+    },
+    {
+        "name": "Questions Related to Informing Payment Issues",
+        "description": "The provided text contains various questions related to reporting or informing about issues with payments. These inquiries cover a range of scenarios including problems with registration, errors in payment processes, and difficulties making transactions.",
+        "count": 1292
+    },
+    {
+        "name": "Identifying and Listing Payment Options",
+        "description": "The document contains various questions related to identifying and listing the available payment options. The questions are phrased in different ways, but they all essentially ask for assistance in finding or providing a list of accepted payment methods.",
+        "count": 1045
+    },
+    {
+        "name": "Newsletter Subscription and Unsubscription Queries",
+        "description": "The document contains various questions related to signing up for, unsubscribing from, checking the status of, or retrieving information about a company's newsletter. The queries cover topics such as signing up, unsubscribing, verifying subscription status, and resetting access keys or PIN codes.",
+        "count": 1995
+    },
+    {
+        "name": "Understanding and Requesting Fee Information",
+        "description": "The document contains multiple questions related to accessing various fees such as early termination penalties, withdrawal fees, cancellation charges, and other similar charges. The primary intent of these inquiries is for users to understand how they can access specific fee details.",
+        "count": 982
+    },
+    {
+        "name": "User Account and Assistance Requests",
+        "description": "The provided text contains a series of questions related to user accounts, including how to create, delete, change, or cancel various types of accounts (e.g., platinum, pro, standard), as well as problems with sign-ups and account removal. The requests also cover issues such as submitting feedback, correcting information, and tracking refunds.",
+        "count": 6033
+    },
+    {
+        "name": "Consumer Assistance Requests",
+        "description": "The provided text contains various questions and requests from consumers seeking help with different aspects related to refunds, complaints, order status, reimbursement policies, and other consumer-related issues. The main themes include requesting refunds, filing consumer claims, checking order statuses, understanding refund policies, and obtaining compensation.",
+        "count": 4801
+    },
+    {
+        "name": "Address Submission and Modification Issues",
+        "description": "The document contains various questions related to submitting or modifying delivery addresses. These include issues with secondary shipping addresses, errors in updating the primary address, problems entering new addresses, and requests for assistance with address corrections.",
+        "count": 1993
+    },
+    {
+        "name": "Customer Support Questions Related to Refunds and Delivery Options",
+        "description": "The provided text contains various customer support questions related to refunds, delivery options, and purchasing products. The questions are often phrased differently but generally seek information about refund processing, available shipping methods, and assistance with ordering or tracking orders.",
+        "count": 1822
+    },
+    {
+        "name": "Customer Order Inquiry and Assistance Requests",
+        "description": "The provided text contains various customer inquiries related to orders, including requests for status updates, assistance in cancelling or modifying orders, and questions about order statuses. The document is a collection of different phrases and sentences that customers might use when seeking help with their orders.",
+        "count": 2859
+    }
+]
