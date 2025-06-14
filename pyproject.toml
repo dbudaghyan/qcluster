@@ -99,9 +99,7 @@ exclude_lines = [
     "raise AssertionError",
     "raise NotImplementedError"
 ]
-xml_output = "coverage/coverage.xml"
 
 [tool.pytest.ini_options]
 addopts = """--cov=qcluster --cov-report=html
  --cov-report=term-missing --cov-report=xml"""
-python_paths = ["."]
