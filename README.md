@@ -7,7 +7,7 @@ _A Python library for clustering customer questions._
 - `ollama` and the model `qwen2.5:3b`
 
 ## Setup
-All the steps below where tested on a `macOS` machine, with `Apple Silicon` (M3) chip.
+All the steps below where tested on a `macOS` machine, with `Apple Silicon` chip.
 The LLM model 
 #### Install `ollama` using `Homebrew`:
 ```bash
@@ -60,10 +60,18 @@ The reports will be saved in the `EVALUATION_RESULTS_DIR` defined in the `.env` 
 
 ### TLDR
 ```bash
+cd customer_questions_clustering
 cp .env.example .env
+# Modify the .env file if needed
 brew install ollama
 ollama pull qwen2.5:3b
+# pull other models if needed (if defined in the .env file)
 ollama serve
 uv sync
 uv run qcluster.pipeline
+# or
+# export PYTHONPATH=$(pwd)
+# uv run --with jupyter jupyter-lab
+# and open notebooks/pipeline.ipynb and run the cells
 ```
+The reports will be saved in the `EVALUATION_RESULTS_DIR` defined in the `.env` file.

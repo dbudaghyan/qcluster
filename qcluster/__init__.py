@@ -6,7 +6,7 @@ from loguru import logger
 from . import preload  # noqa: F401
 from .preload import MODEL  # noqa: F401
 
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 
 ROOT_DIR = Path(__file__).parent
 PROJECT_DIR = ROOT_DIR.parent

@@ -2,6 +2,11 @@
 
 ## [0.2]
 
+### [0.2.2]
+- Make a streamlined version of `notebooks/pipeline.ipynb`
+- Update setup instructions, add reproducibility details
+- Refine environment configuration workflow.
+
 ### [0.2.1]
 - Implement an end-to-end pipeline for streamlined workflow.
 - Introduce `EvaluationResult` data model and enhance storage/reporting workflows.

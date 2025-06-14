@@ -222,7 +222,7 @@ def main():
     unique_folder_path = output_path / unique_folder_name
     # The results will be stored in `EVALUATION_RESULTS_DIR`
     # A new unique folder will be created for each run, storing all the necessary files
-    # for full reproducibility of the results.
+    # for full visibility and reproducibility of the results.
     # The folder will contain:
     # .env variables used for the run
     # evaluation results (confusion matrix, comparison metrics)

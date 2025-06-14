@@ -5,6 +5,7 @@ from os import PathLike
 from pathlib import Path
 from zipfile import ZipFile
 from zlib import DEFLATED
+import traceback
 
 from loguru import logger
 from pycm import ConfusionMatrix
@@ -196,9 +197,10 @@ def save_notebook_or_the_currently_running_script(storage_path: PathLike):
             return FileLink(str(storage_path))
         except Exception as e:
             logger.error(f"Failed to save notebook: {e}")
+            logger.error(f"Full traceback: {traceback.format_exc()}")
     try:
         logger.warning(
-            "Not running in a Jupyter environment,"
+            "Could not save to a Jupyter environment,"
             " will save the main running script instead."
         )
         import sys
@@ -237,7 +239,7 @@ def save_the_full_git_diff_if_any(storage_path: PathLike):
         logger.info(f"Git diff saved to {storage_path / 'git_diff.txt'}")
     except Exception as e:
         logger.error(f"Failed to save git diff: {e}")
-        raise
+        logger.error(f"Full traceback: {traceback.format_exc()}")
 
 
 def save_env_variables(storage_path: PathLike):
