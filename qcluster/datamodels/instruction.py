@@ -11,7 +11,7 @@ from qcluster.custom_types import (
     DissimilarityFunctionType,
     DescriptionFunctionType,
     SimilarityFunctionType,
-    CategoryType
+    CategoryType,
 )
 from qcluster.datamodels.output import ClusterOutput
 
@@ -30,10 +30,10 @@ class Instruction(BaseModel):
         Returns:
             Optional[tuple[int, ...]]: The shape of the embedding or None if not set.
         """
-        return self.embedding.shape if hasattr(self.embedding, 'shape') else None
+        return self.embedding.shape if hasattr(self.embedding, "shape") else None
 
     @classmethod
-    def from_sample(cls, sample: 'Sample') -> 'Instruction':
+    def from_sample(cls, sample: "Sample") -> "Instruction":
         """
         Create an Instruction object from a Sample object.
 
@@ -55,7 +55,6 @@ class Instruction(BaseModel):
         """
         self.embedding = embedding_function([self.text])
 
-
     def __repr__(self) -> str:
         """
         Get a string representation of the instruction.
@@ -64,11 +63,14 @@ class Instruction(BaseModel):
             str: The text of the instruction.
         """
         shape = "NA" if self.embedding is None else self.embedding_shape
-        return (f"Instruction(id={self.id}, text='{self.text}',"
-                f" embedding_shape={shape}, cluster={self.cluster})")
+        return (
+            f"Instruction(id={self.id}, text='{self.text}',"
+            f" embedding_shape={shape}, cluster={self.cluster})"
+        )
 
     def __str__(self) -> str:
         return self.__repr__()
+
 
 class InstructionCollection(BaseModel):
     instructions: list[Instruction]
@@ -100,7 +102,7 @@ class InstructionCollection(BaseModel):
         return [instruction.embedding for instruction in self.instructions]
 
     @classmethod
-    def from_samples(cls, samples: 'SampleCollection') -> 'InstructionCollection':
+    def from_samples(cls, samples: "SampleCollection") -> "InstructionCollection":
         """
         Create an InstructionCollection object from a list of Sample objects.
 
@@ -119,11 +121,14 @@ class InstructionCollection(BaseModel):
         if self.is_a_cluster():
             return self.instructions[0].cluster
         else:
-            raise ValueError("Instructions do not belong to a single cluster."
-                             " Please use `group_by_cluster` to group them first.")
+            raise ValueError(
+                "Instructions do not belong to a single cluster."
+                " Please use `group_by_cluster` to group them first."
+            )
 
     def update_embeddings(
-            self, embedding_function: EmbeddingFunctionType) -> 'InstructionCollection':
+        self, embedding_function: EmbeddingFunctionType
+    ) -> "InstructionCollection":
         """
         Add embeddings to the instructions using the provided embedding function.
 
@@ -138,9 +143,10 @@ class InstructionCollection(BaseModel):
         return self
 
     def update_clusters(
-            self, clustering_function: ClusteringFunctionType,
-            use_raw_instructions: bool = True
-    ) -> 'InstructionCollection':
+        self,
+        clustering_function: ClusteringFunctionType,
+        use_raw_instructions: bool = True,
+    ) -> "InstructionCollection":
         """
         Add clusters to the instructions using the provided clustering function.
 
@@ -151,12 +157,15 @@ class InstructionCollection(BaseModel):
         """
         if use_raw_instructions:
             clusters = clustering_function(
-                [instruction.text for instruction in self.instructions])
+                [instruction.text for instruction in self.instructions]
+            )
         else:
             if not self.embeddings:
                 raise ValueError("Embeddings must be updated before clustering.")
             elif len(self.embeddings) != len(self.instructions):
-                raise ValueError("Embeddings and instructions must have the same length.")
+                raise ValueError(
+                    "Embeddings and instructions must have the same length."
+                )
             clusters = clustering_function(self.embeddings)
 
         for instruction, cluster in zip(self.instructions, clusters):
@@ -164,9 +173,11 @@ class InstructionCollection(BaseModel):
         return self
 
     def get_top_dissimilar_instructions(
-            self, dissimilarity_function: DissimilarityFunctionType,
-            top_n: int = 5, raise_if_too_few: bool = False
-    ) -> 'InstructionCollection':
+        self,
+        dissimilarity_function: DissimilarityFunctionType,
+        top_n: int = 5,
+        raise_if_too_few: bool = False,
+    ) -> "InstructionCollection":
         """Get the top N dissimilar instructions based on a dissimilarity function.
         Args:
             dissimilarity_function (DissimilarityFunction): A function that takes
@@ -188,11 +199,13 @@ class InstructionCollection(BaseModel):
             if raise_if_too_few:
                 raise ValueError(
                     f"top_n ({top_n}) cannot be greater than the number of instructions"
-                    f" ({len(self)}).")
+                    f" ({len(self)})."
+                )
             else:
                 logger.warning(
                     f"top_n ({top_n}) is greater than the number of instructions"
-                    f" ({len(self)}). Returning all instructions.")
+                    f" ({len(self)}). Returning all instructions."
+                )
                 top_n = len(self.instructions)
         instruction_strings = [instruction.text for instruction in self]
         dissimilarities = dissimilarity_function(instruction_strings, top_n)
@@ -200,15 +213,18 @@ class InstructionCollection(BaseModel):
         top_instructions = [self[index] for index in top_indices]
         return InstructionCollection(instructions=top_instructions)
 
-
     def __repr__(self) -> str:
-        indented_instructions = '\n'.join(f'    {instruction!r}' for instruction in self)
-        return (f"{self.__class__.__name__}(\n"
-                f"  num_instructions={len(self)},\n"
-                f"  instructions=[\n"
-                f"{indented_instructions}\n"
-                f"  ]\n"
-                f")")
+        indented_instructions = "\n".join(
+            f"    {instruction!r}" for instruction in self
+        )
+        return (
+            f"{self.__class__.__name__}(\n"
+            f"  num_instructions={len(self)},\n"
+            f"  instructions=[\n"
+            f"{indented_instructions}\n"
+            f"  ]\n"
+            f")"
+        )
 
     def __str__(self) -> str:
         return self.__repr__()
@@ -231,7 +247,7 @@ class InstructionCollection(BaseModel):
         """
         return iter(self.instructions)
 
-    def __getitem__(self, index: int) -> Union[Instruction, 'InstructionCollection']:
+    def __getitem__(self, index: int) -> Union[Instruction, "InstructionCollection"]:
         """
         Get an instruction or a slice of instructions by index.
 
@@ -255,7 +271,7 @@ class InstructionCollection(BaseModel):
         """
         return [instruction.text for instruction in self]
 
-    def get_cluster(self, cluster: ClusterType) -> 'InstructionCollection':
+    def get_cluster(self, cluster: ClusterType) -> "InstructionCollection":
         """
         Collect instructions by a specific cluster.
 
@@ -267,10 +283,11 @@ class InstructionCollection(BaseModel):
              only the instructions that belong to the specified cluster.
         """
         filtered_instructions = [
-            instruction for instruction in self if instruction.cluster == cluster]
+            instruction for instruction in self if instruction.cluster == cluster
+        ]
         return InstructionCollection(instructions=filtered_instructions)
 
-    def group_by_cluster(self) -> dict[ClusterType, 'InstructionCollection']:
+    def group_by_cluster(self) -> dict[ClusterType, "InstructionCollection"]:
         """
         Group instructions by their clusters.
 
@@ -284,8 +301,10 @@ class InstructionCollection(BaseModel):
             if instruction.cluster not in grouped_instructions:
                 grouped_instructions[instruction.cluster] = []
             grouped_instructions[instruction.cluster].append(instruction)
-        return {cluster: InstructionCollection(instructions=instructions)
-                for cluster, instructions in grouped_instructions.items()}
+        return {
+            cluster: InstructionCollection(instructions=instructions)
+            for cluster, instructions in grouped_instructions.items()
+        }
 
     def is_a_cluster(self) -> bool:
         if len(set(instruction.cluster for instruction in self.instructions)) == 1:
@@ -307,8 +326,10 @@ class InstructionCollection(BaseModel):
             raise ValueError("No instructions available for description.")
         document = "\n".join(self.to_list_of_strings())
         if not self.is_a_cluster():
-            raise ValueError("Instructions do not belong to a single cluster."
-                             " Please use `group_by_cluster` to group them first.")
+            raise ValueError(
+                "Instructions do not belong to a single cluster."
+                " Please use `group_by_cluster` to group them first."
+            )
         description_output = description_function(document)
         self.description = description_output.description
         self.title = description_output.title
@@ -316,11 +337,12 @@ class InstructionCollection(BaseModel):
             cluster_id=self.instructions[0].cluster,
             name=description_output.title,
             description=description_output.description,
-            count=len(self.instructions)
+            count=len(self.instructions),
         )
 
-    def description_embedding(self,
-                              embedding_function: EmbeddingFunctionType) -> EmbeddingType:
+    def description_embedding(
+        self, embedding_function: EmbeddingFunctionType
+    ) -> EmbeddingType:
         """
         Get the embedding of the description.
 
@@ -335,14 +357,13 @@ class InstructionCollection(BaseModel):
             raise ValueError("No description available for embedding.")
         return embedding_function([self.description])[0]
 
-
     def find_top_similar_sample_collections(
-            self,
-            sample_collections: list['SampleCollection'],
-            similarity_function: SimilarityFunctionType,
-            top_n: int = 5,
-            use_centroid: bool = False
-    ) -> list['SampleCollection']:
+        self,
+        sample_collections: list["SampleCollection"],
+        similarity_function: SimilarityFunctionType,
+        top_n: int = 5,
+        use_centroid: bool = False,
+    ) -> list["SampleCollection"]:
         """
         Find the most similar samples from a SampleCollection based on the instructions.
 
@@ -369,7 +390,8 @@ class InstructionCollection(BaseModel):
             cluster_emb = self.description
         if not sample_collections:
             raise ValueError(
-                "No sample collections available for similarity calculation.")
+                "No sample collections available for similarity calculation."
+            )
         for sample_collection in sample_collections:
             if use_centroid:
                 break
@@ -389,10 +411,11 @@ class InstructionCollection(BaseModel):
         top_samples = [sample_collections[index] for index in top_indices]
         return top_samples
 
-    def get_cluster_category(self,
-                             sample_collections: list['SampleCollection'],
-                             similarity_function: SimilarityFunctionType,
-                             ) -> CategoryType:
+    def get_cluster_category(
+        self,
+        sample_collections: list["SampleCollection"],
+        similarity_function: SimilarityFunctionType,
+    ) -> CategoryType:
         """
         Get the most common category of samples in the cluster.
 
@@ -408,16 +431,19 @@ class InstructionCollection(BaseModel):
             CategoryType: The most common category in the cluster.
         """
         if not self.is_a_cluster():
-            raise ValueError("Instructions do not belong to a single cluster."
-                             " Please use `group_by_cluster` to group them first.")
+            raise ValueError(
+                "Instructions do not belong to a single cluster."
+                " Please use `group_by_cluster` to group them first."
+            )
         similar_sample_collections = self.find_top_similar_sample_collections(
-            sample_collections, similarity_function, top_n=1)
+            sample_collections, similarity_function, top_n=1
+        )
         if not similar_sample_collections:
             raise ValueError("No similar samples found in the collection.")
         similar_sample_collection = similar_sample_collections[0]
         category = similar_sample_collection.category
         if category is None:
-            return 'UNKNOWN'
+            return "UNKNOWN"
         else:
             return category
 
@@ -426,6 +452,6 @@ class InstructionCollection(BaseModel):
         return sum(self.embeddings) / len(self.embeddings)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Used for pycharm type checking to work properly while avoiding circular imports
     from qcluster.datamodels.sample import Sample, SampleCollection

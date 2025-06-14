@@ -10,6 +10,7 @@ from loguru import logger
 from tqdm import tqdm
 
 from qcluster import ROOT_DIR
+
 # Clustering algorithms
 from qcluster.algorithms.clustering import (
     kmeans_clustering,
@@ -20,6 +21,7 @@ from qcluster.algorithms.clustering import (
     # spectral_clustering
 )
 from qcluster.llm.describer import get_description
+
 # Feature extractors
 from qcluster.algorithms.feature_extractors import (
     create_embeddings,
@@ -27,15 +29,20 @@ from qcluster.algorithms.feature_extractors import (
     umap_reduction,
     # pacmap_reduction
 )
-from qcluster.algorithms.similarity import (
-    get_top_n_similar_embeddings
+from qcluster.algorithms.similarity import get_top_n_similar_embeddings
+from qcluster.custom_types import (
+    CategoryType,
+    IdToCategoryResultType,
+    category_to_idx,
+    ClusterType,
 )
-from qcluster.custom_types import CategoryType, IdToCategoryResultType, category_to_idx, \
-    ClusterType
 from qcluster.datamodels.instruction import InstructionCollection
 from qcluster.datamodels.sample import SampleCollection
-from qcluster.evaluation import evaluate_results, cluster_to_class_similarity_measures, \
-    store_results
+from qcluster.evaluation import (
+    evaluate_results,
+    cluster_to_class_similarity_measures,
+    store_results,
+)
 from qcluster.preload import MODEL
 
 N_CATEGORIES = len(SampleCollection.all_category_classes())
@@ -44,13 +51,13 @@ clustering_function = functools.partial(
     # hdbscan_clustering,
     kmeans_clustering,
     # min_cluster_size=1000,
-    n_clusters=N_CATEGORIES
+    n_clusters=N_CATEGORIES,
 )
 
 
 describer = functools.partial(
     get_description,
-    template_name='description_prompt_simple',
+    template_name="description_prompt_simple",
     # template_name='description_prompt_from_instructions'
 )
 
@@ -60,6 +67,7 @@ similarity_function = functools.partial(
     # mmr_lambda=0.3,
     # mmr_top_n=20
 )
+
 
 def feature_extractor(texts: list[str]) -> torch.Tensor:
     """
@@ -71,9 +79,9 @@ def feature_extractor(texts: list[str]) -> torch.Tensor:
 
 
 CSV_PATH: PathLike = (
-        ROOT_DIR.parent
-        / "data"
-        / "Bitext_Sample_Customer_Support_Training_Dataset_27K_responses-v11.csv"
+    ROOT_DIR.parent
+    / "data"
+    / "Bitext_Sample_Customer_Support_Training_Dataset_27K_responses-v11.csv"
 )
 
 
@@ -103,21 +111,23 @@ def create_instructions(samples: SampleCollection) -> InstructionCollection:
     """Creates and processes an InstructionCollection from a SampleCollection."""
     logger.info("Creating instruction collection from samples...")
     instructions = InstructionCollection.from_samples(samples)
-    logger.info(f"Created an instruction collection with"
-                f" {len(instructions)} instructions.")
+    logger.info(
+        f"Created an instruction collection with" f" {len(instructions)} instructions."
+    )
 
     logger.info("Updating instruction embeddings and clustering...")
-    (instructions
-     .update_embeddings(feature_extractor)
-     .update_clusters(clustering_function=clustering_function,
-                      use_raw_instructions=False)
-     )
+    (
+        instructions.update_embeddings(feature_extractor).update_clusters(
+            clustering_function=clustering_function, use_raw_instructions=False
+        )
+    )
     logger.info("Instruction embeddings updated and clusters created.")
     return instructions
 
 
-def create_clusters(instructions: InstructionCollection) -> dict[
-    ClusterType, InstructionCollection]:
+def create_clusters(
+    instructions: InstructionCollection,
+) -> dict[ClusterType, InstructionCollection]:
     """Groups instructions into clusters and describes them."""
     logger.info("Grouping instructions by cluster...")
     instructions_by_cluster = instructions.group_by_cluster()
@@ -130,9 +140,9 @@ def create_clusters(instructions: InstructionCollection) -> dict[
 
 
 def match_clusters(
-        instructions_by_cluster: dict[ClusterType, InstructionCollection],
-        samples_by_category: dict[CategoryType, SampleCollection],
-        all_samples: SampleCollection
+    instructions_by_cluster: dict[ClusterType, InstructionCollection],
+    samples_by_category: dict[CategoryType, SampleCollection],
+    all_samples: SampleCollection,
 ) -> IdToCategoryResultType:
     """Matches instruction clusters to sample categories."""
     logger.info("Finding top similar sample categories for each instruction cluster...")
@@ -142,14 +152,16 @@ def match_clusters(
             sample_collections=list(samples_by_category.values()),
             similarity_function=similarity_function,
         )
-        logger.info(f"Cluster N {instruction_collection.cluster} title:"
-                    f" `{instruction_collection.title}`"
-                    f" top similar sample category: {predicted_category}")
+        logger.info(
+            f"Cluster N {instruction_collection.cluster} title:"
+            f" `{instruction_collection.title}`"
+            f" top similar sample category: {predicted_category}"
+        )
         logger.info(f"Mapping cluster {cluster} to category {predicted_category}")
         for sample in instruction_collection:
             id_to_category_pairs[sample.id] = (
                 all_samples.get_sample_by_id(sample.id).category,
-                predicted_category
+                predicted_category,
             )
     logger.info("Matching completed.")
     logger.info(f"Total pairs: {len(id_to_category_pairs)}")
@@ -157,20 +169,22 @@ def match_clusters(
 
 
 def save_cluster_data(
-        instructions_by_cluster: dict[ClusterType, InstructionCollection],
-        file_path: PathLike
+    instructions_by_cluster: dict[ClusterType, InstructionCollection],
+    file_path: PathLike,
 ):
     """
     Saves cluster data to a JSON file.
     """
     clusters_data = []
     for instruction_collection in instructions_by_cluster.values():
-        clusters_data.append({
-            "name": instruction_collection.title,
-            "description": instruction_collection.description,
-            "count": instruction_collection.count,
-        })
-    with open(file_path, 'w') as f:
+        clusters_data.append(
+            {
+                "name": instruction_collection.title,
+                "description": instruction_collection.description,
+                "count": instruction_collection.count,
+            }
+        )
+    with open(file_path, "w") as f:
         json.dump(clusters_data, f, indent=4)
 
 
@@ -188,14 +202,15 @@ def main():
     instructions = create_instructions(samples)
     instructions_by_cluster = create_clusters(instructions)
     save_cluster_data(instructions_by_cluster, json_folder_path)
-    id_to_category_pairs = match_clusters(instructions_by_cluster,
-                                          samples_by_category,
-                                          samples)
+    id_to_category_pairs = match_clusters(
+        instructions_by_cluster, samples_by_category, samples
+    )
     logger.info("Evaluating results...")
     cm = evaluate_results(id_to_category_pairs)
     predicted_clusters_dict: dict[int, int] = {i.id: i.cluster for i in instructions}
     actual_categories_dict: dict[int, int] = {
-        cat.id: category_to_idx(cat.category) for cat in samples}
+        cat.id: category_to_idx(cat.category) for cat in samples
+    }
     assert None not in predicted_clusters_dict.values()
     assert None not in actual_categories_dict.values()
     predicted_cluster_list = []
@@ -204,7 +219,8 @@ def main():
         predicted_cluster_list.append(predicted_category)
         actual_category_list.append(actual_category)
     cluster_to_class_scores = cluster_to_class_similarity_measures(
-        predicted_cluster_list, actual_category_list)
+        predicted_cluster_list, actual_category_list
+    )
     logger.info("Evaluation results:")
     for measure, score in cluster_to_class_scores.items():
         print(f"{measure.capitalize()}: {score:.4f}")
@@ -219,12 +235,14 @@ def main():
         git_commit = "unknown"
     unique_folder_name = f"{timestamp}-{git_commit}"
     unique_folder_path = output_path / unique_folder_name
-    store_results(cm=cm,
-                  cluster_to_class_scores=cluster_to_class_scores,
-                  storage_path=unique_folder_path)
+    store_results(
+        cm=cm,
+        cluster_to_class_scores=cluster_to_class_scores,
+        storage_path=unique_folder_path,
+    )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     start_time = time.time()
     main()
     logger.info(f"Execution time: {time.time() - start_time:.2f} seconds")

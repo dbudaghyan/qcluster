@@ -6,9 +6,9 @@ from qcluster.datamodels.sample import Sample, SampleCollection
 
 def test_samples_from_csv():
     csv_file_path = (
-            ROOT_DIR.parent
-            / "data"
-            / "Bitext_Sample_Customer_Support_Training_Dataset_27K_responses-v11.csv"
+        ROOT_DIR.parent
+        / "data"
+        / "Bitext_Sample_Customer_Support_Training_Dataset_27K_responses-v11.csv"
     )
     rows = pd.read_csv(csv_file_path, dtype=str).shape[0]
     samples = SampleCollection.from_csv(csv_file_path)

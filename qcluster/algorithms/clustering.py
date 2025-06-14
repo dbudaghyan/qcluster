@@ -4,12 +4,7 @@ from typing import Optional
 import numpy as np
 from bertopic import BERTopic
 from sentence_transformers import SentenceTransformer
-from sklearn.cluster import (
-    KMeans,
-    DBSCAN,
-    AgglomerativeClustering,
-    SpectralClustering
-)
+from sklearn.cluster import KMeans, DBSCAN, AgglomerativeClustering, SpectralClustering
 
 from hdbscan import HDBSCAN
 from sklearn.feature_extraction.text import CountVectorizer
@@ -27,9 +22,9 @@ def spectral_clustering(embeddings: EmbeddingType, n_clusters) -> list[int]:
         A list of cluster labels for each embedding.
     """
     embeddings_array = np.array(embeddings)
-    spectral = SpectralClustering(n_clusters=n_clusters,
-                                  affinity='nearest_neighbors',
-                                  random_state=42)
+    spectral = SpectralClustering(
+        n_clusters=n_clusters, affinity="nearest_neighbors", random_state=42
+    )
     spectral.fit(embeddings_array)
     return spectral.labels_.tolist()
 
@@ -44,10 +39,11 @@ def kmeans_clustering(embeddings: EmbeddingType, n_clusters) -> list[int]:
         A list of cluster labels for each embedding.
     """
     embeddings_array = np.array(embeddings)
-    kmeans = KMeans(n_clusters=n_clusters,
-                    random_state=42,
-                    n_init='auto',
-                    )
+    kmeans = KMeans(
+        n_clusters=n_clusters,
+        random_state=42,
+        n_init="auto",
+    )
     kmeans.fit(embeddings_array)
     return kmeans.labels_.tolist()
 
@@ -64,21 +60,23 @@ def dbscan_clustering(embeddings: EmbeddingType, eps=0.5) -> list[int]:
         A list of cluster labels for each embedding.
     """
     embeddings_array = np.array(embeddings)
-    dbscan = DBSCAN(eps=eps, min_samples=5, metric='euclidean')
+    dbscan = DBSCAN(eps=eps, min_samples=5, metric="euclidean")
     dbscan.fit(embeddings_array)
     return dbscan.labels_.tolist()
 
-def hdbscan_clustering(embeddings: EmbeddingType,
-                       min_cluster_size=5,
-                       min_samples=5,
-                       cluster_selection_epsilon=0.5,
-                       max_cluster_size=0,
-                       metric="euclidean",
-                       alpha=1.0,
-                       p=None,
-                       algorithm="best",
-                       leaf_size=40,
-                       ) -> list[int]:
+
+def hdbscan_clustering(
+    embeddings: EmbeddingType,
+    min_cluster_size=5,
+    min_samples=5,
+    cluster_selection_epsilon=0.5,
+    max_cluster_size=0,
+    metric="euclidean",
+    alpha=1.0,
+    p=None,
+    algorithm="best",
+    leaf_size=40,
+) -> list[int]:
     """
     Generates clusters using the HDBSCAN algorithm.
     Args:
@@ -106,7 +104,7 @@ def hdbscan_clustering(embeddings: EmbeddingType,
         alpha=alpha,
         p=p,
         algorithm=algorithm,
-        leaf_size=leaf_size
+        leaf_size=leaf_size,
     )
     hdbscan.fit(embeddings_array)
     return hdbscan.labels_.tolist()
@@ -137,19 +135,22 @@ def bert_topic_extraction(
         raise ValueError("embeddings list cannot be empty.")
     if isinstance(embeddings[0], str):
         if not model:
-            model = SentenceTransformer(os.environ['SENTENCE_TRANSFORMERS_MODEL'])
-        topic_model = BERTopic(embedding_model=model,
-                               nr_topics=n_clusters,
-                               verbose=True)
+            model = SentenceTransformer(os.environ["SENTENCE_TRANSFORMERS_MODEL"])
+        topic_model = BERTopic(
+            embedding_model=model, nr_topics=n_clusters, verbose=True
+        )
         topics, _ = topic_model.fit_transform(documents=embeddings)
     else:
         embeddings = np.array(embeddings)
         dummy_documents = [f"embedding_{i}" for i in range(len(embeddings))]
         dummy_vectorizer = CountVectorizer(tokenizer=lambda x: [x])
-        topic_model = BERTopic(vectorizer_model=dummy_vectorizer,
-                               embedding_model=None,
-                               nr_topics=n_clusters,
-                               verbose=True)
-        topics, _ = topic_model.fit_transform(documents=dummy_documents,
-                                              embeddings=embeddings)
+        topic_model = BERTopic(
+            vectorizer_model=dummy_vectorizer,
+            embedding_model=None,
+            nr_topics=n_clusters,
+            verbose=True,
+        )
+        topics, _ = topic_model.fit_transform(
+            documents=dummy_documents, embeddings=embeddings
+        )
     return topics

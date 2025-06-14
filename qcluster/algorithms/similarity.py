@@ -14,7 +14,7 @@ def get_top_n_similar_embeddings(
     top_n: int = 5,
     use_mmr: bool = False,
     mmr_lambda: float = 0.1,
-    mmr_top_n: int = 10
+    mmr_top_n: int = 10,
 ) -> list[tuple[int, float]]:
     """
     Get the top N most similar embeddings to a query embedding.

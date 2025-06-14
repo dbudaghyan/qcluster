@@ -5,8 +5,9 @@ import jinja2
 
 TEMPLATE_PATH = os.path.join(
     Path(__file__).parent,
-    'templates',
+    "templates",
 )
+
 
 def read_prompt_template(template_name: str) -> jinja2.Template:
     """
@@ -15,6 +16,3 @@ def read_prompt_template(template_name: str) -> jinja2.Template:
     loader = jinja2.FileSystemLoader(os.path.dirname(TEMPLATE_PATH))
     env = jinja2.Environment(loader=loader)
     return env.get_template(f"{template_name}.j2")
-
-
-

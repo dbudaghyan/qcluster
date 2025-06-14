@@ -7,9 +7,11 @@ from sklearn.metrics.pairwise import cosine_similarity
 from qcluster.custom_types import EmbeddingType
 
 
-def select_mmr(sentences: list[Union[str, EmbeddingType]], n: int,
-               lambda_param: Optional[float] = 0.5) -> list[
-    tuple[int, str]]:
+def select_mmr(
+    sentences: list[Union[str, EmbeddingType]],
+    n: int,
+    lambda_param: Optional[float] = 0.5,
+) -> list[tuple[int, str]]:
     """
     Selects a diverse subset of N sentences from a list using
      Maximal Marginal Relevance (MMR).
@@ -46,6 +48,7 @@ def select_mmr(sentences: list[Union[str, EmbeddingType]], n: int,
     # The model will be downloaded automatically on first use.
     if isinstance(sentences[0], str):
         from qcluster import MODEL
+
         embeddings = MODEL.encode(sentences)
     else:
         embeddings = np.array(sentences)
@@ -78,8 +81,10 @@ def select_mmr(sentences: list[Union[str, EmbeddingType]], n: int,
             # Note: similarity_matrix[i, selected_indices] gives a row slice
             max_similarity_to_selected = np.max(similarity_matrix[i, selected_indices])
             # Calculate MMR score
-            mmr_score = lambda_param * relevance - (
-                        1 - lambda_param) * max_similarity_to_selected
+            mmr_score = (
+                lambda_param * relevance
+                - (1 - lambda_param) * max_similarity_to_selected
+            )
             mmr_scores[i] = mmr_score
         # Select the sentence with the highest MMR score
         best_next_idx = max(mmr_scores, key=mmr_scores.get)

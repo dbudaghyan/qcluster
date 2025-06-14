@@ -10,7 +10,7 @@ from qcluster.custom_types import (
     FlagType,
     IntentType,
     EmbeddingFunctionType,
-    DescriptionFunctionType
+    DescriptionFunctionType,
 )
 from qcluster.datamodels.output import ClusterOutput
 
@@ -44,7 +44,7 @@ class Sample(BaseModel):
         Returns:
             Optional[tuple[int, ...]]: The shape of the embedding or None if not set.
         """
-        return self.embedding.shape if hasattr(self.embedding, 'shape') else None
+        return self.embedding.shape if hasattr(self.embedding, "shape") else None
 
     def update_embedding(self, embedding_function: EmbeddingFunctionType):
         """
@@ -64,11 +64,13 @@ class Sample(BaseModel):
             str: A formatted string representing the sample.
         """
         shape = "NA" if self.embedding is None else self.embedding_shape
-        return (f"Sample(id={self.id}, flags='{self.flags}',"
-                f" instruction='{self.instruction}',"
-                f" category='{self.category}', intent='{self.intent}',"
-                f" response='{self.response[:40]}...',"
-                f" embedding_shape={shape})")
+        return (
+            f"Sample(id={self.id}, flags='{self.flags}',"
+            f" instruction='{self.instruction}',"
+            f" category='{self.category}', intent='{self.intent}',"
+            f" response='{self.response[:40]}...',"
+            f" embedding_shape={shape})"
+        )
 
     def __str__(self) -> str:
         return self.__repr__()
@@ -106,18 +108,20 @@ class SampleCollection(BaseModel):
             Optional[CategoryType]: The category of the samples or None if not applicable.
         """
         if not self.is_a_category():
-            raise ValueError("Samples do not belong to a single category."
-                             " Please use `group_by_category` to group them first.")
+            raise ValueError(
+                "Samples do not belong to a single category."
+                " Please use `group_by_category` to group them first."
+            )
         return self.samples[0].category
-
 
     @property
     def intent(self):
         if not self.is_intent():
-            raise ValueError("Samples do not belong to a single intent."
-                             " Please use `group_by_intent` to group them first.")
+            raise ValueError(
+                "Samples do not belong to a single intent."
+                " Please use `group_by_intent` to group them first."
+            )
         return self.samples[0].intent
-
 
     @property
     def embeddings(self) -> list[Optional[EmbeddingType]]:
@@ -146,7 +150,8 @@ class SampleCollection(BaseModel):
         return None
 
     def update_embeddings(
-            self, embedding_function: EmbeddingFunctionType) -> 'SampleCollection':
+        self, embedding_function: EmbeddingFunctionType
+    ) -> "SampleCollection":
         """
         Add embeddings to the samples using the provided embedding function.
 
@@ -171,13 +176,15 @@ class SampleCollection(BaseModel):
         Returns:
             str: A formatted string representing the sample collection.
         """
-        indented_samples = '\n'.join(f'    {sample!r}' for sample in self)
-        return (f"{self.__class__.__name__}(\n"
-                f"  num_samples={len(self)},\n"
-                f"  samples=[\n"
-                f"{indented_samples}\n"
-                f"  ]\n"
-                f")")
+        indented_samples = "\n".join(f"    {sample!r}" for sample in self)
+        return (
+            f"{self.__class__.__name__}(\n"
+            f"  num_samples={len(self)},\n"
+            f"  samples=[\n"
+            f"{indented_samples}\n"
+            f"  ]\n"
+            f")"
+        )
 
     def __str__(self) -> str:
         return self.__repr__()
@@ -200,7 +207,7 @@ class SampleCollection(BaseModel):
         """
         return iter(self.samples)
 
-    def __getitem__(self, index: int) -> Union[Sample, 'SampleCollection']:
+    def __getitem__(self, index: int) -> Union[Sample, "SampleCollection"]:
         """
         Get a sample or a slice of samples by index.
 
@@ -215,9 +222,7 @@ class SampleCollection(BaseModel):
             return SampleCollection(samples=self.samples[index])
         return self.samples[index]
 
-    def _group_by(
-            self, attr: str) -> dict[
-                    Any, 'SampleCollection']:
+    def _group_by(self, attr: str) -> dict[Any, "SampleCollection"]:
         """
         Generic method to group samples by a specified attribute.
 
@@ -235,10 +240,12 @@ class SampleCollection(BaseModel):
             if key not in grouped_samples:
                 grouped_samples[key] = []
             grouped_samples[key].append(sample)
-        return {key: SampleCollection(samples=samples)
-                for key, samples in grouped_samples.items()}
+        return {
+            key: SampleCollection(samples=samples)
+            for key, samples in grouped_samples.items()
+        }
 
-    def group_by_category(self) -> dict[CategoryType, 'SampleCollection']:
+    def group_by_category(self) -> dict[CategoryType, "SampleCollection"]:
         """
         Group samples by their categories.
 
@@ -247,9 +254,9 @@ class SampleCollection(BaseModel):
              category labels and values are SampleCollection objects containing
              the samples for each category.
         """
-        return self._group_by('category')
+        return self._group_by("category")
 
-    def group_by_intent(self) -> dict[IntentType, 'SampleCollection']:
+    def group_by_intent(self) -> dict[IntentType, "SampleCollection"]:
         """
         Group samples by their intents.
 
@@ -258,9 +265,9 @@ class SampleCollection(BaseModel):
              intent labels and values are SampleCollection objects containing
              the samples for each intent.
         """
-        return self._group_by('intent')
+        return self._group_by("intent")
 
-    def filter_by_category(self, category: CategoryType) -> 'SampleCollection':
+    def filter_by_category(self, category: CategoryType) -> "SampleCollection":
         """
         Collect samples by a specific category.
 
@@ -271,12 +278,12 @@ class SampleCollection(BaseModel):
             SampleCollection: A new SampleCollection object containing
              only the samples that belong to the specified category.
         """
-        filtered_samples = [sample for sample in self
-                            if sample.predicted_category == category]
+        filtered_samples = [
+            sample for sample in self if sample.predicted_category == category
+        ]
         return SampleCollection(samples=filtered_samples)
 
-    def describe(
-            self, description_function: DescriptionFunctionType) -> ClusterOutput:
+    def describe(self, description_function: DescriptionFunctionType) -> ClusterOutput:
         """
         Get a description of the sample collection.
 
@@ -297,11 +304,11 @@ class SampleCollection(BaseModel):
             cluster_id=0,  # Assuming a single cluster for the entire collection
             name=description_output.title,
             description=description_output.description,
-            count=len(self.samples)
+            count=len(self.samples),
         )
 
     @classmethod
-    def from_csv(cls, csv_file: PathLike) -> 'SampleCollection':
+    def from_csv(cls, csv_file: PathLike) -> "SampleCollection":
         """
         Create a `SampleCollection` object from a CSV file.
 
@@ -328,8 +335,9 @@ class SampleCollection(BaseModel):
         """
         return len(self.samples)
 
-    def description_embedding(self,
-                              embedding_function: EmbeddingFunctionType) -> EmbeddingType:
+    def description_embedding(
+        self, embedding_function: EmbeddingFunctionType
+    ) -> EmbeddingType:
         """
         Get the embedding of the description.
 

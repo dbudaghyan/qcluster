@@ -1,4 +1,4 @@
-def identify_unique_categories(samples: 'SampleCollection') -> set[str]:
+def identify_unique_categories(samples: "SampleCollection") -> set[str]:
     """
     Identify unique categories from the SampleCollection object.
 
@@ -11,7 +11,7 @@ def identify_unique_categories(samples: 'SampleCollection') -> set[str]:
     return {sample.predicted_category for sample in samples}
 
 
-def identify_unique_intents(samples: 'SampleCollection') -> set[str]:
+def identify_unique_intents(samples: "SampleCollection") -> set[str]:
     """
     Identify unique intents from the SampleCollection object.
 
@@ -24,7 +24,7 @@ def identify_unique_intents(samples: 'SampleCollection') -> set[str]:
     return {sample.intent for sample in samples}
 
 
-def create_category_intent_tuples(samples: 'SampleCollection') -> set[tuple[str, str]]:
+def create_category_intent_tuples(samples: "SampleCollection") -> set[tuple[str, str]]:
     """
     Create a set of tuples containing unique (category, intent) pairs
      from the SampleCollection object.
@@ -39,7 +39,8 @@ def create_category_intent_tuples(samples: 'SampleCollection') -> set[tuple[str,
 
 
 def create_category_intent_hierarchy(
-        category_intent_tuples: set[tuple[str, str]]) -> dict[str, set[str]]:
+    category_intent_tuples: set[tuple[str, str]]
+) -> dict[str, set[str]]:
     """
     Create a hierarchy of categories and their associated intents.
     Args:
@@ -57,7 +58,7 @@ def create_category_intent_hierarchy(
     return hierarchy
 
 
-def identify_unique_flags(samples: 'SampleCollection') -> set[str]:
+def identify_unique_flags(samples: "SampleCollection") -> set[str]:
     """
     Identify unique flags from the SampleCollection object.
 
@@ -70,15 +71,16 @@ def identify_unique_flags(samples: 'SampleCollection') -> set[str]:
     return {flag for sample in samples for flag in sample.flags}
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from qcluster.datamodels.sample import SampleCollection
     from qcluster import ROOT_DIR
 
     from loguru import logger
+
     csv_file_ = (
-            ROOT_DIR.parent
-            / "data"
-            / "Bitext_Sample_Customer_Support_Training_Dataset_27K_responses-v11.csv"
+        ROOT_DIR.parent
+        / "data"
+        / "Bitext_Sample_Customer_Support_Training_Dataset_27K_responses-v11.csv"
     )
     samples_ = SampleCollection.from_csv(csv_file_)
     unique_categories_ = identify_unique_categories(samples_)

@@ -28,4 +28,4 @@ torch.backends.cudnn.benchmark = False
 
 
 logger.info("Loading the SentenceTransformer model...")
-MODEL = SentenceTransformer(os.environ['SENTENCE_TRANSFORMERS_MODEL'])
+MODEL = SentenceTransformer(os.environ["SENTENCE_TRANSFORMERS_MODEL"])
