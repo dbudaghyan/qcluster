@@ -1,44 +1,111 @@
-# QCluster
-_A Python library for clustering customer questions._
+<div align="center">
 
-## Requirements
-- `Python 3.12+`
-- `uv`
-- `ollama` and the model `qwen2.5:3b`
+  <h1 align="center">QCluster</h1>
+  <p align="center">
+    A Python library for clustering customer questions using large language models.
+    <br />
+    <a href="#about-the-project"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/dbudaghyan/qcluster/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/dbudaghyan/qcluster/issues">Request Feature</a>
+  </p>
 
-## Setup
-All the steps below where tested on a `macOS` machine, with `Apple Silicon` chip.
-The LLM model 
-#### Install `ollama` using `Homebrew`:
-```bash
-brew install ollama
-```
-#### Or download the binary directly:
-You can download the latest release from [here](https://ollama.com/download)
+  <!-- Project Shields -->
+  <p align="center">
+    <a href="https://github.com/dbudaghyan/qcluster/stargazers"><img src="https://img.shields.io/github/stars/dbudaghyan/qcluster.svg?style=for-the-badge" alt="Stars"></a>
+    <a href="https://github.com/dbudaghyan/qcluster/network/members"><img src="https://img.shields.io/github/forks/dbudaghyan/qcluster.svg?style=for-the-badge" alt="Forks"></a>
+    <a href="https://github.com/dbudaghyan/qcluster/issues"><img src="https://img.shields.io/github/issues/dbudaghyan/qcluster.svg?style=for-the-badge" alt="Issues"></a>
+    <a href="https://github.com/dbudaghyan/qcluster/blob/main/LICENSE"><img src="https://img.shields.io/github/license/dbudaghyan/qcluster.svg?style=for-the-badge" alt="License"></a>
+    <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/Python-3.12+-blue?style=for-the-badge&logo=python" alt="Python Version"></a>
+  </p>
+</div>
 
-#### Pull the `qwen2.5:3b` model:
-```bash
-ollama pull qwen2.5:3b
-```
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ol>
+</details>
 
-#### Make sure the `ollama` server is running:
-```bash
-ollama serve
-```
+<!-- ABOUT THE PROJECT -->
+## About The Project
 
-#### Install the requirements using `uv`:
-```bash
-uv sync
-```
+QCluster is a powerful Python library designed to help you make sense of large volumes of customer feedback. By leveraging the power of Large Language Models (LLMs), QCluster can automatically group similar customer questions, allowing you to identify trends, pain points, and frequently asked questions with ease.
 
-#### Set up the environment
-Option 1: Set the environment variables directly:
-```bash
-cp .env.example .env
-```
+This project provides a complete pipeline for:
+*   Extracting customer questions from your data sources.
+*   Generating embeddings for each question.
+*   Clustering the questions based on their semantic similarity.
+*   Evaluating the quality of the clustering results.
+*   Generating insightful reports.
 
+<!-- GETTING STARTED -->
+## Getting Started
+
+Follow these simple steps to get your local copy of QCluster up and running.
+
+### Prerequisites
+
+This project was tested on `macOS` with `Apple Silicon`, but it should work on other systems as well.
+
+*   **Python** `3.12+`
+*   **uv**: A fast Python package installer and resolver.
+*   **ollama**: Run large language models locally.
+    *   You will also need the `qwen2.5:3b` model, but you can configure other models as well.
+
+### Installation
+
+1.  **Clone the repo**
+    ```sh
+    git clone https://github.com/dbudaghyan/qcluster.git
+    cd qcluster
+    ```
+2.  **Set up the environment variables**
+    ```sh
+    cp .env.example .env
+    ```
+    *You can modify the `.env` file to change the default settings.*
+3.  **Install `ollama`**
+    *   Using `Homebrew` (on macOS):
+        ```sh
+        brew install ollama
+        ```
+    *   Or download the binary directly from the [official website](https://ollama.com/download).
+4.  **Pull the LLM model**
+    ```sh
+    ollama pull qwen2.5:3b
+    ```
+    *If you have defined other models in your `.env` file, make sure to pull them as well.*
+5.  **Start the `ollama` server**
+    ```sh
+    ollama serve
+    ```
+6.  **Install the Python dependencies**
+    ```sh
+    uv sync
+    ```
+
+<!-- USAGE -->
 ## Usage
-### Python
+
+You can run the clustering pipeline either as a simple Python script or through a Jupyter Notebook for a more interactive experience.
+
 ### Run the `qcluster.pipeline`
 ```bash
 uv run qcluster.pipeline

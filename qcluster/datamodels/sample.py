@@ -279,9 +279,7 @@ class SampleCollection(BaseModel):
             SampleCollection: A new SampleCollection object containing
              only the samples that belong to the specified category.
         """
-        filtered_samples = [
-            sample for sample in self if sample.category == category
-        ]
+        filtered_samples = [sample for sample in self if sample.category == category]
         return SampleCollection(samples=filtered_samples)
 
     def describe(self, description_function: DescriptionFunctionType) -> ClusterOutput:

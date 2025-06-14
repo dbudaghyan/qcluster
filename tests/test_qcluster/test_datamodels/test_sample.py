@@ -308,9 +308,7 @@ def test_describe():
 
     # noinspection PyUnusedLocal
     def mock_description_function(doc: str):
-        return ClusterDescription(
-            title="Test Title", description="Test Description"
-        )
+        return ClusterDescription(title="Test Title", description="Test Description")
 
     output = collection.describe(mock_description_function)
     assert collection.title == "Test Title"
@@ -364,10 +362,10 @@ def test_from_csv():
         # The method shuffles the data, so we check by content
         instructions = {s.instruction for s in collection}
         assert instructions == {"Instruction A", "Instruction B"}
-        
+
         sample_a = next(s for s in collection if s.instruction == "Instruction A")
         assert sample_a.category == "ACCOUNT"
-        assert sample_a.id is not None # check id is assigned
+        assert sample_a.id is not None  # check id is assigned
 
 
 def test_number_of_samples():

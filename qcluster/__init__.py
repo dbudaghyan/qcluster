@@ -23,7 +23,6 @@ logger.add(
 os.makedirs(Path(ROOT_DIR, "logs"), exist_ok=True)
 
 
-
 REQUIRED_ENV_VARIABLES = [
     "TOKENIZERS_PARALLELISM",
     "OLLAMA_MODEL",

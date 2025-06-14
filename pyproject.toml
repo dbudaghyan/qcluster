@@ -40,7 +40,7 @@ dev = [
 
 [tool.black]
 line-length = 88
-target-version = ['py312', 'py313', 'py314']
+target-version = ['py312', 'py313']
 exclude = '''
 /(
     \.git
@@ -62,12 +62,12 @@ exclude = '''
 max-line-length = 90
 
 [tool.coverage.html]
-directory = "htmlcov"
+directory = "coverage"
 
 [tool.coverage.run]
 source = ["qcluster"]
 branch = true
-omit = ["tests/*", ".venv/*"]
+omit = ["tests/*", ".venv/*", "**/__init__.py"]
 command_line = "pytest"
 
 [tool.coverage.report]
@@ -84,7 +84,8 @@ exclude_lines = [
     "raise AssertionError",
     "raise NotImplementedError"
 ]
+xml_output = "coverage/coverage.xml"
 
 [tool.pytest.ini_options]
-addopts = """--cov=qcluster --cov-report=html:coverage
- --cov-report=term-missing --cov-report=xml:coverage.xml"""
+addopts = """--cov=qcluster --cov-report=html
+ --cov-report=term-missing --cov-report=xml"""
