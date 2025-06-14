@@ -15,7 +15,7 @@ def query_llm(
     max_tokens: int = 2048,
     output_model: Optional[Type[BaseModel]] = None,
 ) -> Union[BaseModel, str]:
-    if isinstance(output_model, BaseModel):
+    if issubclass(output_model, BaseModel):
         output_schema = output_model.model_json_schema()
         has_output_model = True
     elif isinstance(output_model, str) or output_model is None:

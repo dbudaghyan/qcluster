@@ -18,5 +18,7 @@ def get_description(
         model=model,
         output_model=ClusterDescription,
     )
-    assert isinstance(llm_output, ClusterDescription)
+    assert isinstance(
+        llm_output, ClusterDescription
+    ), f"Expected ClusterDescription, got {type(llm_output)}"
     return llm_output

@@ -2,7 +2,13 @@ The information provided below contains the results of clustering a dataset.
 The dataset consists of {{ num_samples }} samples.
 The samples are customer inquiries.
 The clustering results are then compared with the provided labels.
-The labels are: {{ labels }}.
+
+The labels are:
+{% for label in labels %}
+    {{ label }}
+{% endfor %}
+.
+
 Below is the summary result of the clustering in HTML format.
 
 {{ clustering_summary_html }}

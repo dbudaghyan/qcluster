@@ -10,6 +10,13 @@ class ClusterDescription(BaseModel):
     description: str
 
 
+class ClusteringReport(BaseModel):
+    """Used to report clustering results"""
+
+    title: str
+    report: str
+
+
 EmbeddingType = Any
 ClusterType = Any
 EmbeddingFunctionType = Callable[[list[str]], EmbeddingType]
@@ -96,5 +103,5 @@ def flag_to_idx(flag: FlagType) -> Optional[int]:
 
 
 def intent_to_idx(intent: IntentType) -> Optional[int]:
-    """Convert an intent to its index."""
+    """Convert intent to its index."""
     return ALL_INTENTS.index(intent) if intent in ALL_INTENTS else None

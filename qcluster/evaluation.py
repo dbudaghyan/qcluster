@@ -1,4 +1,5 @@
 import csv
+import json
 import os
 from os import PathLike
 from pathlib import Path
@@ -9,13 +10,16 @@ from loguru import logger
 from pycm import ConfusionMatrix
 
 from qcluster import REQUIRED_ENV_VARIABLES
-from qcluster.custom_types import IdToCategoryResultType
+from qcluster.custom_types import IdToCategoryResultType, ClusterType
 from sklearn.metrics.cluster import (
     homogeneity_score,
     completeness_score,
     v_measure_score,
     adjusted_rand_score,
 )
+
+from qcluster.datamodels.evaluation_result import EvaluationResult
+from qcluster.datamodels.instruction import InstructionCollection
 
 
 def evaluate_results(id_to_categories: IdToCategoryResultType) -> ConfusionMatrix:
@@ -58,7 +62,12 @@ def cluster_to_class_similarity_measures(act, pred):
     }
 
 
-def store_results(cm: ConfusionMatrix, cluster_to_class_scores, storage_path: PathLike):
+def store_results(
+    cm: ConfusionMatrix,
+    cluster_to_class_scores,
+    storage_path: PathLike,
+    instructions_by_cluster: dict,
+):
     """
     Stores the evaluation results of a confusion matrix and cluster-to-class scores
     in a specified directory. Results are saved in various formats including CSV,
@@ -69,6 +78,8 @@ def store_results(cm: ConfusionMatrix, cluster_to_class_scores, storage_path: Pa
         cluster_to_class_scores (dict): A dictionary mapping cluster measures
          to their scores.
         storage_path (PathLike): The path where the results will be stored.
+        instructions_by_cluster (dict): A dictionary mapping clusters to their
+         corresponding instructions.
     """
     storage_path = Path(storage_path)
     storage_path.mkdir(parents=True, exist_ok=True)
@@ -112,11 +123,17 @@ def store_results(cm: ConfusionMatrix, cluster_to_class_scores, storage_path: Pa
     except Exception as e:
         logger.error(f"Failed to save git diff: {e}")
     # Save the current notebook or script
-    try:
-        save_notebook_or_the_currently_running_script(storage_path)
-    except Exception as e:
-        logger.error(f"Failed to save notebook or script: {e}")
+    # try:
+    save_notebook_or_the_currently_running_script(storage_path)
+    # except Exception as e:
+    #     logger.error(f"Failed to save notebook or script: {e}")
     save_env_variables(storage_path)
+    evaluation_results = EvaluationResult.from_folder_path(storage_path)
+    evaluation_results.add_final_report()
+    save_cluster_data(
+        instructions_by_cluster=instructions_by_cluster,
+        file_path=storage_path / "clusters.json",
+    )
 
 
 def create_cluster_to_category_evaluation_csv(
@@ -166,7 +183,18 @@ def save_notebook_or_the_currently_running_script(storage_path: PathLike):
         ipython = get_ipython()
     except ImportError:
         ipython = None
-    if ipython is None:
+    if ipython is not None:
+        try:
+            from IPython.display import FileLink
+            notebook_path = ipython.get_parent()["metadata"]["path"]
+            storage_path = Path(storage_path) / Path(notebook_path).name
+            with open(storage_path, "w") as f:
+                f.write(ipython.get_notebook().to_string())
+            logger.info(f"Notebook saved to {storage_path}")
+            return FileLink(str(storage_path))
+        except Exception as e:
+            logger.error(f"Failed to save notebook: {e}")
+    try:
         logger.warning(
             "Not running in a Jupyter environment,"
             " will save the main running script instead."
@@ -177,28 +205,18 @@ def save_notebook_or_the_currently_running_script(storage_path: PathLike):
         main_module = sys.modules.get("__main__")
         if not (main_module and hasattr(main_module, "__file__")):
             logger.warning(
-                "Could not determine the entrypoint script."
-                " No script will be saved."
+                "Could not determine the entrypoint script." " No script will be saved."
             )
             return None
         main_script_path = main_module.__file__
-        destination_path = Path(storage_path) / Path(main_script_path).name
+        new_name = f"main_script_{Path(main_script_path).name}"
+        destination_path = Path(storage_path) / new_name
         shutil.copy(main_script_path, destination_path)
+        logger.info(f"Script saved to {destination_path}")
         return destination_path
-    else:
-        try:
-            from IPython.display import FileLink
-
-            notebook_path = ipython.get_parent()["metadata"]["path"]
-            storage_path = Path(storage_path) / Path(notebook_path).name
-            with open(storage_path, "w") as f:
-                f.write(ipython.get_notebook().to_string())
-            logger.info(f"Notebook saved to {storage_path}")
-            return FileLink(str(storage_path))
-        except Exception as e:
-            logger.error(f"Failed to save notebook: {e}")
-            raise
-
+    except Exception as e:
+        logger.error(f"Failed to save the main script: {e}")
+        return None
 
 def save_the_full_git_diff_if_any(storage_path: PathLike):
     """
@@ -228,7 +246,7 @@ def save_env_variables(storage_path: PathLike):
     """
     storage_path = Path(storage_path)
     storage_path.mkdir(parents=True, exist_ok=True)
-    env_file_path = storage_path / "env_backup.txt"
+    env_file_path = storage_path / ".env"
     with open(env_file_path, "w") as f:
         for key, value in os.environ.items():
             if key not in REQUIRED_ENV_VARIABLES:
@@ -251,3 +269,23 @@ def deserialize_from_cm_obj_zip(zip_path: PathLike) -> ConfusionMatrix:
         with zipf.open("pycm.obj", "r") as f:
             cm = ConfusionMatrix(file=f)
     return cm
+
+
+def save_cluster_data(
+    instructions_by_cluster: dict[ClusterType, InstructionCollection],
+    file_path: PathLike,
+):
+    """
+    Saves cluster data to a JSON file.
+    """
+    clusters_data = []
+    for instruction_collection in instructions_by_cluster.values():
+        clusters_data.append(
+            {
+                "name": instruction_collection.title,
+                "description": instruction_collection.description,
+                "count": instruction_collection.count,
+            }
+        )
+    with open(file_path, "w") as f:
+        json.dump(clusters_data, f, indent=4)

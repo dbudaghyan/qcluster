@@ -33,3 +33,6 @@ dev = [
     "notebook>=7.4.3",
     "pytest>=8.4.0",
 ]
+
+[tool.flake8]
+max-line-length = 90

@@ -34,20 +34,7 @@ uv sync
 #### Set up the environment
 Option 1: Set the environment variables directly:
 ```bash
-export TOKENIZERS_PARALLELISM=false
-export OLLAMA_MODEL=qwen2.5:3b
-export OLLAMA_HOST=http://localhost:11434
-export SENTENCE_TRANSFORMERS_MODEL=all-mpnet-base-v2
-export EVALUATION_RESULTS_DIR=../evaluation_results
-```
-
-Option 2: Create a `.env` file in the project root with the following content:
-```ini
-TOKENIZERS_PARALLELISM=false
-OLLAMA_MODEL=qwen2.5:3b
-OLLAMA_HOST=http://localhost:11434
-SENTENCE_TRANSFORMERS_MODEL=all-mpnet-base-v2
-EVALUATION_RESULTS_DIR=../evaluation_results
+cp .env.example .env
 ```
 
 ## Usage
@@ -69,3 +56,13 @@ uv run --with jupyter jupyter-lab
 ```
 
 The notebook is located at `notebooks/pipeline.ipynb`.
+The reports will be saved in the `EVALUATION_RESULTS_DIR` defined in the `.env` file.
+
+### TLDR
+```bash
+brew install ollama
+ollama pull qwen2.5:3b
+ollama serve
+uv sync
+uv run qcluster.pipeline
+```

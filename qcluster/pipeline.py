@@ -1,7 +1,6 @@
 import functools
 import os
 import time
-import json
 from os import PathLike
 from pathlib import Path
 
@@ -57,7 +56,7 @@ clustering_function = functools.partial(
 
 describer = functools.partial(
     get_description,
-    template_name="description_prompt_simple",
+    template_name=os.environ['DESCRIPTION_PROMPT_TEMPLATE'],
     # template_name='description_prompt_from_instructions'
 )
 
@@ -168,40 +167,17 @@ def match_clusters(
     return id_to_category_pairs
 
 
-def save_cluster_data(
-    instructions_by_cluster: dict[ClusterType, InstructionCollection],
-    file_path: PathLike,
-):
-    """
-    Saves cluster data to a JSON file.
-    """
-    clusters_data = []
-    for instruction_collection in instructions_by_cluster.values():
-        clusters_data.append(
-            {
-                "name": instruction_collection.title,
-                "description": instruction_collection.description,
-                "count": instruction_collection.count,
-            }
-        )
-    with open(file_path, "w") as f:
-        json.dump(clusters_data, f, indent=4)
-
-
 def main():
     """
     Main function to run the clustering pipeline.
     """
     samples = load_samples(CSV_PATH)
-    # samples: SampleCollection = samples[:1000]
+    samples: SampleCollection = samples[:4000]; logger.error("WARNING: Using only 1000 samples for testing purposes."*10)
     logger.info(f"Using {len(samples)} samples for processing.")
     output_path = Path(os.environ["EVALUATION_RESULTS_DIR"])
-    json_folder_path = Path(output_path) / "clusters.json"
-    os.makedirs(json_folder_path, exist_ok=True)
     samples_by_category = process_samples(samples)
     instructions = create_instructions(samples)
     instructions_by_cluster = create_clusters(instructions)
-    save_cluster_data(instructions_by_cluster, json_folder_path)
     id_to_category_pairs = match_clusters(
         instructions_by_cluster, samples_by_category, samples
     )
@@ -239,6 +215,7 @@ def main():
         cm=cm,
         cluster_to_class_scores=cluster_to_class_scores,
         storage_path=unique_folder_path,
+        instructions_by_cluster=instructions_by_cluster,
     )
 
 

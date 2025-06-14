@@ -70,8 +70,7 @@ def select_mmr(
     selected_indices.append(current_best_idx)
 
     # Keep track of unselected indices
-    unselected_indices = [i for i in range(len(sentences))
-                          if i not in selected_indices]
+    unselected_indices = [i for i in range(len(sentences)) if i not in selected_indices]
 
     for _ in range(n - 1):
         mmr_scores = {}
