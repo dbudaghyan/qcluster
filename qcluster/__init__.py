@@ -1,9 +1,26 @@
 import os
 from pathlib import Path
+
+from loguru import logger
+
 from . import preload  # noqa: F401
 from .preload import MODEL  # noqa: F401
 
 ROOT_DIR = Path(__file__).parent
+PROJECT_DIR = ROOT_DIR.parent
+
+# Set up the logger to write to a file
+logger.add(
+    Path(PROJECT_DIR, "logs", "qcluster.log"),
+    rotation="1 MB",
+    retention="10 days",
+    level="DEBUG",
+    format="{time} {level} {message}",
+)
+# Ensure the logs directory exists
+os.makedirs(Path(ROOT_DIR, "logs"), exist_ok=True)
+
+
 __version__ = "0.2.0"
 
 REQUIRED_ENV_VARIABLES = [
