@@ -58,7 +58,7 @@ uv run --with jupyter jupyter-lab
 The notebook is located at `notebooks/pipeline.ipynb`.
 The reports will be saved in the `EVALUATION_RESULTS_DIR` defined in the `.env` file.
 
-### TLDR;
+### TL;DR
 ```bash
 cd customer_questions_clustering
 cp .env.example .env
