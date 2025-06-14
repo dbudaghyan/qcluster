@@ -177,7 +177,8 @@ def save_notebook_or_the_currently_running_script(storage_path: PathLike):
         main_module = sys.modules.get("__main__")
         if not (main_module and hasattr(main_module, "__file__")):
             logger.warning(
-                "Could not determine the entrypoint script." " No script will be saved."
+                "Could not determine the entrypoint script."
+                " No script will be saved."
             )
             return None
         main_script_path = main_module.__file__

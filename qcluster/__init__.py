@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
-from . import preload
-from .preload import MODEL
+from . import preload  # noqa: F401
+from .preload import MODEL  # noqa: F401
 
 ROOT_DIR = Path(__file__).parent
 __version__ = "0.2.0"

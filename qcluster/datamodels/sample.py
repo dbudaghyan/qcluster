@@ -105,7 +105,8 @@ class SampleCollection(BaseModel):
         Get the category of the samples if they all belong to the same category.
 
         Returns:
-            Optional[CategoryType]: The category of the samples or None if not applicable.
+            Optional[CategoryType]: The category of the samples
+             or None if not applicable.
         """
         if not self.is_a_category():
             raise ValueError(
@@ -316,7 +317,8 @@ class SampleCollection(BaseModel):
             csv_file (str): Path to the CSV file.
 
         Returns:
-            SampleCollection: A SampleCollection object containing the data from the CSV.
+            SampleCollection: A SampleCollection object containing
+             the data from the CSV.
         """
         df = pd.read_csv(csv_file, dtype=str)
         df.index.name = "id"
