@@ -280,7 +280,7 @@ class SampleCollection(BaseModel):
              only the samples that belong to the specified category.
         """
         filtered_samples = [
-            sample for sample in self if sample.predicted_category == category
+            sample for sample in self if sample.category == category
         ]
         return SampleCollection(samples=filtered_samples)
 
