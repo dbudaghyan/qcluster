@@ -21,4 +21,4 @@ jobs:
         uv sync
         uv pip install pytest pytest-cov
     - name: Run pytest
-      run: pytest
+      run: uv run pytest
