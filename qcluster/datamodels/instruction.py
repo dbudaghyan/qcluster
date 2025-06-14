@@ -76,6 +76,10 @@ class InstructionCollection(BaseModel):
     title: Optional[str] = None
 
     @property
+    def count(self):
+        return len(self.instructions)
+
+    @property
     def clusters(self) -> list[Optional[ClusterType]]:
         """
         Get the clusters of the instructions.

@@ -1,7 +1,7 @@
-# Preloading env vars, seeds and models
 import functools
 import os
 import time
+import json
 from os import PathLike
 from pathlib import Path
 
@@ -30,7 +30,8 @@ from qcluster.algorithms.feature_extractors import (
 from qcluster.algorithms.similarity import (
     get_top_n_similar_embeddings
 )
-from qcluster.custom_types import CategoryType, IdToCategoryResultType, category_to_idx
+from qcluster.custom_types import CategoryType, IdToCategoryResultType, category_to_idx, \
+    ClusterType
 from qcluster.datamodels.instruction import InstructionCollection
 from qcluster.datamodels.sample import SampleCollection
 from qcluster.evaluation import evaluate_results, cluster_to_class_similarity_measures, \
@@ -115,21 +116,25 @@ def create_instructions(samples: SampleCollection) -> InstructionCollection:
     return instructions
 
 
-def create_and_match_clusters(
-        instructions: InstructionCollection,
-        samples_by_category: dict[CategoryType, SampleCollection],
-        all_samples: SampleCollection
-) -> IdToCategoryResultType:
-    """Describes instructions and matches them to sample categories."""
+def create_clusters(instructions: InstructionCollection) -> dict[
+    ClusterType, InstructionCollection]:
+    """Groups instructions into clusters and describes them."""
     logger.info("Grouping instructions by cluster...")
     instructions_by_cluster = instructions.group_by_cluster()
     logger.info(f"Grouped instructions into {len(instructions_by_cluster)} clusters.")
-
     logger.info("Describing instructions in each cluster...")
     for cluster, instruction_collection in tqdm(instructions_by_cluster.items()):
         instruction_collection.describe(describer)
     logger.info("Instructions described.")
+    return instructions_by_cluster
 
+
+def match_clusters(
+        instructions_by_cluster: dict[ClusterType, InstructionCollection],
+        samples_by_category: dict[CategoryType, SampleCollection],
+        all_samples: SampleCollection
+) -> IdToCategoryResultType:
+    """Matches instruction clusters to sample categories."""
     logger.info("Finding top similar sample categories for each instruction cluster...")
     id_to_category_pairs: IdToCategoryResultType = {}
     for cluster, instruction_collection in tqdm(instructions_by_cluster.items()):
@@ -151,6 +156,24 @@ def create_and_match_clusters(
     return id_to_category_pairs
 
 
+def save_cluster_data(
+        instructions_by_cluster: dict[ClusterType, InstructionCollection],
+        file_path: PathLike
+):
+    """
+    Saves cluster data to a JSON file.
+    """
+    clusters_data = []
+    for instruction_collection in instructions_by_cluster.values():
+        clusters_data.append({
+            "name": instruction_collection.title,
+            "description": instruction_collection.description,
+            "count": instruction_collection.count,
+        })
+    with open(file_path, 'w') as f:
+        json.dump(clusters_data, f, indent=4)
+
+
 def main():
     """
     Main function to run the clustering pipeline.
@@ -158,13 +181,16 @@ def main():
     samples = load_samples(CSV_PATH)
     # samples: SampleCollection = samples[:1000]
     logger.info(f"Using {len(samples)} samples for processing.")
-
+    output_path = Path(os.environ["EVALUATION_RESULTS_DIR"])
+    json_folder_path = Path(output_path) / "clusters.json"
+    os.makedirs(json_folder_path, exist_ok=True)
     samples_by_category = process_samples(samples)
     instructions = create_instructions(samples)
-    id_to_category_pairs = create_and_match_clusters(
-        instructions, samples_by_category, samples
-    )
-
+    instructions_by_cluster = create_clusters(instructions)
+    save_cluster_data(instructions_by_cluster, json_folder_path)
+    id_to_category_pairs = match_clusters(instructions_by_cluster,
+                                          samples_by_category,
+                                          samples)
     logger.info("Evaluating results...")
     cm = evaluate_results(id_to_category_pairs)
     predicted_clusters_dict: dict[int, int] = {i.id: i.cluster for i in instructions}
@@ -192,12 +218,10 @@ def main():
         logger.warning(f"Failed to get git commit: {e}")
         git_commit = "unknown"
     unique_folder_name = f"{timestamp}-{git_commit}"
-    store_results(
-        cm,
-        cluster_to_class_scores,
-        storage_path=Path(os.environ["EVALUATION_RESULTS_DIR"])
-                     / f"results_{unique_folder_name}"
-    )
+    unique_folder_path = output_path / unique_folder_name
+    store_results(cm=cm,
+                  cluster_to_class_scores=cluster_to_class_scores,
+                  storage_path=unique_folder_path)
 
 
 if __name__ == '__main__':
