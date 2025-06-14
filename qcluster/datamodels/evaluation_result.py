@@ -109,7 +109,7 @@ class EvaluationResult(BaseModel):
         Returns:
             ClusteringReport: The generated final report.
         """
-        report = create_report(
+        report: ClusteringReport = create_report(
             template_name=os.environ["EVALUATION_REPORT_PROMPT_TEMPLATE"],
             evaluation_result=self,
         )
@@ -117,6 +117,6 @@ class EvaluationResult(BaseModel):
             name="final_report.md", path=Path(self.path) / "final_report.md"
         )
         with open(self.final_report.path, "w") as f:
-            f.write(report.content)
-        name = slugify(self.name)
+            f.write(report.report)
+        name = slugify(self.title)
         return ClusteringReport(title=name, report=report.content)

@@ -172,7 +172,7 @@ def main():
     Main function to run the clustering pipeline.
     """
     samples = load_samples(CSV_PATH)
-    samples: SampleCollection = samples[:4000]; logger.error("WARNING: Using only 1000 samples for testing purposes."*10)
+    samples: SampleCollection = samples[:4000]; logger.error("WARNING: Using only limited number of  samples for testing purposes."*10)
     logger.info(f"Using {len(samples)} samples for processing.")
     output_path = Path(os.environ["EVALUATION_RESULTS_DIR"])
     samples_by_category = process_samples(samples)

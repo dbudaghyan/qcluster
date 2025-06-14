@@ -129,11 +129,11 @@ def store_results(
     #     logger.error(f"Failed to save notebook or script: {e}")
     save_env_variables(storage_path)
     evaluation_results = EvaluationResult.from_folder_path(storage_path)
-    evaluation_results.add_final_report()
     save_cluster_data(
         instructions_by_cluster=instructions_by_cluster,
         file_path=storage_path / "clusters.json",
     )
+    evaluation_results.add_final_report()
 
 
 def create_cluster_to_category_evaluation_csv(
