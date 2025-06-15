@@ -1,5 +1,4 @@
 from loguru import logger
-from pacmap import PaCMAP
 from sentence_transformers import SentenceTransformer
 import torch
 from umap import UMAP
