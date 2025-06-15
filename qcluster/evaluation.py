@@ -44,7 +44,7 @@ def evaluate_results(id_to_categories: IdToCategoryResultType) -> ConfusionMatri
     return cm
 
 
-def cluster_to_class_similarity_measures(act, pred):
+def cluster_to_class_similarity_measures(act: list, pred: list):
     """
     Calculates clustering similarity measures between actual and predicted clusters.
 
