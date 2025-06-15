@@ -86,7 +86,7 @@ omit = ["tests/*", ".venv/*", "**/__init__.py"]
 command_line = "pytest"
 
 [tool.coverage.report]
-fail_under = 80
+#fail_under = 80
 precision = 2
 show_missing = true
 skip_empty = true

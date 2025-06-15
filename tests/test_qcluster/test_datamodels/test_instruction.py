@@ -35,13 +35,14 @@ class TestInstruction(unittest.TestCase):
 
     def test_from_sample(self):
         """Test creating an Instruction from a Sample object."""
-        sample = Sample(id=10,
-                        instruction="instruction from sample",
-                        flags="test_flag",
-                        category="ACCOUNT",
-                        intent="test_intent",
-                        response="test response",
-                        )
+        sample = Sample(
+            id=10,
+            instruction="instruction from sample",
+            flags="test_flag",
+            category="ACCOUNT",
+            intent="test_intent",
+            response="test response",
+        )
         instr = Instruction.from_sample(sample)
         self.assertEqual(instr.id, 10)
         self.assertEqual(instr.text, "instruction from sample")
@@ -111,14 +112,22 @@ class TestInstructionCollection(unittest.TestCase):
     def test_from_samples(self):
         """Test creating a collection from a list of Samples."""
         samples = [
-            Sample(id=1, instruction="sample 1",
-                   flags="test_flag", category="ACCOUNT",
-                   intent="test_intent", response="test response"
-                   ),
-            Sample(id=2, instruction="sample 2",
-                   flags="test_flag_2", category="ORDER",
-                   intent="test_intent_2", response="test response 2"
-                   ),
+            Sample(
+                id=1,
+                instruction="sample 1",
+                flags="test_flag",
+                category="ACCOUNT",
+                intent="test_intent",
+                response="test response",
+            ),
+            Sample(
+                id=2,
+                instruction="sample 2",
+                flags="test_flag_2",
+                category="ORDER",
+                intent="test_intent_2",
+                response="test response 2",
+            ),
         ]
         sample_collection = SampleCollection(samples=samples)
         collection = InstructionCollection.from_samples(sample_collection)
@@ -152,12 +161,15 @@ class TestInstructionCollection(unittest.TestCase):
         clustering_func = lambda embeddings: [e[0] % 2 for e in embeddings]
         coll = copy.deepcopy(self.collection[0:4])  # Only take the first 4 instructions
         with self.assertRaises(ValueError):
-            self.collection.update_clusters(clustering_function=clustering_func,
-                                            use_raw_instructions=False)
+            self.collection.update_clusters(
+                clustering_function=clustering_func, use_raw_instructions=False
+            )
         coll.update_embeddings(
-            embedding_function=lambda texts: [np.array([len(t)]) for t in texts])
-        coll.update_clusters(clustering_function=clustering_func,
-                             use_raw_instructions=False)
+            embedding_function=lambda texts: [np.array([len(t)]) for t in texts]
+        )
+        coll.update_clusters(
+            clustering_function=clustering_func, use_raw_instructions=False
+        )
         for inst in coll.instructions:
             self.assertIsNotNone(inst.embedding)
             self.assertIsNotNone(inst.cluster)
@@ -258,8 +270,7 @@ class TestInstructionCollection(unittest.TestCase):
         collection = self.collection.get_cluster(0)  # ids 10 and 30
         collection.instructions[0].embedding = np.array([1.0, 2.0, 3.0])
         collection.instructions[1].embedding = np.array([3.0, 4.0, 5.0])
-        self.assertTrue(np.allclose(collection.centroid,
-                                    np.array([2.0, 3.0, 4.0])))
+        self.assertTrue(np.allclose(collection.centroid, np.array([2.0, 3.0, 4.0])))
 
     def test_centroid_edge_cases(self):
         """Test centroid calculation with missing embeddings."""
@@ -277,7 +288,6 @@ class TestInstructionCollection(unittest.TestCase):
 
         # No instructions in the collection
         _ = InstructionCollection(instructions=[])
-
 
 
 if __name__ == "__main__":

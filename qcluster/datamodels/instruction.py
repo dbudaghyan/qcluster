@@ -452,9 +452,10 @@ class InstructionCollection(BaseModel):
     def centroid(self) -> Optional[EmbeddingType]:
         # Check that there are no empty embeddings
         if self.has_empty_embeddings():
-            raise ValueError("One or more embeddings are empty. Cannot compute centroid.")
+            raise ValueError(
+                "One or more embeddings are empty. Cannot compute centroid."
+            )
         return sum(self.embeddings) / len(self.embeddings)
-
 
     def has_empty_embeddings(self) -> bool:
         """
@@ -463,8 +464,10 @@ class InstructionCollection(BaseModel):
         Returns:
             bool: True if any instruction has an empty embedding, False otherwise.
         """
-        return any(embedding is None or len(embedding) == 0
-                   for embedding in self.embeddings)
+        return any(
+            embedding is None or len(embedding) == 0 for embedding in self.embeddings
+        )
+
 
 if __name__ == "__main__":
     # Used for pycharm type checking to work properly while avoiding circular imports
