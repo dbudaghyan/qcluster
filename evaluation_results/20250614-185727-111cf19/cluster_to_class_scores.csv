@@ -1,5 +1,0 @@
-Measure,Score,Description
-homogeneity,0.7979185957843159,Homogeneity score measures how much each cluster contains only members of a single class.
-completeness,0.726012361957293,Completeness score measures how much all members of a given class are assigned to the same cluster.
-v_measure,0.760269041628382,V-measure is the harmonic mean of homogeneity and completeness.
-ari,0.6122470523829967,Adjusted Rand Index (ARI) is a measure of the similarity between two data clustering results.

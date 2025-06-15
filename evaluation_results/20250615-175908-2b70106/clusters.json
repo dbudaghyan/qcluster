@@ -1,0 +1,57 @@
+[
+    {
+        "name": "Customer Service Assistance Requests",
+        "description": "The provided text contains various questions and requests related to contacting customer support. These inquiries are primarily about finding out the available hours for calling or chatting with a live agent, as well as seeking assistance in submitting feedback or opinions.",
+        "count": 2995
+    },
+    {
+        "name": "Identifying and Locating Bills Requests",
+        "description": "The provided text contains various requests related to locating or downloading bills. These requests are often phrased in different ways but generally aim at the same goal: seeking assistance with retrieving specific bill numbers from a person's account or database.",
+        "count": 2001
+    },
+    {
+        "name": "Payment and Registration Issues",
+        "description": "The provided text contains multiple questions related to payment issues, registration problems, and seeking assistance in various forms. The main themes revolve around understanding accepted payment options, reporting errors or issues with sign-ups or payments, and seeking help for account-related troubles.",
+        "count": 3091
+    },
+    {
+        "name": "Customer Assistance Requests Related to Newsletter Subscription and Complaints",
+        "description": "The provided text contains various requests related to signing up for or unsubscribing from company newsletters, filing consumer claims, and seeking assistance with subscription statuses. The primary theme revolves around customer service inquiries regarding newsletter management.",
+        "count": 1998
+    },
+    {
+        "name": "Customer Support Questions Related to Account Management and Order Cancellation",
+        "description": "The provided text contains various customer support inquiries related to account management, order cancellation, and other operational issues. The questions cover topics such as withdrawal fees, account deletion, early termination penalties, account changes, refunds, and more.",
+        "count": 7744
+    },
+    {
+        "name": "Refund and Reimbursement Inquiry Questions",
+        "description": "The provided text contains various questions related to refund and reimbursement requests. These inquiries cover a range of topics including understanding the conditions for requesting refunds, tracking current status, accessing policies, and obtaining assistance with the process.",
+        "count": 2313
+    },
+    {
+        "name": "Address Submission and Modification Issues",
+        "description": "The provided text contains various questions related to submitting or modifying delivery addresses. These include issues such as submission problems, errors during the process, and requests for information about address updates.",
+        "count": 1968
+    },
+    {
+        "name": "Common Order Status and Assistance Queries",
+        "description": "The provided text contains a series of questions related to checking the status of orders, making changes to orders, and seeking assistance with various order-related tasks. The queries are phrased in multiple ways but generally revolve around accessing or updating information about specific orders (identified by {{Order Number}}). Some examples include asking for current status updates, requesting help with changing items within an order, needing assistance with adding products to an order, and seeking ETA (Estimated Time of Arrival) information.",
+        "count": 1786
+    },
+    {
+        "name": "Navigating Shipping and Delivery Options",
+        "description": "The questions in this document are all related to understanding and accessing various shipping and delivery methods offered by a service provider. The users seek assistance in finding, viewing, or confirming the available options for shipping and delivery.",
+        "count": 647
+    },
+    {
+        "name": "Order Placement and Refund Queries",
+        "description": "The document contains various questions related to placing orders, receiving refunds, and tracking shipments. The questions are phrased in different ways but generally inquire about the delivery capabilities of a service or request assistance with refund processes.",
+        "count": 1068
+    },
+    {
+        "name": "Customer Assistance Requests for Ordering and Managing Orders",
+        "description": "The provided text contains various customer requests related to ordering articles, managing orders, deleting items from an order, and acquiring items. The requests are scattered and not always in a coherent format, but they all share the common theme of needing assistance with purchasing or managing purchases.",
+        "count": 1261
+    }
+]

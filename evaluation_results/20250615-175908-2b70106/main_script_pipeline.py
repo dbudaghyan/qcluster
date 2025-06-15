@@ -9,19 +9,38 @@ from loguru import logger
 from tqdm import tqdm
 
 from qcluster import ROOT_DIR
+
 # Clustering algorithms
-from qcluster.algorithms.clustering import \
-    kmeans_clustering  # dbscan_clustering,; hdbscan_clustering,; agglomerative_clustering; bert_topic_extraction; spectral_clustering
+from qcluster.algorithms.clustering import (
+    kmeans_clustering,
+    # hdbscan_clustering,
+    # spectral_clustering,
+    # dbscan_clustering,
+    # agglomerative_clustering,
+    # bert_topic_extraction,
+)
+
 # Feature extractors
-from qcluster.algorithms.feature_extractors import (  # pca_reduction,; pacmap_reduction
-    create_embeddings, umap_reduction)
+from qcluster.algorithms.feature_extractors import (
+    create_embeddings,
+    umap_reduction,
+    # pca_reduction,
+)
 from qcluster.algorithms.similarity import get_top_n_similar_embeddings
-from qcluster.custom_types import (CategoryType, ClusterType,
-                                   IdToCategoryResultType, category_to_idx)
+from qcluster.custom_types import (
+    CategoryType,
+    ClusterType,
+    IdToCategoryResultType,
+    category_to_idx,
+)
 from qcluster.datamodels.instruction import InstructionCollection
 from qcluster.datamodels.sample import SampleCollection
-from qcluster.evaluation import (cluster_to_class_similarity_measures,
-                                 evaluate_results, store_results)
+from qcluster.evaluation import (
+    cluster_to_class_similarity_measures,
+    evaluate_results,
+    store_results,
+)
+from qcluster.git_utils import get_git_commit_hash
 from qcluster.llm.describer import get_description
 from qcluster.preload import MODEL
 
@@ -38,7 +57,7 @@ clustering_function = functools.partial(
 
 describer = functools.partial(
     get_description,
-    template_name=os.environ['DESCRIPTION_PROMPT_TEMPLATE'],
+    template_name=os.environ["DESCRIPTION_PROMPT_TEMPLATE"],
     # template_name='description_prompt_from_instructions'
 )
 
@@ -88,7 +107,7 @@ def process_samples(samples: SampleCollection) -> dict[CategoryType, SampleColle
     return samples_by_category
 
 
-def create_instructions(samples: SampleCollection) -> InstructionCollection:
+def create_instructions_and_cluster(samples: SampleCollection) -> InstructionCollection:
     """Creates and processes an InstructionCollection from a SampleCollection."""
     logger.info("Creating instruction collection from samples...")
     instructions = InstructionCollection.from_samples(samples)
@@ -106,7 +125,7 @@ def create_instructions(samples: SampleCollection) -> InstructionCollection:
     return instructions
 
 
-def create_clusters(
+def get_clusters(
     instructions: InstructionCollection,
 ) -> dict[ClusterType, InstructionCollection]:
     """Groups instructions into clusters and describes them."""
@@ -158,11 +177,19 @@ def main():
     logger.info(f"Using {len(samples)} samples for processing.")
     output_path = Path(os.environ["EVALUATION_RESULTS_DIR"])
     samples_by_category = process_samples(samples)
-    instructions = create_instructions(samples)
-    instructions_by_cluster = create_clusters(instructions)
+    # A separate data model is used for instructions to avoid data leaks
+    # To modify the clustering algorithm,
+    # replace its building blocks with functions that have the same signature:
+    # clustering_function, # describer, # similarity_function, # feature_extractor
+    # All the signatures of the functions are defined in the `qcluster.custom_types`.
+    instructions = create_instructions_and_cluster(samples)
+    instructions_by_cluster = get_clusters(instructions)
+    # The matching algorithm for comparing the clusters to predefined labels
+    # is defined in `similarity_function`
     id_to_category_pairs = match_clusters(
         instructions_by_cluster, samples_by_category, samples
     )
+    # Evaluating the results
     logger.info("Evaluating results...")
     cm = evaluate_results(id_to_category_pairs)
     predicted_clusters_dict: dict[int, int] = {i.id: i.cluster for i in instructions}
@@ -187,12 +214,20 @@ def main():
     # create a unique storage path based on the current timestamp and git commit
     timestamp = time.strftime("%Y%m%d-%H%M%S")
     try:
-        git_commit = os.popen("git rev-parse --short HEAD").read().strip()
+        git_commit = get_git_commit_hash()
     except Exception as e:
         logger.warning(f"Failed to get git commit: {e}")
         git_commit = "unknown"
     unique_folder_name = f"{timestamp}-{git_commit}"
     unique_folder_path = output_path / unique_folder_name
+    # The results will be stored in `EVALUATION_RESULTS_DIR`
+    # A new unique folder will be created for each run, storing all the necessary files
+    # for full visibility and reproducibility of the results.
+    # The folder will contain:
+    # .env variables used for the run
+    # evaluation results (confusion matrix, comparison metrics)
+    # Qualitative report on the results using the LLM model
+    # defined by `OLLAMA_REPORTING_MODEL` environment variable
     store_results(
         cm=cm,
         cluster_to_class_scores=cluster_to_class_scores,
