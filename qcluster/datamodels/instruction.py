@@ -160,8 +160,8 @@ class InstructionCollection(BaseModel):
                 [instruction.text for instruction in self.instructions]
             )
         else:
-            if not self.embeddings:
-                raise ValueError("Embeddings must be updated before clustering.")
+            if self.has_empty_embeddings():
+                raise ValueError("One or more embeddings are empty. Cannot cluster.")
             elif len(self.embeddings) != len(self.instructions):
                 raise ValueError(
                     "Embeddings and instructions must have the same length."
@@ -307,7 +307,8 @@ class InstructionCollection(BaseModel):
         }
 
     def is_a_cluster(self) -> bool:
-        if len(set(instruction.cluster for instruction in self.instructions)) == 1:
+        unique_clusters = set(instruction.cluster for instruction in self.instructions)
+        if len(unique_clusters) == 1 and None not in unique_clusters:
             return True
         return False
 
@@ -449,8 +450,21 @@ class InstructionCollection(BaseModel):
 
     @property
     def centroid(self) -> Optional[EmbeddingType]:
+        # Check that there are no empty embeddings
+        if self.has_empty_embeddings():
+            raise ValueError("One or more embeddings are empty. Cannot compute centroid.")
         return sum(self.embeddings) / len(self.embeddings)
 
+
+    def has_empty_embeddings(self) -> bool:
+        """
+        Check if any instruction has an empty embedding.
+
+        Returns:
+            bool: True if any instruction has an empty embedding, False otherwise.
+        """
+        return any(embedding is None or len(embedding) == 0
+                   for embedding in self.embeddings)
 
 if __name__ == "__main__":
     # Used for pycharm type checking to work properly while avoiding circular imports

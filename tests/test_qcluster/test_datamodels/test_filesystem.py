@@ -78,8 +78,7 @@ class TestFilesystem(unittest.TestCase):
         obj_path_for_cm = self.test_dir / "pycm"
         cm.save_obj(obj_path_for_cm.as_posix())
 
-        with zipfile.ZipFile(zip_path, "w",
-                             compression=DEFLATED) as zipf:
+        with zipfile.ZipFile(zip_path, "w", compression=DEFLATED) as zipf:
             zipf.write(obj_path, "pycm.obj")
 
         obj_path.unlink()  # remove the intermediate file
