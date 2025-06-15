@@ -49,7 +49,7 @@ class EvaluationResult(BaseModel):
             results_html=File.from_path(path / "results.html"),
             stats_matrix=CSVFile.from_path(path / "stats_matrix.csv"),
             stats_csv=CSVFile.from_path(path / "stats.csv"),
-            stats_pycm=PYCMObject.from_path(path / "pycm.obj"),
+            stats_pycm=PYCMObject.from_path(path / "pycm.zip"),
             clusters=File.from_path(path / "clusters.json"),
             final_report=(
                 File.from_path(path / "final_report.md")
