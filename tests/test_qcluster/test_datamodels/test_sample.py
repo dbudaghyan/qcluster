@@ -70,7 +70,8 @@ def test_update_embedding():
         intent="create_account",
         response="Test response",
     )
-    mock_embedding_function = lambda x: np.array([0.1, 0.2, 0.3])
+    def mock_embedding_function(_x):
+        return np.array([0.1, 0.2, 0.3])
     sample.update_embedding(mock_embedding_function)
     assert isinstance(sample.embedding, np.ndarray)
     np.testing.assert_array_equal(sample.embedding, np.array([0.1, 0.2, 0.3]))
@@ -210,11 +211,12 @@ def test_get_sample_by_id():
 def test_update_embeddings_collection():
     """Tests updating embeddings for the whole collection."""
     collection = SampleCollection(samples=create_sample_list())
-    mock_embedding_function = lambda instructions: [
-        np.array([0.1, 0.2]),
-        np.array([0.3, 0.4]),
-        np.array([0.5, 0.6]),
-    ]
+    def mock_embedding_function(_instructions):
+        return [
+            np.array([0.1, 0.2]),
+            np.array([0.3, 0.4]),
+            np.array([0.5, 0.6]),
+        ]
     collection.update_embeddings(mock_embedding_function)
     assert collection.samples[0].embedding is not None
     assert collection.samples[1].embedding is not None
@@ -327,7 +329,8 @@ def test_describe():
 def test_description_embedding():
     """Tests getting the embedding of the description."""
     collection = SampleCollection(samples=create_sample_list())
-    mock_embedding_function = lambda x: [np.array([0.5, 0.6, 0.7])]
+    def mock_embedding_function(_x):
+        return [np.array([0.5, 0.6, 0.7])]
 
     try:
         collection.description_embedding(mock_embedding_function)
