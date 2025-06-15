@@ -153,3 +153,8 @@ uv run qcluster.pipeline
 # and open notebooks/pipeline.ipynb and run the cells
 ```
 The reports will be saved in the `EVALUATION_RESULTS_DIR` defined in the `.env` file.
+
+<!-- LICENSE -->
+## 📄 License
+
+Distributed under the GPL-2.0 License. See [LICENSE](LICENSE) for more information.
