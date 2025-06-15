@@ -115,12 +115,12 @@ This project was tested on `macOS` with `Apple Silicon`, but it should work on o
 
 You can run the clustering pipeline either as a simple Python script or through a Jupyter Notebook for a more interactive experience.
 
-### Run the `qcluster.pipeline`
+### Option 1: Python Script
 ```bash
 uv run qcluster.pipeline
 ```
 
-### Jupyter Notebook
+### Option 2: Jupyter Notebook
 Add the project root to the Python path:
 ```bash
 export PYTHONPATH=$(pwd)
