@@ -20,6 +20,7 @@ from qcluster import REQUIRED_ENV_VARIABLES
 from qcluster.custom_types import ClusterType, IdToCategoryResultType
 from qcluster.datamodels.evaluation_result import EvaluationResult
 from qcluster.datamodels.instruction import InstructionCollection
+from qcluster.git_utls import get_git_diff
 
 
 def evaluate_results(id_to_categories: IdToCategoryResultType) -> ConfusionMatrix:
@@ -232,7 +233,7 @@ def save_the_full_git_diff_if_any(storage_path: PathLike):
     storage_path = Path(storage_path)
     storage_path.mkdir(parents=True, exist_ok=True)
     try:
-        git_diff = os.popen("git diff").read()
+        git_diff = get_git_diff()
         with open(storage_path / "git_diff.txt", "w") as f:
             f.write(git_diff)
         logger.info(f"Git diff saved to {storage_path / 'git_diff.txt'}")

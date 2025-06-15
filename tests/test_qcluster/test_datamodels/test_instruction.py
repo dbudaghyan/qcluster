@@ -53,9 +53,11 @@ class TestInstruction(unittest.TestCase):
     def test_update_embedding(self):
         """Test updating an instruction's embedding."""
         instr = Instruction(id=1, text="test embedding")
+
         # A simple embedding function for testing
         def embedding_func(texts):
             return np.array([hash(t) for t in texts])
+
         instr.update_embedding(embedding_func)
         self.assertIsNotNone(instr.embedding)
         self.assertIsInstance(instr.embedding, np.ndarray)
@@ -139,8 +141,10 @@ class TestInstructionCollection(unittest.TestCase):
 
     def test_update_embeddings(self):
         """Test updating embeddings for the entire collection."""
+
         def embedding_func(texts):
             return [np.array([len(t)]) for t in texts]
+
         self.collection.update_embeddings(embedding_func)
         self.assertIsNotNone(self.collection.instructions[0].embedding)
         self.assertEqual(
@@ -161,8 +165,10 @@ class TestInstructionCollection(unittest.TestCase):
 
     def test_update_clusters(self):
         """Test the end-to-end process of updating embeddings and clusters."""
+
         def clustering_func(embeddings):
             return [e[0] % 2 for e in embeddings]
+
         coll = copy.deepcopy(self.collection[0:4])  # Only take the first 4 instructions
         with self.assertRaises(ValueError):
             self.collection.update_clusters(
@@ -264,8 +270,10 @@ class TestInstructionCollection(unittest.TestCase):
         collection = InstructionCollection(
             instructions=[], description="test description"
         )
+
         def embedding_func(texts):
             return np.array([hash(t) for t in texts])
+
         embedding = collection.description_embedding(embedding_func)
         self.assertIsNotNone(embedding)
         self.assertEqual(embedding, hash("test description"))

@@ -40,6 +40,7 @@ from qcluster.evaluation import (
     evaluate_results,
     store_results,
 )
+from qcluster.git_utls import get_git_commit_hash
 from qcluster.llm.describer import get_description
 from qcluster.preload import MODEL
 
@@ -213,7 +214,7 @@ def main():
     # create a unique storage path based on the current timestamp and git commit
     timestamp = time.strftime("%Y%m%d-%H%M%S")
     try:
-        git_commit = os.popen("git rev-parse --short HEAD").read().strip()
+        git_commit = get_git_commit_hash()
     except Exception as e:
         logger.warning(f"Failed to get git commit: {e}")
         git_commit = "unknown"
