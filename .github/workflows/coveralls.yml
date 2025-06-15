@@ -12,16 +12,7 @@ jobs:
   coverage:
     name: Coverage
     runs-on: ubuntu-latest
-    env:
-      TOKENIZERS_PARALLELISM: ${{ TOKENIZERS_PARALLELISM }}
-      OLLAMA_MODEL: ${{ secrets.OLLAMA_MODEL }}
-      OLLAMA_REPORTING_MODEL: ${{ secrets.OLLAMA_REPORTING_MODEL }}
-      OLLAMA_HOST: ${{ secrets.OLLAMA_HOST }}
-      SENTENCE_TRANSFORMERS_MODEL: ${{ secrets.SENTENCE_TRANSFORMERS_MODEL }}
-      EVALUATION_RESULTS_DIR: ${{ secrets.EVALUATION_RESULTS_DIR }}
-      EVALUATION_REPORT_PROMPT_TEMPLATE: ${{ secrets.EVALUATION_REPORT_PROMPT_TEMPLATE }}
-      DESCRIPTION_PROMPT_TEMPLATE: ${{ secrets.DESCRIPTION_PROMPT_TEMPLATE }}
-
+    environment: ${{ inputs.environment }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -45,6 +36,14 @@ jobs:
         shell: bash
         env:
           PYTHONPATH: .:./tests
+          TOKENIZERS_PARALLELISM: ${{ vars.TOKENIZERS_PARALLELISM }}
+          OLLAMA_MODEL: ${{ vars.OLLAMA_MODEL }}
+          OLLAMA_REPORTING_MODEL: ${{ vars.OLLAMA_REPORTING_MODEL }}
+          OLLAMA_HOST: ${{ vars.OLLAMA_HOST }}
+          SENTENCE_TRANSFORMERS_MODEL: ${{ vars.SENTENCE_TRANSFORMERS_MODEL }}
+          EVALUATION_RESULTS_DIR: ${{ vars.EVALUATION_RESULTS_DIR }}
+          EVALUATION_REPORT_PROMPT_TEMPLATE: ${{ vars.EVALUATION_REPORT_PROMPT_TEMPLATE }}
+          DESCRIPTION_PROMPT_TEMPLATE: ${{ vars.DESCRIPTION_PROMPT_TEMPLATE }}
 
 
 
