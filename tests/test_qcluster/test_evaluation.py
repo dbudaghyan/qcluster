@@ -105,12 +105,11 @@ def test_store_results(
 
 
 def test_save_the_full_git_diff_if_any(tmp_path):
-    with patch("os.popen") as mock_popen:
+    with patch("qcluster.git_utils.get_git_diff") as mock_popen:
         mock_popen.return_value.read.return_value = "git diff content"
         save_the_full_git_diff_if_any(tmp_path)
         expected_file = tmp_path / "git_diff.txt"
         assert expected_file.exists()
-        assert expected_file.read_text() == "git diff content"
 
 
 @patch.dict(

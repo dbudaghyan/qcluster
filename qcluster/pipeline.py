@@ -40,7 +40,7 @@ from qcluster.evaluation import (
     evaluate_results,
     store_results,
 )
-from qcluster.git_utls import get_git_commit_hash
+from qcluster.git_utils import get_git_commit_hash
 from qcluster.llm.describer import get_description
 from qcluster.preload import MODEL
 

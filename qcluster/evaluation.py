@@ -20,7 +20,7 @@ from qcluster import REQUIRED_ENV_VARIABLES
 from qcluster.custom_types import ClusterType, IdToCategoryResultType
 from qcluster.datamodels.evaluation_result import EvaluationResult
 from qcluster.datamodels.instruction import InstructionCollection
-from qcluster.git_utls import get_git_diff
+from qcluster.git_utils import get_git_diff
 
 
 def evaluate_results(id_to_categories: IdToCategoryResultType) -> ConfusionMatrix:
