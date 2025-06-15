@@ -12,7 +12,6 @@ jobs:
   coverage:
     name: Coverage
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
