@@ -22,7 +22,7 @@
     <br />
     <a href="https://github.com/dbudaghyan/qcluster/actions/workflows/flake8.yml"><img src="https://img.shields.io/github/actions/workflow/status/dbudaghyan/qcluster/flake8.yml?style=for-the-badge&logo=python" alt="Flake8"></a>
     <a href="https://www.codefactor.io/repository/github/dbudaghyan/qcluster"><img src="https://img.shields.io/codefactor/grade/github/dbudaghyan/qcluster?style=for-the-badge" alt="CodeFactor"></a>
-    <a href="https://coveralls.io/github/dbudaghyan/qcluster?branch=master"><img src="https://img.shields.io/coveralls/github/dbudaghyan/qcluster/main.svg?style=for-the-badge" alt="Coverage Status"></a>
+    <a href="https://coveralls.io/github/dbudaghyan/qcluster?branch=master"><img src="https://img.shields.io/coveralls/github/dbudaghyan/qcluster/master.svg?style=for-the-badge" alt="Coverage Status"></a>
     <a href="https://github.com/dbudaghyan/qcluster/commits/master"><img src="https://img.shields.io/github/last-commit/dbudaghyan/qcluster.svg?style=for-the-badge" alt="Last Commit"></a>
     <a href="https://github.com/dbudaghyan/qcluster"><img src="https://img.shields.io/github/repo-size/dbudaghyan/qcluster.svg?style=for-the-badge" alt="Repo Size"></a>
     <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/Python-3.12+-blue?style=for-the-badge&logo=python" alt="Python Version"></a>
