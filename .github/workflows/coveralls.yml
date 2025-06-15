@@ -12,6 +12,7 @@ jobs:
   coverage:
     name: Coverage
     runs-on: ubuntu-latest
+    environment: test
     steps:
       - name: Checkout
         uses: actions/checkout@v4
