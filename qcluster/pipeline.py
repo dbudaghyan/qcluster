@@ -13,12 +13,18 @@ from qcluster import ROOT_DIR
 # Clustering algorithms
 from qcluster.algorithms.clustering import (
     kmeans_clustering,
-)  # dbscan_clustering,; hdbscan_clustering,; agglomerative_clustering; bert_topic_extraction; spectral_clustering
+    # hdbscan_clustering,
+    # spectral_clustering,
+    # dbscan_clustering,
+    # agglomerative_clustering,
+    # bert_topic_extraction,
+)
 
 # Feature extractors
-from qcluster.algorithms.feature_extractors import (  # pca_reduction,; pacmap_reduction
+from qcluster.algorithms.feature_extractors import (
     create_embeddings,
     umap_reduction,
+    # pca_reduction,
 )
 from qcluster.algorithms.similarity import get_top_n_similar_embeddings
 from qcluster.custom_types import (

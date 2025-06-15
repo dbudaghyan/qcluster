@@ -17,11 +17,19 @@
     <a href="https://github.com/dbudaghyan/qcluster/stargazers"><img src="https://img.shields.io/github/stars/dbudaghyan/qcluster.svg?style=for-the-badge" alt="Stars"></a>
     <a href="https://github.com/dbudaghyan/qcluster/network/members"><img src="https://img.shields.io/github/forks/dbudaghyan/qcluster.svg?style=for-the-badge" alt="Forks"></a>
     <a href="https://github.com/dbudaghyan/qcluster/issues"><img src="https://img.shields.io/github/issues/dbudaghyan/qcluster.svg?style=for-the-badge" alt="Issues"></a>
+    <a href="https://github.com/dbudaghyan/qcluster/graphs/contributors"><img src="https://img.shields.io/github/contributors/dbudaghyan/qcluster.svg?style=for-the-badge" alt="Contributors"></a>
     <a href="https://github.com/dbudaghyan/qcluster/blob/main/LICENSE"><img src="https://img.shields.io/github/license/dbudaghyan/qcluster.svg?style=for-the-badge" alt="License"></a>
+    <br />
     <a href="https://github.com/dbudaghyan/qcluster/actions/workflows/flake8.yml"><img src="https://img.shields.io/github/actions/workflow/status/dbudaghyan/qcluster/flake8.yml?style=for-the-badge&logo=python" alt="Flake8"></a>
-    <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/Python-3.12+-blue?style=for-the-badge&logo=python" alt="Python Version"></a>
+    <a href="https://www.codefactor.io/g/github/dbudaghyan/qcluster"><img src="https://img.shields.io/codefactor/grade/github/dbudaghyan/qcluster?style=for-the-badge" alt="CodeFactor"></a>
     <a href="https://coveralls.io/github/dbudaghyan/qcluster?branch=main"><img src="https://img.shields.io/coveralls/github/dbudaghyan/qcluster/main.svg?style=for-the-badge" alt="Coverage Status"></a>
-
+    <a href="https://github.com/dbudaghyan/qcluster/commits/main"><img src="https://img.shields.io/github/last-commit/dbudaghyan/qcluster.svg?style=for-the-badge" alt="Last Commit"></a>
+    <a href="https://github.com/dbudaghyan/qcluster"><img src="https://img.shields.io/github/repo-size/dbudaghyan/qcluster.svg?style=for-the-badge" alt="Repo Size"></a>
+    <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/Python-3.12+-blue?style=for-the-badge&logo=python" alt="Python Version"></a>
+    <br />
+    <a href="https://github.com/dbudaghyan/qcluster/graphs/commit-activity"><img src="https://img.shields.io/github/commit-activity/m/dbudaghyan/qcluster?style=for-the-badge" alt="Commit Activity"></a>
+    <a href="https://github.com/dbudaghyan/qcluster"><img src="https://img.shields.io/github/languages/top/dbudaghyan/qcluster?style=for-the-badge" alt="Top Language"></a>
+    <a href="http://makeapullrequest.com"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=for-the-badge" alt="PRs Welcome"></a>
   </p>
 </div>
 
@@ -30,24 +38,24 @@
   <summary>Table of Contents</summary>
   <ol>
     <li>
-      <a href="#about-the-project">About The Project</a>
+      <a href="#about-the-project">🎯 About The Project</a>
     </li>
     <li>
-      <a href="#getting-started">Getting Started</a>
+      <a href="#getting-started">🚀 Getting Started</a>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
+        <li><a href="#prerequisites">🛠️ Prerequisites</a></li>
+        <li><a href="#installation">📦 Installation</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="#usage">▶️ Usage</a></li>
+    <li><a href="#contributing">🤝 Contributing</a></li>
+    <li><a href="#license">📄 License</a></li>
+    <li><a href="#contact">📧 Contact</a></li>
   </ol>
 </details>
 
 <!-- ABOUT THE PROJECT -->
-## About The Project
+## 🎯 About The Project
 
 QCluster is a powerful Python library designed to help you make sense of large volumes of customer feedback. By leveraging the power of Large Language Models (LLMs), QCluster can automatically group similar customer questions, allowing you to identify trends, pain points, and frequently asked questions with ease.
 
@@ -59,11 +67,11 @@ This project provides a complete pipeline for:
 *   Generating insightful reports.
 
 <!-- GETTING STARTED -->
-## Getting Started
+## 🚀 Getting Started
 
 Follow these simple steps to get your local copy of QCluster up and running.
 
-### Prerequisites
+### 🛠️ Prerequisites
 
 This project was tested on `macOS` with `Apple Silicon`, but it should work on other systems as well.
 
@@ -72,7 +80,7 @@ This project was tested on `macOS` with `Apple Silicon`, but it should work on o
 *   **ollama**: Run large language models locally.
     *   You will also need the `qwen2.5:3b` model, but you can configure other models as well.
 
-### Installation
+### 📦 Installation
 
 1.  **Clone the repo**
     ```sh
@@ -105,7 +113,7 @@ This project was tested on `macOS` with `Apple Silicon`, but it should work on o
     ```
 
 <!-- USAGE -->
-## Usage
+## ▶️ Usage
 
 You can run the clustering pipeline either as a simple Python script or through a Jupyter Notebook for a more interactive experience.
 
