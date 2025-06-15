@@ -18,7 +18,7 @@
     <a href="https://github.com/dbudaghyan/qcluster/network/members"><img src="https://img.shields.io/github/forks/dbudaghyan/qcluster.svg?style=for-the-badge" alt="Forks"></a>
     <a href="https://github.com/dbudaghyan/qcluster/issues"><img src="https://img.shields.io/github/issues/dbudaghyan/qcluster.svg?style=for-the-badge" alt="Issues"></a>
     <a href="https://github.com/dbudaghyan/qcluster/graphs/contributors"><img src="https://img.shields.io/github/contributors/dbudaghyan/qcluster.svg?style=for-the-badge" alt="Contributors"></a>
-    <a href="https://github.com/dbudaghyan/qcluster/blob/master/LICENSE"><img src="https://img.shields.io/github/license/dbudaghyan/qcluster.svg?style=for-the-badge" alt="License"></a>
+    <a href="https://github.com/dbudaghyan/qcluster/blob/master/LICENSE"><img src="https://img.shields.io/github/license/dbudaghyan/qcluster?label=license&style=for-the-badge" alt="License"></a>
     <br />
     <a href="https://github.com/dbudaghyan/qcluster/actions/workflows/flake8.yml"><img src="https://img.shields.io/github/actions/workflow/status/dbudaghyan/qcluster/flake8.yml?style=for-the-badge&logo=python" alt="Flake8"></a>
     <a href="https://www.codefactor.io/repository/github/dbudaghyan/qcluster"><img src="https://img.shields.io/codefactor/grade/github/dbudaghyan/qcluster?style=for-the-badge" alt="CodeFactor"></a>
