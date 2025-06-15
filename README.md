@@ -48,14 +48,12 @@
       </ul>
     </li>
     <li><a href="#usage">▶️ Usage</a></li>
-    <li><a href="#contributing">🤝 Contributing</a></li>
     <li><a href="#license">📄 License</a></li>
-    <li><a href="#contact">📧 Contact</a></li>
   </ol>
 </details>
 
 <!-- ABOUT THE PROJECT -->
-## 🎯 About The Project
+<h2 id="about-the-project">🎯 About The Project</h2>
 
 QCluster is a powerful Python library designed to help you make sense of large volumes of customer feedback. By leveraging the power of Large Language Models (LLMs), QCluster can automatically group similar customer questions, allowing you to identify trends, pain points, and frequently asked questions with ease.
 
@@ -67,11 +65,11 @@ This project provides a complete pipeline for:
 *   Generating insightful reports.
 
 <!-- GETTING STARTED -->
-## 🚀 Getting Started
+<h2 id="getting-started">🚀 Getting Started</h2>
 
 Follow these simple steps to get your local copy of QCluster up and running.
 
-### 🛠️ Prerequisites
+<h3 id="prerequisites">🛠️ Prerequisites</h3>
 
 This project was tested on `macOS` with `Apple Silicon`, but it should work on other systems as well.
 
@@ -80,7 +78,7 @@ This project was tested on `macOS` with `Apple Silicon`, but it should work on o
 *   **ollama**: Run large language models locally.
     *   You will also need the `qwen2.5:3b` model, but you can configure other models as well.
 
-### 📦 Installation
+<h3 id="installation">📦 Installation</h3>
 
 1.  **Clone the repo**
     ```sh
@@ -113,7 +111,7 @@ This project was tested on `macOS` with `Apple Silicon`, but it should work on o
     ```
 
 <!-- USAGE -->
-## ▶️ Usage
+<h2 id="usage">▶️ Usage</h2>
 
 You can run the clustering pipeline either as a simple Python script or through a Jupyter Notebook for a more interactive experience.
 
@@ -155,6 +153,6 @@ uv run qcluster.pipeline
 The reports will be saved in the `EVALUATION_RESULTS_DIR` defined in the `.env` file.
 
 <!-- LICENSE -->
-## 📄 License
+<h2 id="license">📄 License</h2>
 
 Distributed under the GPL-2.0 License. See [LICENSE](LICENSE) for more information.
