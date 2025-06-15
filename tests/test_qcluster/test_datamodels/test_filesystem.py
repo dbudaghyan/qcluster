@@ -1,21 +1,16 @@
-import unittest
-import tempfile
 import shutil
-from pathlib import Path
+import tempfile
+import unittest
 import zipfile
+from pathlib import Path
 from zlib import DEFLATED
 
-from pycm import ConfusionMatrix
 import pandas as pd
+from pycm import ConfusionMatrix
 
-from qcluster.datamodels.filesystem import (
-    slugify,
-    deserialize_from_cm_obj_zip,
-    File,
-    Folder,
-    CSVFile,
-    PYCMObject,
-)
+from qcluster.datamodels.filesystem import (CSVFile, File, Folder, PYCMObject,
+                                            deserialize_from_cm_obj_zip,
+                                            slugify)
 
 
 class TestFilesystem(unittest.TestCase):

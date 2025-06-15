@@ -4,14 +4,9 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from qcluster.custom_types import (
-    ALL_CATEGORIES,
-    ALL_FLAGS,
-    ALL_INTENTS,
-    ClusterDescription,
-)
+from qcluster.custom_types import (ALL_CATEGORIES, ALL_FLAGS, ALL_INTENTS,
+                                   ClusterDescription)
 from qcluster.datamodels.sample import Sample, SampleCollection
-
 
 # --- Tests for Sample Class ---
 

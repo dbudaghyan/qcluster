@@ -7,7 +7,6 @@ from dotenv import load_dotenv
 from loguru import logger
 from sentence_transformers.SentenceTransformer import SentenceTransformer
 
-
 load_dotenv()
 seed = 42  # You can use any integer as the seed
 

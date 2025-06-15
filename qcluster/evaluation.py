@@ -1,24 +1,19 @@
 import csv
 import json
 import os
+import traceback
 from os import PathLike
 from pathlib import Path
 from zipfile import ZipFile
 from zlib import DEFLATED
-import traceback
 
 from loguru import logger
 from pycm import ConfusionMatrix
+from sklearn.metrics.cluster import (adjusted_rand_score, completeness_score,
+                                     homogeneity_score, v_measure_score)
 
 from qcluster import REQUIRED_ENV_VARIABLES
-from qcluster.custom_types import IdToCategoryResultType, ClusterType
-from sklearn.metrics.cluster import (
-    homogeneity_score,
-    completeness_score,
-    v_measure_score,
-    adjusted_rand_score,
-)
-
+from qcluster.custom_types import ClusterType, IdToCategoryResultType
 from qcluster.datamodels.evaluation_result import EvaluationResult
 from qcluster.datamodels.instruction import InstructionCollection
 
@@ -203,8 +198,8 @@ def save_notebook_or_the_currently_running_script(storage_path: PathLike):
             "Could not save to a Jupyter environment,"
             " will save the main running script instead."
         )
-        import sys
         import shutil
+        import sys
 
         main_module = sys.modules.get("__main__")
         if not (main_module and hasattr(main_module, "__file__")):

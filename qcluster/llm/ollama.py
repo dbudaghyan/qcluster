@@ -1,5 +1,5 @@
 import os
-from typing import Optional, Any, Union, Type
+from typing import Any, Optional, Type, Union
 
 from loguru import logger
 from ollama import Client

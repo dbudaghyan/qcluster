@@ -1,6 +1,5 @@
 from qcluster.datamodels.output import ClusterOutput, ClusterOutputCollection
 
-
 # --- Tests for ClusterOutput Class ---
 
 

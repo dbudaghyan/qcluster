@@ -1,5 +1,6 @@
 import unittest
 from unittest.mock import patch
+
 import torch
 
 from qcluster.algorithms.similarity import get_top_n_similar_embeddings

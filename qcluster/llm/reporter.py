@@ -1,6 +1,5 @@
 import os
 
-
 # from qcluster.custom_types import ClusteringReport
 from qcluster.llm.ollama import query_llm
 

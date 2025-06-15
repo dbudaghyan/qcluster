@@ -9,8 +9,8 @@ from pycm import ConfusionMatrix
 from pydantic import BaseModel
 
 from qcluster.custom_types import ClusteringReport
+from qcluster.datamodels.filesystem import CSVFile, File, PYCMObject, slugify
 from qcluster.llm.reporter import create_report
-from qcluster.datamodels.filesystem import File, slugify, CSVFile, PYCMObject
 
 
 class EvaluationResult(BaseModel):

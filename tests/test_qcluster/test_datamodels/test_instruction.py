@@ -1,10 +1,11 @@
 import copy
 import unittest
+
 import numpy as np
 
 from qcluster.custom_types import ClusterDescription
 from qcluster.datamodels.instruction import Instruction, InstructionCollection
-from qcluster.datamodels.sample import SampleCollection, Sample
+from qcluster.datamodels.sample import Sample, SampleCollection
 
 
 class TestInstruction(unittest.TestCase):

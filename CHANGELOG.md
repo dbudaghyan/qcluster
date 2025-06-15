@@ -2,6 +2,12 @@
 
 ## [0.2]
 
+### [0.2.3]
+- Add extensive test coverage (80%+ coverage)
+- Add a CI / CD pipeline with GitHub Actions
+- Code cleanup using `black` and `isort`
+- Update `README.md` with badges and project status
+
 ### [0.2.2]
 - Make a streamlined version of `notebooks/pipeline.ipynb`
 - Update setup instructions, add reproducibility details

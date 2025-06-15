@@ -1,7 +1,6 @@
 import os
 from typing import Optional
 
-
 from qcluster.custom_types import ClusterDescription
 from qcluster.llm.ollama import query_llm
 

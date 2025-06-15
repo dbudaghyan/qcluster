@@ -1,11 +1,11 @@
+import torch
 from loguru import logger
 from sentence_transformers import SentenceTransformer
-import torch
+from sklearn.decomposition import PCA
 from umap import UMAP
 
-from qcluster.datamodels.sample import SampleCollection
 from qcluster import ROOT_DIR
-from sklearn.decomposition import PCA
+from qcluster.datamodels.sample import SampleCollection
 
 
 def create_embeddings(texts: list[str], model: SentenceTransformer) -> torch.Tensor:

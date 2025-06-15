@@ -2,10 +2,10 @@ from typing import Union
 
 from sklearn.metrics.pairwise import cosine_similarity
 
-from qcluster.algorithms.dissimilarity import select_mmr
-from qcluster.custom_types import EmbeddingType
-from qcluster.algorithms.feature_extractors import create_embeddings
 from qcluster import MODEL
+from qcluster.algorithms.dissimilarity import select_mmr
+from qcluster.algorithms.feature_extractors import create_embeddings
+from qcluster.custom_types import EmbeddingType
 
 
 def get_top_n_similar_embeddings(

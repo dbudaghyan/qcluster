@@ -1,16 +1,15 @@
-import pytest
-import numpy as np
 from functools import partial
 from typing import Callable
 
-from qcluster.algorithms.clustering import (
-    spectral_clustering,
-    kmeans_clustering,
-    dbscan_clustering,
-    hdbscan_clustering,
-    agglomerative_clustering,
-    bert_topic_extraction,
-)
+import numpy as np
+import pytest
+
+from qcluster.algorithms.clustering import (agglomerative_clustering,
+                                            bert_topic_extraction,
+                                            dbscan_clustering,
+                                            hdbscan_clustering,
+                                            kmeans_clustering,
+                                            spectral_clustering)
 
 # --- Test Data ---
 

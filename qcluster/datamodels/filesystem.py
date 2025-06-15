@@ -1,7 +1,7 @@
+import re
 import unicodedata
 from os import PathLike
 from pathlib import Path
-import re
 from typing import AnyStr
 from zipfile import ZipFile
 from zlib import DEFLATED
@@ -104,8 +104,9 @@ class CSVFile(File):
         Returns:
             pd.DataFrame: The DataFrame representation of the CSV content.
         """
-        import pandas as pd
         from io import StringIO
+
+        import pandas as pd
 
         content = self.content
         return pd.read_csv(

@@ -1,10 +1,8 @@
-from qcluster.dataset_analyzer import (
-    identify_unique_categories,
-    identify_unique_intents,
-    create_category_intent_tuples,
-    create_category_intent_hierarchy,
-    identify_unique_flags,
-)
+from qcluster.dataset_analyzer import (create_category_intent_hierarchy,
+                                       create_category_intent_tuples,
+                                       identify_unique_categories,
+                                       identify_unique_flags,
+                                       identify_unique_intents)
 
 
 # Mock objects to simulate Sample and SampleCollection for testing

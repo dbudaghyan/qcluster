@@ -72,10 +72,10 @@ def identify_unique_flags(samples: "SampleCollection") -> set[str]:
 
 
 if __name__ == "__main__":
-    from qcluster.datamodels.sample import SampleCollection
-    from qcluster import ROOT_DIR
-
     from loguru import logger
+
+    from qcluster import ROOT_DIR
+    from qcluster.datamodels.sample import SampleCollection
 
     csv_file_ = (
         ROOT_DIR.parent

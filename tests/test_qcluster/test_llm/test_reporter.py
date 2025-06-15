@@ -1,6 +1,6 @@
 import os
 import unittest
-from unittest.mock import patch, Mock
+from unittest.mock import Mock, patch
 
 from qcluster import ROOT_DIR
 from qcluster.llm.reporter import create_report
