@@ -136,7 +136,7 @@ The reports will be saved in the `EVALUATION_RESULTS_DIR` defined in the `.env` 
 
 ### TL;DR
 ```bash
-cd customer_questions_clustering
+cd qcluster
 cp .env.example .env
 # Modify the .env file if needed
 brew install ollama
