@@ -126,37 +126,37 @@ def umap_reduction(
     reduced_embeddings = umap.fit_transform(embeddings.cpu().numpy())
     return torch.tensor(reduced_embeddings)
 
-
-def pacmap_reduction(
-    embeddings: torch.Tensor,
-    n_components: int = 2,
-    n_neighbors=10,
-    mn_ratio=0.5,
-    fp_ratio=2.0,
-) -> torch.Tensor:
-    """
-    Reduces the dimensionality of the embeddings using PaCMAP.
-
-    Args:
-        embeddings: A torch.Tensor containing the embeddings to be reduced.
-        n_components: The number of components to keep after reduction.
-        n_neighbors: The number of neighbors to consider for the local structure.
-        mn_ratio: The ratio of the number of negative samples to positive samples.
-        fp_ratio: The ratio of the number of FP samples to TP samples.
-    Returns:
-        A torch.Tensor containing the reduced embeddings.
-    """
-    pacmap_model = PaCMAP(
-        n_components=n_components,
-        n_neighbors=n_neighbors,
-        MN_ratio=mn_ratio,
-        FP_ratio=fp_ratio,
-        verbose=True,
-    )
-    reduced_embeddings = pacmap_model.fit_transform(
-        embeddings.cpu().numpy(), init="pca"
-    )
-    return torch.tensor(reduced_embeddings)
+# The module has an issue, test fails https://github.com/YingfanWang/PaCMAP/issues/94
+# def pacmap_reduction(
+#     embeddings: torch.Tensor,
+#     n_components: int = 2,
+#     n_neighbors=10,
+#     mn_ratio=0.5,
+#     fp_ratio=2.0,
+# ) -> torch.Tensor:
+#     """
+#     Reduces the dimensionality of the embeddings using PaCMAP.
+#
+#     Args:
+#         embeddings: A torch.Tensor containing the embeddings to be reduced.
+#         n_components: The number of components to keep after reduction.
+#         n_neighbors: The number of neighbors to consider for the local structure.
+#         mn_ratio: The ratio of the number of negative samples to positive samples.
+#         fp_ratio: The ratio of the number of FP samples to TP samples.
+#     Returns:
+#         A torch.Tensor containing the reduced embeddings.
+#     """
+#     pacmap_model = PaCMAP(
+#         n_components=n_components,
+#         n_neighbors=n_neighbors,
+#         MN_ratio=mn_ratio,
+#         FP_ratio=fp_ratio,
+#         verbose=True,
+#     )
+#     reduced_embeddings = pacmap_model.fit_transform(
+#         embeddings.cpu().numpy(), init="pca"
+#     )
+#     return torch.tensor(reduced_embeddings)
 
 
 if __name__ == "__main__":

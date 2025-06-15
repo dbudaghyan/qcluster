@@ -82,7 +82,7 @@ directory = "coverage"
 [tool.coverage.run]
 source = ["qcluster"]
 branch = true
-omit = ["tests/*", ".venv/*", "**/__init__.py", "**/pipelines.py"]
+omit = ["tests/*", ".venv/*", "**/__init__.py", "**/pipeline.py"]
 command_line = "pytest"
 
 [tool.coverage.report]
