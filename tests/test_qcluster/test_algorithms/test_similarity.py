@@ -71,7 +71,6 @@ class TestGetTopNSimilarEmbeddings(unittest.TestCase):
         # Assert
         self.assertEqual(len(result), len(documents))
 
-    @patch("qcluster.algorithms.feature_extractors.create_embeddings")
     def test_empty_document_list(self):
         """
         Tests the case where the input document list is empty.
