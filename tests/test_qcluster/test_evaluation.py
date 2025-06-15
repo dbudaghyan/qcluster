@@ -86,9 +86,11 @@ def test_store_results(
     cluster_scores = {"homogeneity": 1.0}
     instructions = {"cluster_1": MagicMock()}
 
-    with patch("builtins.open", MagicMock()), patch(
-        "zipfile.ZipFile", MagicMock()
-    ), patch.object(Path, "unlink", MagicMock()):
+    with (
+        patch("builtins.open", MagicMock()),
+        patch("zipfile.ZipFile", MagicMock()),
+        patch.object(Path, "unlink", MagicMock()),
+    ):
         store_results(mock_cm_instance, cluster_scores, tmp_path, instructions)
 
     mock_save_git_diff.assert_called_once_with(tmp_path)
