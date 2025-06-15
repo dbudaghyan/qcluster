@@ -126,6 +126,7 @@ def umap_reduction(
     reduced_embeddings = umap.fit_transform(embeddings.cpu().numpy())
     return torch.tensor(reduced_embeddings)
 
+
 # The module has an issue, test fails https://github.com/YingfanWang/PaCMAP/issues/94
 # def pacmap_reduction(
 #     embeddings: torch.Tensor,

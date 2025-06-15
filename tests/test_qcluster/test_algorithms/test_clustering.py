@@ -15,21 +15,57 @@ from qcluster.algorithms.clustering import (
 # --- Test Data ---
 
 # Sample embeddings with 3 distinct clusters
-SAMPLE_EMBEDDINGS = np.array([
-    [1.0, 1.0], [1.1, 1.2], [0.9, 0.8], [1.0, 1.1], [1.2, 1.0],
-    [0.8, 0.9], [1.1, 1.0], [1.0, 0.9], [0.9, 1.1], [1.2, 1.2],
-    [10.0, 10.0], [10.1, 10.2], [9.9, 9.8], [10.0, 10.1], [10.2, 10.0],
-    [9.8, 9.9], [10.1, 10.0], [10.0, 9.9], [9.9, 10.1], [10.2, 10.2],
-    [20.0, 20.0], [20.1, 20.2], [19.9, 19.8], [20.0, 20.1], [20.2, 20.0],
-    [19.8, 19.9], [20.1, 20.0], [20.0, 19.9], [19.9, 20.1], [20.2, 20.2],
-]).tolist()
+SAMPLE_EMBEDDINGS = np.array(
+    [
+        [1.0, 1.0],
+        [1.1, 1.2],
+        [0.9, 0.8],
+        [1.0, 1.1],
+        [1.2, 1.0],
+        [0.8, 0.9],
+        [1.1, 1.0],
+        [1.0, 0.9],
+        [0.9, 1.1],
+        [1.2, 1.2],
+        [10.0, 10.0],
+        [10.1, 10.2],
+        [9.9, 9.8],
+        [10.0, 10.1],
+        [10.2, 10.0],
+        [9.8, 9.9],
+        [10.1, 10.0],
+        [10.0, 9.9],
+        [9.9, 10.1],
+        [10.2, 10.2],
+        [20.0, 20.0],
+        [20.1, 20.2],
+        [19.9, 19.8],
+        [20.0, 20.1],
+        [20.2, 20.0],
+        [19.8, 19.9],
+        [20.1, 20.0],
+        [20.0, 19.9],
+        [19.9, 20.1],
+        [20.2, 20.2],
+    ]
+).tolist()
 
 # Densely packed data for DBSCAN/HDBSCAN tests
-DENSE_EMBEDDINGS = np.array([
-    [1.0, 1.0], [1.1, 1.2], [0.9, 0.8], [1.2, 0.9], [1.3, 1.1],
-    [1.0, 1.1], [1.2, 1.0], [0.8, 0.9], [1.1, 1.0], [1.0, 0.9],
-    [10.0, 10.0],  # This point should be noise
-]).tolist()
+DENSE_EMBEDDINGS = np.array(
+    [
+        [1.0, 1.0],
+        [1.1, 1.2],
+        [0.9, 0.8],
+        [1.2, 0.9],
+        [1.3, 1.1],
+        [1.0, 1.1],
+        [1.2, 1.0],
+        [0.8, 0.9],
+        [1.1, 1.0],
+        [1.0, 0.9],
+        [10.0, 10.0],  # This point should be noise
+    ]
+).tolist()
 
 EMPTY_EMBEDDINGS = []
 SINGLE_EMBEDDING = [[5.0, 5.0]]
@@ -37,9 +73,8 @@ SINGLE_EMBEDDING = [[5.0, 5.0]]
 
 # --- Conformance Test Helper ---
 
-def check_clustering_function_conformance(
-    clustering_fn: Callable, embeddings: list
-):
+
+def check_clustering_function_conformance(clustering_fn: Callable, embeddings: list):
     """
     Checks if a clustering function conforms to the ClusteringFunctionType
     by verifying its input/output types and dimensions.
@@ -67,6 +102,7 @@ def check_clustering_function_conformance(
 
 
 # --- Test Cases ---
+
 
 def test_kmeans_clustering():
     """Tests the kmeans_clustering function."""
@@ -129,8 +165,7 @@ def test_dbscan_clustering():
 
 def test_hdbscan_clustering():
     """Tests the hdbscan_clustering function."""
-    labels = hdbscan_clustering(DENSE_EMBEDDINGS, min_cluster_size=3,
-                                min_samples=1)
+    labels = hdbscan_clustering(DENSE_EMBEDDINGS, min_cluster_size=3, min_samples=1)
     # Expects one cluster and one noise point
     assert 0 in labels and -1 in labels
     assert len(labels) == len(DENSE_EMBEDDINGS)

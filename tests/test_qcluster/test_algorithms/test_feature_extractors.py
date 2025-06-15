@@ -3,6 +3,7 @@ import unittest
 from unittest.mock import MagicMock
 
 import torch
+
 # from pacmap import PaCMAP
 from umap import UMAP
 
@@ -36,9 +37,7 @@ class TestFeatureExtractor(unittest.TestCase):
 
         result_embeddings = create_embeddings(self.texts, mock_model)
 
-        mock_model.encode.assert_called_with(
-            self.texts, convert_to_tensor=True
-        )
+        mock_model.encode.assert_called_with(self.texts, convert_to_tensor=True)
         mock_gpu_tensor.cpu.assert_called_once()
         self.assertIs(result_embeddings, cpu_tensor)
 
@@ -56,9 +55,7 @@ class TestFeatureExtractor(unittest.TestCase):
     def test_pca_reduction(self):
         """Test the pca_reduction function."""
         n_components = 5
-        reduced_embeddings = pca_reduction(
-            self.embeddings, n_components=n_components
-        )
+        reduced_embeddings = pca_reduction(self.embeddings, n_components=n_components)
         self.assertIsInstance(reduced_embeddings, torch.Tensor)
         self.assertEqual(
             reduced_embeddings.shape, (self.embeddings.shape[0], n_components)

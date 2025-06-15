@@ -184,9 +184,7 @@ def test_identify_unique_flags_single_sample_single_flag():
 
 
 def test_identify_unique_flags_single_sample_multiple_flags():
-    samples = SampleCollection(
-        [Sample("cat1", "intent1", flags=["flagA", "flagB"])]
-    )
+    samples = SampleCollection([Sample("cat1", "intent1", flags=["flagA", "flagB"])])
     assert identify_unique_flags(samples) == {"flagA", "flagB"}
 
 
