@@ -92,4 +92,4 @@ def select_mmr(
         selected_indices.append(best_next_idx)
         unselected_indices.remove(best_next_idx)
     # 5. Return the selected sentences and their original indices
-    return [(i, sentences[i]) for i in selected_indices]
+    return [(int(i), sentences[i]) for i in selected_indices]
