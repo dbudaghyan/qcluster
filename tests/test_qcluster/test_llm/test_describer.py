@@ -49,7 +49,9 @@ def test_get_description_with_limit(mock_query_llm):
     mock_query_llm.return_value = expected_cluster_description
 
     # Act
-    result = get_description(document=document, template_name=template_name, limit=limit)
+    result = get_description(
+        document=document, template_name=template_name, limit=limit
+    )
 
     # Assert
     assert result == expected_cluster_description

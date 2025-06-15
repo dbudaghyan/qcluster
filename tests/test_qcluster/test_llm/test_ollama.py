@@ -4,9 +4,9 @@ from unittest.mock import patch, MagicMock
 from qcluster.llm.ollama import query_llm
 
 
-@patch('qcluster.llm.ollama.read_prompt_template')
+@patch("qcluster.llm.ollama.read_prompt_template")
 @patch.dict(os.environ, {"OLLAMA_HOST": "mock_host"})
-@patch('qcluster.llm.ollama.Client')
+@patch("qcluster.llm.ollama.Client")
 def test_query_llm(mock_client_constructor, mock_read_prompt_template):
     """
     Tests the query_llm function with a mocked ollama client.
@@ -25,9 +25,7 @@ def test_query_llm(mock_client_constructor, mock_read_prompt_template):
 
     # Act
     result = query_llm(
-        template_name="test_template",
-        data={"key": "value"},
-        model="test_model"
+        template_name="test_template", data={"key": "value"}, model="test_model"
     )
 
     # Assert
