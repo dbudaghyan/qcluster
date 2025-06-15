@@ -22,7 +22,9 @@ class TestEvaluationResult(unittest.TestCase):
         self.test_dir.mkdir(exist_ok=True)
 
         # Create dummy files required by EvaluationResult
-        (self.test_dir / "cluster_to_class_scores.csv").write_text("col1,col2\n1,2\n3,4")
+        (self.test_dir / "cluster_to_class_scores.csv").write_text(
+            "col1,col2\n1,2\n3,4"
+        )
         (self.test_dir / "git_diff.txt").write_text("git diff content")
         (self.test_dir / "entrypoint.py").write_text("# entrypoint.py")
         (self.test_dir / "results.html").write_text("<h1>Results</h1>")
@@ -34,13 +36,12 @@ class TestEvaluationResult(unittest.TestCase):
         y_actual = [1, 2, 3, 1, 2, 3]
         y_predict = [1, 2, 3, 3, 2, 1]
         cm = ConfusionMatrix(y_actual, y_predict)
-        
+
         pycm_obj_path = self.test_dir / "pycm.obj"
         cm.save_obj(str(self.test_dir / "pycm"))  # This creates pycm.obj
 
         # Now zip it and remove the original
-        with ZipFile(self.test_dir / "pycm.zip", "w",
-                     compression=DEFLATED) as zipf:
+        with ZipFile(self.test_dir / "pycm.zip", "w", compression=DEFLATED) as zipf:
             zipf.write(pycm_obj_path, arcname="pycm.obj")
         pycm_obj_path.unlink()
 
@@ -58,13 +59,14 @@ class TestEvaluationResult(unittest.TestCase):
 
     def test_from_folder_path_with_final_report(self):
         """Test creating an EvaluationResult from a folder path that includes
-            a final report."""
+        a final report."""
         (self.test_dir / "final_report.md").write_text("This is a final report.")
         evaluation_result = EvaluationResult.from_folder_path(self.test_dir)
         self.assertIsNotNone(evaluation_result.final_report)
         self.assertEqual(evaluation_result.final_report.name, "final_report.md")
-        self.assertEqual(evaluation_result.final_report.content,
-                         "This is a final report.")
+        self.assertEqual(
+            evaluation_result.final_report.content, "This is a final report."
+        )
 
     def test_cm_cached_property(self):
         """Test the lazy-loaded confusion matrix property."""
@@ -89,7 +91,7 @@ class TestEvaluationResult(unittest.TestCase):
     def test_additional_metrics_property(self):
         """Test the additional_metrics property."""
         evaluation_result = EvaluationResult.from_folder_path(self.test_dir)
-        expected_metrics = str([{'col1': 1, 'col2': 2}, {'col1': 3, 'col2': 4}])
+        expected_metrics = str([{"col1": 1, "col2": 2}, {"col1": 3, "col2": 4}])
         self.assertEqual(evaluation_result.additional_metrics, expected_metrics)
 
     def test_cluster_json_property(self):
@@ -106,7 +108,7 @@ class TestEvaluationResult(unittest.TestCase):
         self.assertEqual(template_args["clustering_summary_html"], "<h1>Results</h1>")
         self.assertEqual(template_args["cluster_json"], '{"cluster1": [1, 2]}')
 
-    @patch('qcluster.datamodels.evaluation_result.create_report')
+    @patch("qcluster.datamodels.evaluation_result.create_report")
     def test_add_final_report(self, mock_create_report):
         """Test the add_final_report method."""
         mock_create_report.return_value = "Mocked report content"
@@ -121,7 +123,9 @@ class TestEvaluationResult(unittest.TestCase):
         self.assertIsNotNone(evaluation_result.final_report)
         self.assertIsInstance(evaluation_result.final_report, File)
         self.assertTrue((self.test_dir / "final_report.md").exists())
-        self.assertEqual(evaluation_result.final_report.content, "Mocked report content")
+        self.assertEqual(
+            evaluation_result.final_report.content, "Mocked report content"
+        )
 
         # Check the returned report object
         self.assertIsInstance(report, ClusteringReport)
@@ -130,7 +134,6 @@ class TestEvaluationResult(unittest.TestCase):
 
         # Check that create_report was called correctly
         mock_create_report.assert_called_once_with(
-            template_name="dummy_template",
-            evaluation_result=evaluation_result
+            template_name="dummy_template", evaluation_result=evaluation_result
         )
         del os.environ["EVALUATION_REPORT_PROMPT_TEMPLATE"]
