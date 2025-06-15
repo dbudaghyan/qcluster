@@ -5,8 +5,7 @@ import numpy as np
 from bertopic import BERTopic
 from hdbscan import HDBSCAN
 from sentence_transformers import SentenceTransformer
-from sklearn.cluster import (DBSCAN, AgglomerativeClustering, KMeans,
-                             SpectralClustering)
+from sklearn.cluster import DBSCAN, AgglomerativeClustering, KMeans, SpectralClustering
 from sklearn.feature_extraction.text import CountVectorizer
 
 from qcluster.custom_types import EmbeddingType

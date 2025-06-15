@@ -9,8 +9,12 @@ from zlib import DEFLATED
 
 from loguru import logger
 from pycm import ConfusionMatrix
-from sklearn.metrics.cluster import (adjusted_rand_score, completeness_score,
-                                     homogeneity_score, v_measure_score)
+from sklearn.metrics.cluster import (
+    adjusted_rand_score,
+    completeness_score,
+    homogeneity_score,
+    v_measure_score,
+)
 
 from qcluster import REQUIRED_ENV_VARIABLES
 from qcluster.custom_types import ClusterType, IdToCategoryResultType

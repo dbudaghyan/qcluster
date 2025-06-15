@@ -4,9 +4,14 @@ from typing import Any, Optional, Union, get_args
 import pandas as pd
 from pydantic import BaseModel
 
-from qcluster.custom_types import (CategoryType, DescriptionFunctionType,
-                                   EmbeddingFunctionType, EmbeddingType,
-                                   FlagType, IntentType)
+from qcluster.custom_types import (
+    CategoryType,
+    DescriptionFunctionType,
+    EmbeddingFunctionType,
+    EmbeddingType,
+    FlagType,
+    IntentType,
+)
 from qcluster.datamodels.output import ClusterOutput
 
 

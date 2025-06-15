@@ -3,11 +3,16 @@ from typing import Optional, Union
 from loguru import logger
 from pydantic import BaseModel
 
-from qcluster.custom_types import (CategoryType, ClusteringFunctionType,
-                                   ClusterType, DescriptionFunctionType,
-                                   DissimilarityFunctionType,
-                                   EmbeddingFunctionType, EmbeddingType,
-                                   SimilarityFunctionType)
+from qcluster.custom_types import (
+    CategoryType,
+    ClusteringFunctionType,
+    ClusterType,
+    DescriptionFunctionType,
+    DissimilarityFunctionType,
+    EmbeddingFunctionType,
+    EmbeddingType,
+    SimilarityFunctionType,
+)
 from qcluster.datamodels.output import ClusterOutput
 
 

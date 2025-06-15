@@ -3,11 +3,15 @@ import unittest
 from unittest.mock import MagicMock
 
 import torch
+
 # from pacmap import PaCMAP
 from umap import UMAP
 
 from qcluster.algorithms.feature_extractors import (  # pacmap_reduction,
-    create_embeddings, pca_reduction, umap_reduction)
+    create_embeddings,
+    pca_reduction,
+    umap_reduction,
+)
 
 
 class TestFeatureExtractor(unittest.TestCase):

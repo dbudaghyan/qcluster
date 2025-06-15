@@ -8,9 +8,14 @@ from zlib import DEFLATED
 import pandas as pd
 from pycm import ConfusionMatrix
 
-from qcluster.datamodels.filesystem import (CSVFile, File, Folder, PYCMObject,
-                                            deserialize_from_cm_obj_zip,
-                                            slugify)
+from qcluster.datamodels.filesystem import (
+    CSVFile,
+    File,
+    Folder,
+    PYCMObject,
+    deserialize_from_cm_obj_zip,
+    slugify,
+)
 
 
 class TestFilesystem(unittest.TestCase):

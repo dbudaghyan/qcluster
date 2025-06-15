@@ -4,12 +4,14 @@ from typing import Callable
 import numpy as np
 import pytest
 
-from qcluster.algorithms.clustering import (agglomerative_clustering,
-                                            bert_topic_extraction,
-                                            dbscan_clustering,
-                                            hdbscan_clustering,
-                                            kmeans_clustering,
-                                            spectral_clustering)
+from qcluster.algorithms.clustering import (
+    agglomerative_clustering,
+    bert_topic_extraction,
+    dbscan_clustering,
+    hdbscan_clustering,
+    kmeans_clustering,
+    spectral_clustering,
+)
 
 # --- Test Data ---
 

@@ -9,19 +9,31 @@ from loguru import logger
 from tqdm import tqdm
 
 from qcluster import ROOT_DIR
+
 # Clustering algorithms
-from qcluster.algorithms.clustering import \
-    kmeans_clustering  # dbscan_clustering,; hdbscan_clustering,; agglomerative_clustering; bert_topic_extraction; spectral_clustering
+from qcluster.algorithms.clustering import (
+    kmeans_clustering,
+)  # dbscan_clustering,; hdbscan_clustering,; agglomerative_clustering; bert_topic_extraction; spectral_clustering
+
 # Feature extractors
 from qcluster.algorithms.feature_extractors import (  # pca_reduction,; pacmap_reduction
-    create_embeddings, umap_reduction)
+    create_embeddings,
+    umap_reduction,
+)
 from qcluster.algorithms.similarity import get_top_n_similar_embeddings
-from qcluster.custom_types import (CategoryType, ClusterType,
-                                   IdToCategoryResultType, category_to_idx)
+from qcluster.custom_types import (
+    CategoryType,
+    ClusterType,
+    IdToCategoryResultType,
+    category_to_idx,
+)
 from qcluster.datamodels.instruction import InstructionCollection
 from qcluster.datamodels.sample import SampleCollection
-from qcluster.evaluation import (cluster_to_class_similarity_measures,
-                                 evaluate_results, store_results)
+from qcluster.evaluation import (
+    cluster_to_class_similarity_measures,
+    evaluate_results,
+    store_results,
+)
 from qcluster.llm.describer import get_description
 from qcluster.preload import MODEL
 

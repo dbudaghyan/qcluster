@@ -10,12 +10,17 @@ from pycm import ConfusionMatrix
 
 from qcluster.custom_types import IdToCategoryResultType
 from qcluster.datamodels.instruction import InstructionCollection
-from qcluster.evaluation import (cluster_to_class_similarity_measures,
-                                 create_cluster_to_category_evaluation_csv,
-                                 deserialize_from_cm_obj_zip, evaluate_results,
-                                 save_cluster_data, save_env_variables,
-                                 save_notebook_or_the_currently_running_script,
-                                 save_the_full_git_diff_if_any, store_results)
+from qcluster.evaluation import (
+    cluster_to_class_similarity_measures,
+    create_cluster_to_category_evaluation_csv,
+    deserialize_from_cm_obj_zip,
+    evaluate_results,
+    save_cluster_data,
+    save_env_variables,
+    save_notebook_or_the_currently_running_script,
+    save_the_full_git_diff_if_any,
+    store_results,
+)
 
 
 @pytest.fixture
