@@ -24,10 +24,15 @@ class EvaluationResult(BaseModel):
     stats_csv: CSVFile
     stats_pycm: PYCMObject
     clusters: File
+    summary_statistics: File
     final_report: Optional[File]
 
     @staticmethod
-    def from_folder_path(path: PathLike) -> "EvaluationResult":
+    def final_report_filename() -> str:
+        return "final_report.md"
+
+    @classmethod
+    def from_folder_path(cls, path: PathLike) -> "EvaluationResult":
         """
         Reads the report files from a folder and returns a Report instance.
 
@@ -51,9 +56,10 @@ class EvaluationResult(BaseModel):
             stats_csv=CSVFile.from_path(path / "stats.csv"),
             stats_pycm=PYCMObject.from_path(path / "pycm.zip"),
             clusters=File.from_path(path / "clusters.json"),
+            summary_statistics=File.from_path(path / "stats.pycm"),
             final_report=(
-                File.from_path(path / "final_report.md")
-                if (path / "final_report.md").exists()
+                File.from_path(path / cls.final_report_filename())
+                if (path / cls.final_report_filename()).exists()
                 else None
             ),
         )
@@ -101,6 +107,7 @@ class EvaluationResult(BaseModel):
             "clustering_summary_html": self.clustering_summary_html,
             "additional_metrics": self.additional_metrics,
             "cluster_json": self.cluster_json,
+            "summary_statistics": self.summary_statistics.content,
         }
 
     def add_final_report(self) -> ClusteringReport:
@@ -116,7 +123,8 @@ class EvaluationResult(BaseModel):
             evaluation_result=self,
         )
         self.final_report = File(
-            name="final_report.md", path=Path(self.path) / "final_report.md"
+            name=self.final_report_filename(),
+            path=Path(self.path) / self.final_report_filename(),
         )
         with open(self.final_report.path, "w") as f:
             f.write(report)

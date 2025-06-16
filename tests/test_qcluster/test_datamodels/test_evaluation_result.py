@@ -39,6 +39,7 @@ class TestEvaluationResult(unittest.TestCase):
 
         pycm_obj_path = self.test_dir / "pycm.obj"
         cm.save_obj(str(self.test_dir / "pycm"))  # This creates pycm.obj
+        cm.save_stat(str(self.test_dir / "stats"), summary=True)
 
         # Now zip it and remove the original
         with ZipFile(self.test_dir / "pycm.zip", "w", compression=DEFLATED) as zipf:
@@ -60,10 +61,15 @@ class TestEvaluationResult(unittest.TestCase):
     def test_from_folder_path_with_final_report(self):
         """Test creating an EvaluationResult from a folder path that includes
         a final report."""
-        (self.test_dir / "final_report.md").write_text("This is a final report.")
+        (self.test_dir / EvaluationResult.final_report_filename()).write_text(
+            "This is a final report."
+        )
         evaluation_result = EvaluationResult.from_folder_path(self.test_dir)
         self.assertIsNotNone(evaluation_result.final_report)
-        self.assertEqual(evaluation_result.final_report.name, "final_report.md")
+        self.assertEqual(
+            evaluation_result.final_report.name,
+            EvaluationResult.final_report_filename(),
+        )
         self.assertEqual(
             evaluation_result.final_report.content, "This is a final report."
         )
@@ -122,7 +128,9 @@ class TestEvaluationResult(unittest.TestCase):
         # Check that the final report file is created and has the correct content
         self.assertIsNotNone(evaluation_result.final_report)
         self.assertIsInstance(evaluation_result.final_report, File)
-        self.assertTrue((self.test_dir / "final_report.md").exists())
+        self.assertTrue(
+            (self.test_dir / EvaluationResult.final_report_filename()).exists()
+        )
         self.assertEqual(
             evaluation_result.final_report.content, "Mocked report content"
         )

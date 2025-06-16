@@ -9,9 +9,12 @@ The labels are:
 {% endfor %}
 .
 
-Below is the summary result of the clustering in HTML format.
+{#Below is the summary result of the clustering in HTML format.#}
+{##}
+{#{{ clustering_summary_html }}#}
+Below is the summary statistics of the clustering results:
 
-{{ clustering_summary_html }}
+{{ summary_statistics }}
 
 Here are some additional metrics comparing the clustering results with the labels:
 
@@ -21,12 +24,14 @@ Here are the cluster titles and their descriptions:
 
 {{ cluster_json}}
 
-Provided the information above, generate a comprehensive report on the clustering results.
-Include comparison of the generated clusters with the provided labels.
+Provided the information above, generate a comprehensive qualitative
+report on the clustering results.
+Compare generated clusters with the provided labels.
 The report should be structured as follows:
-1. **Introduction**: Briefly describe the dataset and the purpose of clustering.
+
+1. **Introduction**: Very briefly describe the dataset and the purpose of clustering.
 2. **Clustering Results**: Summarize the clustering results,
-        including the number of clusters, and their characteristics.
+        including the cluster sizes and their characteristics.
 3. **Comparison with Labels**: Analyze how the clusters relate to the provided labels,
         highlighting any significant findings or discrepancies.
 4. **Conclusion**: Provide a summary of the findings
