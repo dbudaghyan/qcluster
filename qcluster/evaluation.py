@@ -118,9 +118,7 @@ def store_results(
         logger.error(f"Failed to save PyCM object: {status.get('Message')}")
     else:
         logger.info(f"PyCM object saved at {storage_path / 'pycm'}")
-    status = cm.save_stat(str(storage_path / "stats"),
-                          sparse=True,
-                          summary=True)
+    status = cm.save_stat(str(storage_path / "stats"), sparse=True, summary=True)
     if status.get("Status") is False:
         logger.error(f"Failed to save stats: {status.get('Message')}")
     else:
